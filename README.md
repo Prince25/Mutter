@@ -15,7 +15,7 @@ Mutter requires [node.js](https://nodejs.org/) to run.
 Clone repository, install the dependencies and start the server.
 
 ```sh
-$ git clone https://github.com/aaronvandoren/Mutter.git
+$ git clone https://github.com/PrinceS25/Mutter.git
 $ cd mutter
 $ npm install -d
 $ npm start
