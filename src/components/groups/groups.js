@@ -7,11 +7,12 @@ export class Groups extends Component {
     
     return (
       <div className="container">
-        <p>discover</p>
+        <p>Groups</p>
       </div>
     )
  
   }
 }
+
 
 export default Groups
