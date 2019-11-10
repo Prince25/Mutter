@@ -1,13 +1,16 @@
+// https://react-bootstrap.github.io/components/navbar/
+
 import React from 'react';
-import { Link } from 'react-router-dom'
+import { Link, Redirect } from 'react-router-dom'
 import SignedInLinks from './signedInLinks'
-import SignedOutLinks from './signedOutLinks'
 import { connect } from 'react-redux'
 
 
 const Navbar = (props) => {
+
   const { auth, profile } = props
-  const links = auth.uid ? (<SignedInLinks profile={profile} />) : (<SignedOutLinks />)
+  const links = <SignedInLinks profile={profile} />
+  
   return (
     <nav className="nav-wrapper grey darken-3">
       <div className="container">

@@ -11,7 +11,7 @@ class Dashboard extends Component {
   render(){
 
     const { projects, auth, notifications } = this.props
-    if (!auth.uid) return <Redirect to='/signin' /> 
+    if (!auth.uid) return <Redirect to='/splash' />
 
     return (
       <div className="dashboard container">

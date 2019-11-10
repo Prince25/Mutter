@@ -7,29 +7,42 @@
 
 import React, { Component } from 'react';
 import { BrowserRouter, Switch, Route } from 'react-router-dom'
+import { connect } from 'react-redux'
+import { Redirect } from 'react-router-dom'
 import Navbar from './components/layout/navbar'
 import Dashboard from './components/dashboard/dashboard'
 import ProjectDetails from './components/project/projectDetails'
-import SignIn from './components/auth/signin'
-import SignUp from './components/auth/signup'
 import CreateProject from './components/project/createProject'
 import Discover from './components/discover/discover'
 import Groups from './components/groups/groups'
 import Feed from './components/feed/feed'
 import Profile from './components/profile/profile'
+import Splash from './components/layout/splash/splash'
+import Loading from './loading'
 
 
 class App extends Component {
 
+  state = { isLoading: true }
+
+  // Ensures the no other componenet loads before the Navbar
+  componentWillReceiveProps() {
+    this.setState({isLoading: false})
+  }
+
   render() {
+
+    const { auth } = this.props
+    const showNavbar = (auth.isLoaded && auth.uid) ? <Navbar /> : <Redirect to='/splash' />
+
     return (
+      this.state.isLoading ? <Loading /> :
       <BrowserRouter>
         <div className="App">
-          <Navbar />
+          { showNavbar }
           <Switch>
             <Route exact path='/' component={Dashboard} />        {/* change to discover.js once implemented */}
-            <Route path='/signin' component={SignIn} />
-            <Route path='/signup' component={SignUp} />
+            <Route path='/splash' component={Splash} />
             <Route path='/groups' component={CreateProject} />    {/* change to groups.js once implemented */}
             <Route path='/feed' component={Feed} />
             <Route path='/profile' component={Profile} />
@@ -42,4 +55,11 @@ class App extends Component {
 
 }
 
-export default App;
+const mapStateToProps = (state) => {
+  return {
+    auth: state.firebase.auth,
+    profile: state.firebase.profile
+  }
+}
+
+export default connect(mapStateToProps)(App);
