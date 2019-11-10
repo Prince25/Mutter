@@ -20,8 +20,7 @@ const spotifyApi = new SpotifyWebApi();
 
 // export default Profile
 
-
-class profile extends Component {
+class Profile extends Component {
   constructor(){
      
     super();
@@ -136,7 +135,7 @@ class profile extends Component {
 
   render() {
     return (
-      <div className="profile">
+      <div className="Profile">
         <a href='http://localhost:8888' > Login to Spotify </a>
         <div>
           Now Playing: { this.state.nowPlaying.name }
@@ -144,10 +143,13 @@ class profile extends Component {
         <div>
           <img src={this.state.nowPlaying.albumArt} style={{ height: 150 }}/>
         </div>
-
         { this.state.loggedIn &&
           <button onClick={() => this.getNowPlaying()}>
             Check Now Playing
+          </button>
+        }
+        {  <button onClick={() => this.getNowPlaying()}>
+            Check now testing
           </button>
         }
         { this.state.loggedIn &&
@@ -246,4 +248,4 @@ class profile extends Component {
   }
 }
 
-export default profile;
+export default Profile;
