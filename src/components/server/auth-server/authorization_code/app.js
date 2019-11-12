@@ -13,10 +13,17 @@ var cors = require('cors');
 var querystring = require('querystring');
 var cookieParser = require('cookie-parser');
 
+const AppConfig = require('../../../config/app');
+const AuthConfig = require('../../../config/auth');
+
+const redirect_uri = AppConfig.HOST;
+const client_id = AuthConfig.CLIENT_ID;
+const client_secret = AuthConfig.CLIENT_SECRET;
+/*
 var client_id = '253c9f9496a3402292afcac6494edd05'; // Your client id
 var client_secret = '017ba64d2469488686442087cc78a652'; // Your secret
 var redirect_uri = 'http://localhost:8888/callback'; // Your redirect uri
-
+/*
 /**
  * Generates a random string containing numbers and letters
  * @param  {number} length The length of the string
@@ -118,6 +125,27 @@ console.log("*******************************************************************
 */
   let topartists="";
   let recommendedurl =""
+console.log("******************************************************************************");
+console.log("******************************************************************************");
+console.log("******************************************************************************");
+  /////testing 
+  var options3 = {
+          url: 'https://api.spotify.com/v1/search?q=taylor&type=artist&limit=5',
+          headers: { 'Authorization': 'Bearer ' + 'BQDDLNjheLhY_YNJarl3jveWeBt9cXY3WXtDHw1H7Ccb-oJqo0l24zGQ01a4b5A29nXwpyoeGeWPtq_wCyYz9YQxSZ112C2m67Eqf9m0-CXH07IT3xRzNvMzz1rns0rHlFDoLAtfBdNLNmK2XC7vIiwX-La-yqGs8B2MWr-GhCT34vA' },
+          json: true
+    //limit 5
+        };
+  // use the access token to access the most recommended song by artistID
+        request.get(options3, function(error, response, body) {
+          console.log(body);
+          console.log(body.artists.items[0].name)
+          console.log("******************************************************************************");
+        });
+console.log("******************************************************************************");
+console.log("******************************************************************************");
+console.log("******************************************************************************");
+  //end testing......
+
 
   //trying to get the top artist
   var options2 = {
@@ -149,6 +177,7 @@ console.log("*******************************************************************
     //console.log(response);
         });
   });
+
 
 
 /*  
