@@ -20,7 +20,7 @@ export class CreatePost extends Component {
   handleSubmit = (e) => {
     e.preventDefault()
     this.props.createPost(this.state)
-    this.props.history.push('/')
+    this.props.history.push('/feed')
   }
 
   render() {
@@ -32,17 +32,17 @@ export class CreatePost extends Component {
 
             <div className="input-field">
               <label htmlFor="song">Song</label>
-              <input type="text" id="song" onChange={this.handleChange}/>
+              <input type="text" id="song" onChange={this.handleChange} />
             </div>
 
             <div className="input-field">
-              <label htmlFor="rating">Rating</label>
-              <textarea id="rating" className="materialize-textarea" onChange={this.handleChange}></textarea>
+              <label htmlFor="rating">Rating (1 - 5)</label>
+              <input type="number" min="1" max="5" id="rating" className="materialize-textarea" onChange={this.handleChange} />
             </div>
 
             <div className="input-field">
               <label htmlFor="comment">Comment</label>
-              <textarea id="comment" className="materialize-textarea" onChange={this.handleChange}></textarea>
+              <input type="text" id="comment" className="materialize-textarea" onChange={this.handleChange} />
             </div>
 
             <div className="input-field">

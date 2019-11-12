@@ -12,7 +12,6 @@ const SignedInLinks = (props) => {
       <li><NavLink to='/'>Discover</NavLink></li>
       <li><NavLink to='/groups'>Groups</NavLink></li>
       <li><NavLink to='/feed'>Feed</NavLink></li>
-      <li><NavLink to='/newpost'>New Post</NavLink></li>
       <li><NavLink to='/profile' className='btn btn-floating pink lighten-1'>
         { props.profile.initials }
       </NavLink></li>
