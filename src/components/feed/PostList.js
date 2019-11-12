@@ -4,7 +4,6 @@ import { Link } from 'react-router-dom';
 
 
 const PostList = ({posts}) => {
-
   return (
     <div className="post-list section">
       { posts && posts.map(post => {

@@ -9,7 +9,6 @@ const PostSummary = ({post}) => {
 
     <div className="card z-depth-0 post-summary">
       <div className="card-content grey-text text-darken-3">
-        {/*change STARS to STAR if one star*/}
         <div className="card-title"><b>{post.author}</b> rated song "<b>{post.song}</b>"</div>
         <span className={"fa fa-star " + (rating >= 1 ? 'checked' : '')}></span>
         <span className={"fa fa-star " + (rating >= 2 ? 'checked' : '')}></span>

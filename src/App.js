@@ -13,6 +13,7 @@ import Navbar from './components/layout/navbar'
 import Dashboard from './components/dashboard/dashboard'
 import ProjectDetails from './components/project/projectDetails'
 import CreateProject from './components/project/createProject'
+import CreatePost from './components/feed/createPost'
 import Discover from './components/discover/discover'
 import Groups from './components/groups/groups'
 import Feed from './components/feed/feed'
@@ -45,6 +46,7 @@ class App extends Component {
             <Route path='/splash' component={Splash} />
             <Route path='/groups' component={CreateProject} />    {/* change to groups.js once implemented */}
             <Route path='/feed' component={Feed} />
+            <Route path='/newpost' component={CreatePost} />
             <Route path='/profile' component={Profile} />
             <Route path='/project/:id' component={ProjectDetails} />
           </Switch>
