@@ -108,6 +108,14 @@ console.log("*******************************************************************
 
         var access_token = body.access_token,
             refresh_token = body.refresh_token;
+        var options ={
+                url : 'https://api.spotify.com/v1/me',
+                headers: { 'Authorization' : 'Bearer ' + access_token},
+                json: true
+            };
+        request.get(options, function(error, response, body) {
+            console.log("the access_token is "+ body);
+        });
 
 /*
         var options = {
@@ -138,7 +146,7 @@ console.log("*******************************************************************
   // use the access token to access the most recommended song by artistID
         request.get(options3, function(error, response, body) {
           console.log(body);
-          console.log(body.artists.items[0].name)
+          //console.log(body.artists.items[0].name)
           console.log("******************************************************************************");
         });
 console.log("******************************************************************************");
@@ -157,11 +165,15 @@ console.log("*******************************************************************
 
         // use the access token to access the top artists
         request.get(options2, function(error, response, body) {
-          //console.log(body);
+          console.log(body);
+          console.log("******************************************************************************");
+          console.log("******************************************************************************");
+          console.log("******************************************************************************");
+              
     topartists = body.items[0].id;
     //console.log(body.items[0].id);
     recommendedurl ='https://api.spotify.com/v1/recommendations?limit=5&market=US&seed_artists=' + topartists + '&min_energy=0.4&min_popularity=50';
-    console.log(recommendedurl);
+    //console.log(recommendedurl);
     // *********************** try to put options3 here inside 2 ************
     var options3 = {
       url: recommendedurl,
@@ -172,9 +184,9 @@ console.log("*******************************************************************
           request.get(options3, function(error, response, body) {
           console.log(body);
           console.log("******************************************************************************");
-console.log("******************************************************************************");
-console.log("******************************************************************************");
-    //console.log(response);
+          console.log("******************************************************************************");
+          console.log("******************************************************************************");
+              //console.log(response);
         });
   });
 

@@ -42,10 +42,10 @@ class Discover extends Component {
                           albumArtL: ['','','','','']},
       searchingArtistL: { ArtistName: ['1','2','3','',''],
                           ArtistImage: ['6','7','8','','']}
-  }
+    }
     this.handleChange = this.handleChange.bind(this);
     this.handleSubmit = this.handleSubmit.bind(this);
-}
+  }
 
   handleChange(event) {
     //var delayInMilliseconds = 200; //1 second
@@ -62,7 +62,7 @@ class Discover extends Component {
     //window.alert("event target value is " +q);
     //window.alert("the search value is " +this.state.searchvalue.searchartistvalue);
     }
-}
+  }
 
   handleSubmit(event) {
   	//this.setState({searchvalue: event.target.value});
@@ -97,86 +97,86 @@ class Discover extends Component {
     
     spotifyApi.getMyRecentlyPlayedTracks()
     .then((response)=>{
-     this.setState({
-  recentList:{
-    name: [response.items[0].track.name,
-     response.items[1].track.name,           
-     response.items[2].track.name,
-     response.items[3].track.name,      
-                 response.items[4].track.name],
-    albumArtN:[
-      response.items[0].track.album.name,
-      response.items[1].track.album.name,
-      response.items[2].track.album.name,
-      response.items[3].track.album.name,
-      response.items[4].track.album.name
-        ],
-    albumArtL: [response.items[0].track.album.images[0].url,
-      response.items[1].track.album.images[0].url,
-      response.items[2].track.album.images[0].url,
-      response.items[3].track.album.images[0].url,
-      response.items[4].track.album.images[0].url
-         ]
-  }
-     });
+      this.setState({
+        recentList:{
+          name: [response.items[0].track.name,
+           response.items[1].track.name,           
+           response.items[2].track.name,
+           response.items[3].track.name,      
+           response.items[4].track.name],
+          albumArtN:[
+            response.items[0].track.album.name,
+            response.items[1].track.album.name,
+            response.items[2].track.album.name,
+            response.items[3].track.album.name,
+            response.items[4].track.album.name
+              ],
+          albumArtL: [response.items[0].track.album.images[0].url,
+            response.items[1].track.album.images[0].url,
+            response.items[2].track.album.images[0].url,
+            response.items[3].track.album.images[0].url,
+            response.items[4].track.album.images[0].url
+               ]
+        }
+      });
     })
   }
   
   getrefreshtoken(){
-  var returnaccesstoken;
-  var returnrefreshtoken;
-  var stateKey = 'spotify_auth_state';
-  var express = require('express');
-  var app = express();
-  app.get('/callback', function(req, res) {
-        var code = req.query.code || null;
-        var state = req.query.state || null;
-        var storedState = req.cookies ? req.cookies[stateKey] : null;
+    var returnaccesstoken;
+    var returnrefreshtoken;
+    var stateKey = 'spotify_auth_state';
+    var express = require('express');
+    var app = express();
+    app.get('/callback', function(req, res) {
+          var code = req.query.code || null;
+          var state = req.query.state || null;
+          var storedState = req.cookies ? req.cookies[stateKey] : null;
 
-        if (state === null || state !== storedState) {
-          res.redirect('/#' +
-            querystring.stringify({
-              error: 'state_mismatch'
-            }));
-        } else {
-          res.clearCookie(stateKey);
-          var authOptions = {
-            url: 'https://accounts.spotify.com/api/token',
-            form: {
-              code: code,
-              redirect_uri: redirect_uri,
-              grant_type: 'authorization_code'
-            },
-            headers: {
-              'Authorization': 'Basic ' + (new Buffer(client_id + ':' + client_secret).toString('base64'))
-            },
-            json: true
-          };
+          if (state === null || state !== storedState) {
+            res.redirect('/#' +
+              querystring.stringify({
+                error: 'state_mismatch'
+              }));
+          } else {
+            res.clearCookie(stateKey);
+            var authOptions = {
+              url: 'https://accounts.spotify.com/api/token',
+              form: {
+                code: code,
+                redirect_uri: redirect_uri,
+                grant_type: 'authorization_code'
+              },
+              headers: {
+                'Authorization': 'Basic ' + (new Buffer(client_id + ':' + client_secret).toString('base64'))
+              },
+              json: true
+            };
 
-          request.post(authOptions, function(error, response, body) {
-            if (!error && response.statusCode === 200) {
+            request.post(authOptions, function(error, response, body) {
+              if (!error && response.statusCode === 200) {
 
-              var access_token = body.access_token,
-                  refresh_token = body.refresh_token;
-                  returnaccesstoken = access_token;
-                  returnrefreshtoken = refresh_token;
-              // res.redirect('http://localhost:3000/profile/#' +
-              // querystring.stringify({
-              //   access_token: access_token,
-              //   refresh_token: refresh_token
-              // }));
-            }
-      //       else {
-      //         res.redirect('/#' +
-      //           querystring.stringify({
-      //             error: 'invalid_token'
-      //     }));
-      // }
-    });
+                var access_token = body.access_token,
+                    refresh_token = body.refresh_token;
+                    returnaccesstoken = access_token;
+                    returnrefreshtoken = refresh_token;
+                // res.redirect('http://localhost:3000/profile/#' +
+                // querystring.stringify({
+                //   access_token: access_token,
+                //   refresh_token: refresh_token
+                // }));
+              }
+        //       else {
+        //         res.redirect('/#' +
+        //           querystring.stringify({
+        //             error: 'invalid_token'
+        //     }));
+        // }
+            });
+        }
+    })
+    this.setState({access_token:returnaccesstoken, refresh_token:returnrefreshtoken});
   }
-})
- this.setState({access_token:returnaccesstoken, refresh_token:returnrefreshtoken});
-}
   changeArtist(bodydata)
   {
     this.setState({
@@ -191,8 +191,8 @@ class Discover extends Component {
                                bodydata.artists.items[2].images[0].url,
                                bodydata.artists.items[3].images[0].url,
                                bodydata.artists.items[4].images[0].url]
-              }
-          });
+            }
+    });
 
   }
 
@@ -215,7 +215,7 @@ class Discover extends Component {
         };
 
     //window.alert(this.token);
-  // use the access token to access the most recommended song by artistID
+        // use the access token to access the most recommended song by artistID
         var feed = this;
         request.get(options3, function(error, response, body) {
           //console.log(body);
@@ -254,78 +254,111 @@ class Discover extends Component {
 
         });
         // window.alert(this.searchingArtistL.ArtistName[0]);
-      };
-  
-  /*
-   spotifyApi.searchArtists(Q)
-      .then((response) => {
-        console.log(response);
-        window.alert("inside then");
-        window.alert(response.artists.items[0].name)
-  */
-        //var json = JSON.stringify(response);
-        //var fs = require('fs');
-        //fs.writeFile('myjsonfile.json', json, 'utf8');*/
-        /*this.setState({
-          searchingArtistL: { 
-              ArtistName: [response.artists.items[0].name,
-                            response.artists.items[1].name,
-                            response.artists.items[2].name,
-                            response.artists.items[3].name,
-                            response.artists.items[4].name ],
-              ArtistImage: [response.artists.items[0].images[0].url,
-                             response.artists.items[1].images[0].url,
-                             response.artists.items[2].images[0].url,
-                             response.artists.items[3].images[0].url,
-                             response.artists.items[4].images[0].url]
-            }
-        });*/
-      //})
+  };
+
+  getSearchTrack()
+  {
+    //var Q = this.state.searchvalue.searchartistvalue;
+    //Q = Q + '-H "Accept: application/json" -H "Content-Type: application/json" -H "Authorization: Bearer BQCfOZVYMAZr54h6uJ6wEtfsYAPbgCKNLrYGI6chKSr3stYSCAwnt50Hd2i-SkTPnCEdxm8h-ngTCrrp47iz8_cLiClg2lTLkeLYrAo1BadxjpIaWidSag0lGYGYmV1thIGQDxlpMCaJ92Ia0epQnLpQ9Bk9hwPsHfPGh0UwovLVO6g'
+    //window.alert("the searching artist value in the function is " + Q);
+    //this.getrefreshtoken();
+    var searchtrackurl = 'https://api.spotify.com/v1/search?q=' + this.state.searchvalue.searchartistvalue + '&type=track&market=US&limit=5';
+    //var passlist = searchingArtistL;
+    //window.alert(this.state.searchvalue.searchartistvalue)
+    var options4 = {
+          url: searchtrackurl,
+          headers: { 'Authorization': 'Bearer '},
+          json: true
+        
+        };
+
+    //window.alert(this.token);
+        // use the access token to access the most recommended song by artistID
+        var feed = this;
+        request.get(options4, function(error, response, body) {
+          //console.log(body);
+          window.alert("inside request");
+          window.alert("body is there " +body);
+          window.alert("artists is there" + body.artists);
+          window.alert(body.artists.items[0].name);
+          //feed.changeArtist(body);
+           
+
+        });
+        // window.alert(this.searchingArtistL.ArtistName[0]);
+  };
+
+  getSearchAlbum()
+  {
+    //var Q = this.state.searchvalue.searchartistvalue;
+    //Q = Q + '-H "Accept: application/json" -H "Content-Type: application/json" -H "Authorization: Bearer BQCfOZVYMAZr54h6uJ6wEtfsYAPbgCKNLrYGI6chKSr3stYSCAwnt50Hd2i-SkTPnCEdxm8h-ngTCrrp47iz8_cLiClg2lTLkeLYrAo1BadxjpIaWidSag0lGYGYmV1thIGQDxlpMCaJ92Ia0epQnLpQ9Bk9hwPsHfPGh0UwovLVO6g'
+    //window.alert("the searching artist value in the function is " + Q);
+    //this.getrefreshtoken();
+    var searchalbumurl = 'https://api.spotify.com/v1/search?q=' + this.state.searchvalue.searchartistvalue + '&type=album&market=US&limit=5';
+    //var passlist = searchingArtistL;
+    //window.alert(this.state.searchvalue.searchartistvalue)
+    var options5 = {
+          url: searchalbumurl,
+          headers: { 'Authorization': 'Bearer '},
+          json: true
+        
+        };
+
+    //window.alert(this.token);
+        // use the access token to access the most recommended song by artistID
+        var feed = this;
+        request.get(options5, function(error, response, body) {
+          //console.log(body);
+          window.alert("inside request");
+          window.alert("body is there " +body);
+          window.alert("artists is there" + body.artists);
+          window.alert(body.artists.items[0].name);
+          //feed.changeArtist(body);
+           
+
+        });
+        // window.alert(this.searchingArtistL.ArtistName[0]);
+  };
 
   
   printsearch(){
-
- 
-  window.alert(this.state.searchvalue.searchartistvalue);
-
+    window.alert(this.state.searchvalue.searchartistvalue);
   }
-
 
   getMostReommended(){
   //window.alert(spotifyApi.getRecommendations()); 
 
     spotifyApi.getRecommendations().then((response)=>{
-     window.alert(response);
-     window.alert("inside then")
-     this.setState({
-  mostRecommendedL:{
-    songname: [response.tracks[0].name,
-     response.tracks[1].name,        
-     response.tracks[2].name,
-     response.tracks[3].name,   
-                 response.tracks[4].name],
-  //it may need to change for mutiple artists
-    albumArtN:[
-      response.tracks[0].album.artists[0].name,
-      response.tracks[1].album.artists[0].name,        
-      response.tracks[2].album.artists[0].name,
-      response.tracks[3].album.artists[0].name,   
-                  response.tracks[4].album.artists[0].name],
-    albumArtL: [response.tracks[0].images[0].url,
-      response.tracks[1].images[0].url,
-      response.tracks[2].images[0].url,
-      response.tracks[3].images[0].url,
-      response.tracks[4].images[0].url
-         ]
-  
-  }
-  
-     });
-  window.alert('set state');
+      window.alert(response);
+      window.alert("inside then")
+      this.setState({
+        mostRecommendedL:{
+          songname: [response.tracks[0].name,
+           response.tracks[1].name,        
+           response.tracks[2].name,
+           response.tracks[3].name,   
+                       response.tracks[4].name],
+        //it may need to change for mutiple artists
+          albumArtN:[
+            response.tracks[0].album.artists[0].name,
+            response.tracks[1].album.artists[0].name,        
+            response.tracks[2].album.artists[0].name,
+            response.tracks[3].album.artists[0].name,   
+                        response.tracks[4].album.artists[0].name],
+          albumArtL: [response.tracks[0].images[0].url,
+            response.tracks[1].images[0].url,
+            response.tracks[2].images[0].url,
+            response.tracks[3].images[0].url,
+            response.tracks[4].images[0].url
+               ]
+        
+        }
+      });
+      window.alert('set state');
     })
-  window.alert(this.state.mostRecommendedL.songname[0]);
-  window.alert(this.state.mostRecommendedL.albumArtN[0]);
-  window.alert(this.state.mostRecommendedL.albumArtL[0]);
+    window.alert(this.state.mostRecommendedL.songname[0]);
+    window.alert(this.state.mostRecommendedL.albumArtN[0]);
+    window.alert(this.state.mostRecommendedL.albumArtL[0]);
 
   }
 
@@ -363,124 +396,126 @@ class Discover extends Component {
         }
         { 
           <button onClick={() => this.getSearchArtist()}>
-            Start search
+            Search Artists
+          </button>
+        }
+        { 
+          <button onClick={() => this.getSearchTrack()}>
+            Search Tracks
+          </button>
+        }
+        { 
+          <button onClick={() => this.getSearchAlbum()}>
+            Search Albums
           </button>
         }
         
+        
 
 
-  <label className="searchartists-label" htmlFor = "searchartists_input">
-        <p>Search</p>
-        <input type="text"
-        	   name ="searchvalue" 
-        	   value={searchvalue.searchartistvalue}
-        	   id= "searchartists_input" 
-        	   onChange={this.handleChange}
-         />
-         <i className="fa fa-search search-icon" aria-hidden="true"/>
-  </label>
-  <div> the search artist </div>
-  <div>
-       Artist: {this.state.searchingArtistL.ArtistName[0]}
-  <br/>Artist image:  
-  <br/><img src={this.state.searchingArtistL.ArtistImage[0]} style={{ height: 150 }}/>
-  </div> 
-  <div>
-       Artist: {this.state.searchingArtistL.ArtistName[1]}
-  <br/>Artist image:  
-  <br/><img src={this.state.searchingArtistL.ArtistImage[1]} style={{ height: 150 }}/>
-  </div> 
-  <div>
-       Artist: {this.state.searchingArtistL.ArtistName[2]}
-  <br/>Artist image:  
-  <br/><img src={this.state.searchingArtistL.ArtistImage[2]} style={{ height: 150 }}/>
-  </div> 
-  <div>
-       Artist: {this.state.searchingArtistL.ArtistName[3]}
-  <br/>Artist image:  
-  <br/><img src={this.state.searchingArtistL.ArtistImage[3]} style={{ height: 150 }}/>
-  </div> 
-  <div>
-       Artist: {this.state.searchingArtistL.ArtistName[4]}
-  <br/>Artist image:  
-  <br/><img src={this.state.searchingArtistL.ArtistImage[4]} style={{ height: 150 }}/>
-  </div>        
-   
-  <div>
-     Most Recommended Song: 
-  </div>
-  <div>
-           { this.state.mostRecommendedL.songname[0] }
-     <br/> {this.state.mostRecommendedL.albumArtN[0]}
+        <label className="searchartists-label" htmlFor = "searchartists_input">
+              <p>Fill your search content below:</p>
+              <input type="text"
+              	   name ="searchvalue" 
+              	   value={searchvalue.searchartistvalue}
+              	   id= "searchartists_input" 
+              	   onChange={this.handleChange}
+               />
+               <i className="fa fa-search search-icon" aria-hidden="true"/>
+        </label>
+        <div> The searched artist </div>
+        <div>
+             Artist: {this.state.searchingArtistL.ArtistName[0]}
+        <br/>Artist image:  
+        <br/><img src={this.state.searchingArtistL.ArtistImage[0]} style={{ height: 150 }}/>
+        </div> 
+        <div>
+             Artist: {this.state.searchingArtistL.ArtistName[1]}
+        <br/>Artist image:  
+        <br/><img src={this.state.searchingArtistL.ArtistImage[1]} style={{ height: 150 }}/>
+        </div> 
+        <div>
+             Artist: {this.state.searchingArtistL.ArtistName[2]}
+        <br/>Artist image:  
+        <br/><img src={this.state.searchingArtistL.ArtistImage[2]} style={{ height: 150 }}/>
+        </div> 
+        <div>
+             Artist: {this.state.searchingArtistL.ArtistName[3]}
+        <br/>Artist image:  
+        <br/><img src={this.state.searchingArtistL.ArtistImage[3]} style={{ height: 150 }}/>
+        </div> 
+        <div>
+             Artist: {this.state.searchingArtistL.ArtistName[4]}
+        <br/>Artist image:  
+        <br/><img src={this.state.searchingArtistL.ArtistImage[4]} style={{ height: 150 }}/>
+        </div>        
+         
+        <div>
+           Most Recommended Song: 
         </div>
-  <div>
-          <img src={this.state.mostRecommendedL.albumArtL[0]} style={{ height: 150 }}/>
-        </div>
-  <div>
-           { this.state.mostRecommendedL.songname[1] }
-     <br/> {this.state.mostRecommendedL.albumArtN[1]}
-        </div>
-  <div>
-          <img src={this.state.mostRecommendedL.albumArtL[1]} style={{ height: 150 }}/>
-        </div><div>
-           { this.state.mostRecommendedL.songname[2] }
-     <br/> {this.state.mostRecommendedL.albumArtN[2]}
-        </div>
-  <div>
-          <img src={this.state.mostRecommendedL.albumArtL[2]} style={{ height: 150 }}/>
-        </div><div>
-           { this.state.mostRecommendedL.songname[3] }
-     <br/> {this.state.mostRecommendedL.albumArtN[3]}
-        </div>
-  <div>
-          <img src={this.state.mostRecommendedL.albumArtL[3]} style={{ height: 150 }}/>
-        </div>
-  <div>
-           { this.state.mostRecommendedL.songname[4] }
-     <br/> {this.state.mostRecommendedL.albumArtN[4]}
-        </div>
-  <div>
-          <img src={this.state.mostRecommendedL.albumArtL[4]} style={{ height: 150 }}/>
-        </div>
+        <div>
+                 { this.state.mostRecommendedL.songname[0] }
+           <br/> {this.state.mostRecommendedL.albumArtN[0]}
+              </div>
+        <div>
+                <img src={this.state.mostRecommendedL.albumArtL[0]} style={{ height: 150 }}/>
+              </div>
+        <div>
+                 { this.state.mostRecommendedL.songname[1] }
+           <br/> {this.state.mostRecommendedL.albumArtN[1]}
+              </div>
+        <div>
+                <img src={this.state.mostRecommendedL.albumArtL[1]} style={{ height: 150 }}/>
+              </div><div>
+                 { this.state.mostRecommendedL.songname[2] }
+           <br/> {this.state.mostRecommendedL.albumArtN[2]}
+              </div>
+        <div>
+                <img src={this.state.mostRecommendedL.albumArtL[2]} style={{ height: 150 }}/>
+              </div><div>
+                 { this.state.mostRecommendedL.songname[3] }
+           <br/> {this.state.mostRecommendedL.albumArtN[3]}
+              </div>
+        <div>
+                <img src={this.state.mostRecommendedL.albumArtL[3]} style={{ height: 150 }}/>
+              </div>
+        <div>
+                 { this.state.mostRecommendedL.songname[4] }
+           <br/> {this.state.mostRecommendedL.albumArtN[4]}
+              </div>
+        <div>
+                <img src={this.state.mostRecommendedL.albumArtL[4]} style={{ height: 150 }}/>
+              </div>
 
 
-  <div>
-     Recently Played Song 
-  </div>
-  <div>
-           { this.state.recentList.name[0] }
-     <br/> {this.state.recentList.albumArtN[0]}
+        <div>
+           Recently Played Song 
         </div>
-  <div>
-          <img src={this.state.recentList.albumArtL[0]} style={{ height: 150 }}/>
-        </div>
-  <div>
-          { this.state.recentList.name[1] }
-     <br/>{this.state.recentList.albumArtN[1]}
-        </div>
-  <div>
-          <img src={this.state.recentList.albumArtL[1]} style={{ height: 150 }}/>
-        </div>
-  <div>
-          { this.state.recentList.name[2] }
-     <br/>{this.state.recentList.albumArtN[2]}
-        </div>
-  <div>
-          <img src={this.state.recentList.albumArtL[2]} style={{ height: 150 }}/>
-        </div>
-  <div>
-          { this.state.recentList.name[3] }
-     <br/>{this.state.recentList.albumArtN[3]}
-        </div>
-  <div>
-          <img src={this.state.recentList.albumArtL[3]} style={{ height: 150 }}/>
-        </div>
-  <div>
-          { this.state.recentList.name[4] }
-     <br/>{this.state.recentList.albumArtN[4]}
-        </div>
-  <div>
-          <img src={this.state.recentList.albumArtL[4]} style={{ height: 150 }}/>
+        <div>
+                 { this.state.recentList.name[0] }
+           <br/> {this.state.recentList.albumArtN[0]}
+              
+           <br/><img src={this.state.recentList.albumArtL[0]} style={{ height: 150 }}/>
+              
+           <br/><br/>     { this.state.recentList.name[1] }
+           <br/>{this.state.recentList.albumArtN[1]}
+              
+           <br/>     <img src={this.state.recentList.albumArtL[1]} style={{ height: 150 }}/>
+              
+           <br/><br/>     { this.state.recentList.name[2] }
+           <br/>{this.state.recentList.albumArtN[2]}
+              
+           <br/>     <img src={this.state.recentList.albumArtL[2]} style={{ height: 150 }}/>
+              
+           <br/><br/>     { this.state.recentList.name[3] }
+           <br/>{this.state.recentList.albumArtN[3]}
+              
+           <br/>     <img src={this.state.recentList.albumArtL[3]} style={{ height: 150 }}/>
+              
+           <br/><br/>     { this.state.recentList.name[4] }
+           <br/>{this.state.recentList.albumArtN[4]}
+              
+           <br/>     <img src={this.state.recentList.albumArtL[4]} style={{ height: 150 }}/>
         </div>
 
       </div>
