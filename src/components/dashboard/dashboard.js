@@ -1,3 +1,5 @@
+// DELETE: FOR REFERENCE 
+
 import React, { Component } from 'react'
 import Notifications from './notifications'
 import ProjectList from '../project/projectList'

@@ -15,6 +15,7 @@ import ProjectDetails from './components/project/projectDetails'
 import CreateProject from './components/project/createProject'
 import Discover from './components/discover/discover'
 import Groups from './components/groups/groups'
+import GroupDetails from './components/groups/groupDetails'
 import Feed from './components/feed/feed'
 import Profile from './components/profile/profile'
 import Splash from './components/layout/splash/splash'
@@ -41,12 +42,13 @@ class App extends Component {
         <div className="App">
           { showNavbar }
           <Switch>
-            <Route exact path='/' component={Dashboard} />        {/* change to discover.js once implemented */}
-            <Route path='/splash' component={Splash} />
-            <Route path='/groups' component={CreateProject} />    {/* change to groups.js once implemented */}
-            <Route path='/feed' component={Feed} />
-            <Route path='/profile' component={Profile} />
-            <Route path='/project/:id' component={ProjectDetails} />
+            <Route exact path='/'       component={Dashboard} />        {/* change to discover.js once implemented */}
+            <Route path='/splash'       component={Splash} />
+            <Route path='/groups'       component={Groups} />           
+            <Route path='/group/:id'    component={GroupDetails} />           
+            <Route path='/feed'         component={Feed} />
+            <Route path='/profile'      component={Profile} />
+            <Route path='/project/:id'  component={ProjectDetails} />
           </Switch>
         </div>
       </BrowserRouter>
