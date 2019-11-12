@@ -1,24 +1,3 @@
-/*
-import React, { Component } from 'react'
-
-
-export class Feed extends Component {
-
-  render() {
-    
-    return (
-      <div className="container">
-        <p>Be patient - currently constructing your personal feed...</p>
-      </div>
-    )
- 
-  }
-}
-
-
-export default Feed
-*/
-
 import React, { Component } from 'react';
 import PostList from '../feed/PostList';
 import { connect } from 'react-redux';
@@ -31,10 +10,8 @@ class Feed extends Component {
   
   render() {
 
-    const { posts } = this.props;
-    //const { posts, auth } = this.props;
-
-    //if (!auth.uid) return <Redirect to='/splash' />
+    const { posts, auth } = this.props;
+    if (!auth.uid) return <Redirect to='/splash' />
 
     return (
       <div className="feed container">
@@ -52,8 +29,8 @@ class Feed extends Component {
 
 const mapStateToProps = (state) => {
   return {
-    posts: state.firestore.ordered.posts
-    //, auth: state.firebase.auth
+    posts: state.firestore.ordered.posts,
+    auth: state.firebase.auth
   }
 }
 
