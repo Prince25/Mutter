@@ -9,6 +9,57 @@ import PostList from '../feed/PostList';
 
 export class Profile extends Component {
 
+	state = {
+		display: 'mutters'
+	};
+
+  handleClick = (e) => {
+  	this.setState({
+  		display: e.target.id
+  	});
+  }
+
+  getContent = () => {
+  	switch(this.state.display) {
+  		case 'mutters':
+  			const { posts } = this.props;
+  			return (
+  				<div className="row">
+          			<div className="col">
+            			<PostList posts={posts} />
+         	 		</div>
+        		</div>
+  			);
+  			break;
+  		case 'followers':
+  			return (
+  				<div className="collection followers">
+    				<a href="#!" className="collection-item">John Adams</a>
+	    			<a href="#!" className="collection-item">Paul Revere</a>
+	    			<a href="#!" className="collection-item">George Washington</a>
+    				<a href="https://google.com" className="collection-item">Thomas Jefferson</a>
+    				<a href="#!" className="collection-item">Barack Obama</a>
+    				<a href="#!" className="collection-item">Bill Clinton</a>
+  				</div>
+  			);
+  			break;
+  		case 'following':
+  			return (
+  				<div className="collection followers">
+    				<a href="#!" className="collection-item">John Adams</a>
+	    			<a href="#!" className="collection-item">Paul Revere</a>
+	    			<a href="#!" className="collection-item">George Washington</a>
+    				<a href="https://google.com" className="collection-item">Thomas Jefferson</a>
+    				<a href="#!" className="collection-item">Barack Obama</a>
+    				<a href="#!" className="collection-item">Bill Clinton</a>
+  				</div>
+  			);
+  			break;
+  		default:
+  			break;
+  	}
+  }
+
   render() {
 
   	const { posts, profile, auth } = this.props;
@@ -23,24 +74,16 @@ export class Profile extends Component {
         </div>
 
         {/*navbar: mutters (Default active) | # followers | # following*/}
-        <div class="btn-group">
-  			<button>Mutters</button>
-  			<button>Followers</button>
-  			<button>Following</button>
+        <div className="btn-group">
+  			<button onClick={this.handleClick} id="mutters">Mutters</button>
+  			<button onClick={this.handleClick} id="followers">Followers</button>
+  			<button onClick={this.handleClick} id="following">Following</button>
 		</div>
 
     	{/*users posts (mutters), or list of users following/followers*/}
-        <div id="profile-content">
-        	<div className="row">
-
-          <div className="col"> {/* https://youtu.be/hZswcXSd5GA?t=130 */}
-            <PostList posts={posts} />
-          </div>
- 
-        </div>
- 
-        	{/*<p className="center">PROFILE CONTENT</p>*/}
-        </div>
+    	<div id="profile-content">
+    		{this.getContent() }    	
+    	</div>
       
       </div>
     )
