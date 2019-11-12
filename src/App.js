@@ -27,10 +27,11 @@ class App extends Component {
         <div className="App">
           <Navbar />
           <Switch>
-            <Route exact path='/' component={Dashboard} />        {/* change to discover.js once implemented */}
+            <Route exact path='/' component={Dashboard} />        
             <Route path='/signin' component={SignIn} />
             <Route path='/signup' component={SignUp} />
-            <Route path='/groups' component={CreateProject} />    {/* change to groups.js once implemented */}
+            <Route path='/discover' component={Discover} />
+            <Route path='/groups' component={CreateProject} />    
             <Route path='/feed' component={Feed} />
             <Route path='/profile' component={Profile} />
             <Route path='/project/:id' component={ProjectDetails} />

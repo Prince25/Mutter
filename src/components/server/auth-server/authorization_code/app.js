@@ -131,7 +131,7 @@ console.log("*******************************************************************
   /////testing 
   var options3 = {
           url: 'https://api.spotify.com/v1/search?q=taylor&type=artist&limit=5',
-          headers: { 'Authorization': 'Bearer ' + 'BQDDLNjheLhY_YNJarl3jveWeBt9cXY3WXtDHw1H7Ccb-oJqo0l24zGQ01a4b5A29nXwpyoeGeWPtq_wCyYz9YQxSZ112C2m67Eqf9m0-CXH07IT3xRzNvMzz1rns0rHlFDoLAtfBdNLNmK2XC7vIiwX-La-yqGs8B2MWr-GhCT34vA' },
+          headers: { 'Authorization': 'Bearer ' + access_token },
           json: true
     //limit 5
         };
@@ -206,7 +206,7 @@ console.log("*******************************************************************
 
 
         // we can also pass the token to the browser to make requests from there
-        res.redirect('http://localhost:3000/profile/#' +
+        res.redirect('http://localhost:3000/discover/#' +
           querystring.stringify({
             access_token: access_token,
             refresh_token: refresh_token
