@@ -8,6 +8,7 @@ say about top music.
 * [React](https://reactjs.org/) - Frontend: JavaScript library for creating web apps!
 * [node.js](http://nodejs.org) - evented I/O for the backend
 * [Firebase](https://firebase.google.com/) - Backend: Database and Authorization
+* [Jsdoc](https://devdocs.io/jsdoc/) - To help with documentation, we have used JSDoc
 
 
 ### Installation
