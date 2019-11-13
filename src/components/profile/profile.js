@@ -10,18 +10,20 @@ import PostList from '../feed/PostList';
 export class Profile extends Component {
 
 	state = {
-		display: 'mutters'
+		display: 'Mutters'	
 	};
 
   handleClick = (e) => {
+  	document.getElementById(this.state.display).innerHTML = this.state.display;
   	this.setState({
   		display: e.target.id
   	});
+  	document.getElementById(e.target.id).innerHTML = "<b><u>"+e.target.id+"</u><b>";
   }
 
   getContent = () => {
   	switch(this.state.display) {
-  		case 'mutters':
+  		case 'Mutters':
   			const { posts } = this.props;
   			return (
   				<div className="row">
@@ -31,7 +33,29 @@ export class Profile extends Component {
         		</div>
   			);
   			break;
-  		case 'followers':
+  		case 'Followers':
+  			return (
+  				<div className="collection followers">
+    				<a href="#!" className="collection-item">Stacy's Mom</a>
+	    			<a href="#!" className="collection-item">Chad Johnson</a>
+	    			<a href="#!" className="collection-item">Tom Bradyr</a>
+    				<a href="https://google.com" className="collection-item">Old McDonald</a>
+    				<a href="#!" className="collection-item">LeBron James</a>
+    				<a href="#!" className="collection-item">Kobe Bryant</a>
+    				<a href="#!" className="collection-item">Bill Walton</a>
+    				<a href="#!" className="collection-item">Luke Walton</a>
+    				<a href="#!" className="collection-item">Stacy's Mom</a>
+	    			<a href="#!" className="collection-item">Chad Johnson</a>
+	    			<a href="#!" className="collection-item">Tom Bradyr</a>
+    				<a href="https://google.com" className="collection-item">Old McDonald</a>
+    				<a href="#!" className="collection-item">LeBron James</a>
+    				<a href="#!" className="collection-item">Kobe Bryant</a>
+    				<a href="#!" className="collection-item">Bill Walton</a>
+    				<a href="#!" className="collection-item">Luke Walton</a>
+  				</div>
+  			);
+  			break;
+  		case 'Following':
   			return (
   				<div className="collection followers">
     				<a href="#!" className="collection-item">John Adams</a>
@@ -40,12 +64,6 @@ export class Profile extends Component {
     				<a href="https://google.com" className="collection-item">Thomas Jefferson</a>
     				<a href="#!" className="collection-item">Barack Obama</a>
     				<a href="#!" className="collection-item">Bill Clinton</a>
-  				</div>
-  			);
-  			break;
-  		case 'following':
-  			return (
-  				<div className="collection followers">
     				<a href="#!" className="collection-item">John Adams</a>
 	    			<a href="#!" className="collection-item">Paul Revere</a>
 	    			<a href="#!" className="collection-item">George Washington</a>
@@ -75,9 +93,9 @@ export class Profile extends Component {
 
         {/*navbar: mutters (Default active) | # followers | # following*/}
         <div className="btn-group">
-  			<button onClick={this.handleClick} id="mutters">Mutters</button>
-  			<button onClick={this.handleClick} id="followers">Followers</button>
-  			<button onClick={this.handleClick} id="following">Following</button>
+  			<button onClick={this.handleClick} id="Mutters"><b><u>Mutters</u></b></button>
+  			<button onClick={this.handleClick} id="Followers">Followers</button>
+  			<button onClick={this.handleClick} id="Following">Following</button>
 		</div>
 
     	{/*users posts (mutters), or list of users following/followers*/}
