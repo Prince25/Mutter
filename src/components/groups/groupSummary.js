@@ -10,7 +10,12 @@ const GroupSummary = ({group}) => {
     <div className="card z-depth-0 project-summary">
       <div className="card-content grey-text text-darken-3">
 
+        <div className="card-image card small">
+          { group.imageUrl && <img src={group.imageUrl} />}
+        </div>
+
         <span className="card-title">{group.name}</span>
+        
         { group.numberOfMembers === 1 ? 
           <p>{group.numberOfMembers} Mutterer</p> : 
           <p>{group.numberOfMembers} Mutterers</p> }

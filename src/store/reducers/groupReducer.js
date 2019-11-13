@@ -10,6 +10,7 @@ const initState = {
       members: ["1", "2", "3"],
       posts: ["1", "2", "3"],
       numberOfMembers: 0,
+      imageUrl: "https://firebasestorage.googleapis.com/v0/b/mutter-ucla.appspot.com/o/groups%2Fdefault.png?alt=media&token=9902e63a-5fa4-4256-ac94-0647583086d3"
     }
   ]
 }
@@ -49,6 +50,14 @@ const groupReducer = (state = initState, action) => {
 
     case 'REMOVE_MEMBER_ERROR': 
       console.log('Leave group error', action.err)
+      return state
+
+    case 'GROUP_IMAGE': 
+      console.log('Updated group image', action.groupId, action.imageUrl)
+      return state
+
+    case 'GROUP_IMAGE_ERROR': 
+      console.log('Update group image error', action.err)
       return state
       
     default: return state

@@ -16,6 +16,7 @@ export const createGroup = (group) => {
       members: [authorId],
       posts: null,
       numberOfMembers: 1,
+      imageUrl: "https://firebasestorage.googleapis.com/v0/b/mutter-ucla.appspot.com/o/groups%2Fdefault.png?alt=media&token=9902e63a-5fa4-4256-ac94-0647583086d3"
     }).then(() => {
       dispatch({ type: 'CREATE_GROUP', group })
     }).catch((err) => {
@@ -74,6 +75,23 @@ export const leaveGroup = (groupId) => {
       dispatch({ type: 'REMOVE_MEMBER', groupId })
     }).catch((err) => {
       dispatch({ type: 'REMOVE_MEMBER_ERROR', err })
+    })
+  }
+}
+
+
+export const updateImage = (groupId, imageUrl) => {
+  return (dispatch, getState, { getFirebase, getFirestore }) => {
+
+    // Make async call to database
+    const firestore = getFirestore()
+
+    firestore.collection('groups').doc(groupId).update({
+      imageUrl: imageUrl
+    }).then(() => {
+      dispatch({ type: 'GROUP_IMAGE', groupId })
+    }).catch((err) => {
+      dispatch({ type: 'GROUP_IMAGE_ERROR', err })
     })
   }
 }
