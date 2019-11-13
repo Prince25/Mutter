@@ -15,38 +15,38 @@ export class Groups extends Component {
 
   render() {
     const { showCreate } = this.state
-    const { groups } = this.props
+    const { recent, popular } = this.props
 
     return (
       <div className="container">
-        <p>Groups</p>
-
-        <button onClick={() => this.setState({ showCreate: !showCreate })}> Create </button>
+        <br/>
+        
+        <a className="waves-effect waves-yellow btn" onClick={
+          () => this.setState({ showCreate: !showCreate })}>
+          <i className="material-icons left">add</i>Create</a>
         { showCreate ? <CreateGroup /> : null }
 
         <br/><br/>
-        <div className="divider"></div>
+        <div className="divider" />
         
         <h5>Recent Groups</h5>
-        
-        <div className="row">
+        <GroupList groups={recent} />
+ 
+        <div className="divider" />
 
-          <div className="col s4"> {/* https://youtu.be/hZswcXSd5GA?t=130 */}
-            <GroupList groups={groups} />
-          </div>
+        <h5>Popular Groups</h5>
+        <GroupList groups={popular} />
 
-        </div>
-        
       </div>
     )
- 
   }
 }
 
 
 const mapStateToProps = (state) => {
   return {
-    groups: state.firestore.ordered.groups
+    recent: state.firestore.ordered.recent,
+    popular: state.firestore.ordered.popular
   }
 }
 
@@ -54,6 +54,7 @@ const mapStateToProps = (state) => {
 export default compose(
   connect(mapStateToProps),
   firestoreConnect([
-    { collection: 'groups', orderBy: ['createdAt', 'desc'] }
+    { collection: 'groups', orderBy: ['createdAt', 'desc'], limit: 8, storeAs: 'recent' },
+    { collection: 'groups', orderBy: ['numberOfMembers', 'desc'], limit: 8, storeAs: 'popular' }
   ])
 )(Groups)

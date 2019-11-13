@@ -48,7 +48,7 @@ textarea.materialize-textarea:focus:not([readonly]){
   box-shadow: none;
 }
 
-.divider{
+.myDivider{
   width:50px;
   height:auto;
   display:inline-block;

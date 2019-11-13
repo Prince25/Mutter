@@ -9,42 +9,65 @@ import { removeGroup, joinGroup, leaveGroup } from '../../store/actions/groupAct
 
 const GroupDetails = (props) => {
 
-  const { groupId, group, users } = props
+  const { groupId, group, users, authId } = props
    
   if (group && users) {
+
     const authorId = group.createdBy
     let authorName = ""
     if (authorId && users[authorId]) {
       authorName = users[authorId].name
     }
+
     return(
       <div className="container section project-details">
         <div className="card z-depth-0">
 
           <div className="card-content">
             <span className="card-title">{ group.name }</span>
-            <p>{ group.description }</p>
-          </div>
-          <div>
-          <button className="btn blue lighten-1 z-depth-0" onClick={() => {
-              props.joinGroup(groupId)
-              props.history.push("/groups")
-              }
-          }>Join</button>
-          <div class="divider"/>
-          <button className="btn orange lighten-1 z-depth-0" onClick={() => {
-              props.leaveGroup(groupId)
-              props.history.push("/groups")
-              }
-          }>Leave</button>
-          <div class="divider"/>
-          <button className="btn pink lighten-1 z-depth-0" onClick={() => {
-              props.removeGroup(groupId)
-              props.history.push("/groups")
-              }
-          }>Delete</button>
+            <p> <strong>Description:</strong> { group.description }</p>
+            <p> <strong>Category:</strong> { group.category }</p>
 
+            <strong>Members: </strong>
+            { group.members && group.members.map((memberId, index) => {
+              return (
+                <span key={memberId}>
+                  { index > 0 && ', '}
+                  { users[memberId] ? users[memberId].name : null }
+                </span>
+              )
+            })}
           </div>
+          
+          
+          <div>
+          <div class="myDivider"/>
+
+            { group.members && authId && group.members.indexOf(authId) === -1 ? 
+              <button className="btn blue lighten-1 z-depth-0" onClick={() => {
+                props.joinGroup(groupId)
+                props.history.push("/groups")
+              }}>Join</button> : null }
+                        
+            <div class="myDivider"/>
+            
+            { group.members && authId && group.members.indexOf(authId) !== -1 ?
+              <button className="btn orange lighten-1 z-depth-0" onClick={() => {
+                  props.leaveGroup(groupId)
+                  props.history.push("/groups")
+              }}>Leave</button> : null }
+
+            <div class="myDivider"/>
+            
+            { authorId && authId && authorId === authId ?
+              <button className="btn pink lighten-1 z-depth-0" onClick={() => {
+                props.removeGroup(groupId)
+                props.history.push("/groups")
+              }}>Delete</button>: null }
+          </div>
+
+          <div class="myDivider"/>
+
           <div className="card-action grey lighten-4 grey-text">
             <div>Created by { authorName }</div>
             <div>
@@ -74,7 +97,8 @@ const mapStateToProps = (state, ownProps) => {
   return {
     groupId: id,
     group: group,
-    users: users
+    users: users,
+    authId: state.firebase.auth.uid
   }
 }
 
