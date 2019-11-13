@@ -1,3 +1,5 @@
+// DELETE: FOR REFERENCE 
+
 
 export const createProject = (project) => {
   return (dispatch, getState, { getFirebase, getFirestore }) => {
@@ -17,7 +19,5 @@ export const createProject = (project) => {
     }).catch((err) => {
       dispatch({ type: 'CREATE_PROJECT_ERROR', err })
     })
-
-
   }
 }

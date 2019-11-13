@@ -1,3 +1,5 @@
+// DELETE: FOR REFERENCE 
+
 import React from 'react'
 import { connect } from 'react-redux'
 import { firestoreConnect } from 'react-redux-firebase'
@@ -5,7 +7,7 @@ import { compose } from 'redux'
 import moment from 'moment'
 
 
-const projectDetails = (props) => {
+const ProjectDetails = (props) => {
 
   const { project } = props
  
@@ -51,4 +53,4 @@ export default compose(
   firestoreConnect([
     { collection: 'projects' }
   ])
-)(projectDetails)
+)(ProjectDetails)
