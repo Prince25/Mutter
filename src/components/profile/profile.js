@@ -24,11 +24,13 @@ export class Profile extends Component {
   getContent = () => {
   	switch(this.state.display) {
   		case 'Mutters':
-  			const { posts } = this.props;
+  			const { posts, auth} = this.props;
+  			const uid = auth.uid;
+  			const myPosts = (posts != null ? posts.filter(post => post.authorId == uid) : []); 
   			return (
   				<div className="row">
           			<div className="col">
-            			<PostList posts={posts} />
+            			<PostList posts={myPosts} />
          	 		</div>
         		</div>
   			);
