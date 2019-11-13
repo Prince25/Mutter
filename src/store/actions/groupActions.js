@@ -1,4 +1,14 @@
 
+/** 
+ * @method createGroup
+ * @description a function for a user to create a group for Mutterers.
+ * @param {object} group- the group object taken from the input form.
+ * @param {string} group.name - name of the group created.
+ * @param {string} group.description - description for the group created.
+ * @param {string} group.category - category for the group created.
+ * @returns {null} 
+ */
+
 export const createGroup = (group) => {
   return (dispatch, getState, { getFirebase, getFirestore }) => {
 
@@ -25,6 +35,12 @@ export const createGroup = (group) => {
   }
 }
 
+/** 
+ * @method removeGroup
+ * @description a function for a user to create a group for Mutterers.
+ * @param {string} groupId - the ID of the group we want to remove.
+ * @returns {Object} 
+ */
 
 export const removeGroup = (groupId) => {
   return (dispatch, getState, { getFirebase, getFirestore }) => {
@@ -41,6 +57,13 @@ export const removeGroup = (groupId) => {
   }
 }
 
+
+/** 
+ * @method joinGroup
+ * @description a function for users to join a group. 
+ * @param {string} groupId - the ID of the group we want to join.
+ * @returns {Object} 
+ */
 
 export const joinGroup = (groupId) => {
   return (dispatch, getState, { getFirebase, getFirestore }) => {
@@ -61,6 +84,13 @@ export const joinGroup = (groupId) => {
 }
 
 
+/** 
+ * @method leaveGroup
+ * @description a function for users to leave a group they no longer like.
+ * @param {string} groupId - the ID of the group we want to join.
+ * @returns {Object} 
+ */
+
 export const leaveGroup = (groupId) => {
   return (dispatch, getState, { getFirebase, getFirestore }) => {
 
@@ -78,6 +108,14 @@ export const leaveGroup = (groupId) => {
     })
   }
 }
+
+/** 
+ * @method updateImage
+ * @description a function to update the images
+ * @param {string} groupId - the ID of the group we want to update the image for
+ * @param {string} imageUrl - the new image URL that we want to use for our updated image.
+ * @returns {Object} 
+ */
 
 
 export const updateImage = (groupId, imageUrl) => {
