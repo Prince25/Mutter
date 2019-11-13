@@ -13,8 +13,10 @@ const GroupDetails = (props) => {
    
   if (group && users) {
     const authorId = group.createdBy
-    const authorName = users[authorId].name
-
+    let authorName = ""
+    if (authorId && users[authorId]) {
+      authorName = users[authorId].name
+    }
     return(
       <div className="container section project-details">
         <div className="card z-depth-0">
