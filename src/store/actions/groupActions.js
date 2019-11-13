@@ -46,7 +46,10 @@ export const joinGroup = (groupId) => {
 
     // Make async call to database
     const firestore = getFirestore()
-    const userId = getState().firebase.auth.uid
+    //! BUG: currently this doesnt check if a user is currently member of a group
+    const group = firestore.collection('groups').doc(groupId)
+
+    console.log(group)
     firestore.collection('groups').doc(groupId).update({
       members: firestore.FieldValue.arrayUnion(userId),
       numberOfMembers: firestore.FieldValue.increment(1),

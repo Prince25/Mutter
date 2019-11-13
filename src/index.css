@@ -47,3 +47,9 @@ textarea.materialize-textarea:focus:not([readonly]){
   border-color: #ec407a;
   box-shadow: none;
 }
+
+.divider{
+  width:50px;
+  height:auto;
+  display:inline-block;
+}

@@ -25,25 +25,26 @@ const GroupDetails = (props) => {
             <span className="card-title">{ group.name }</span>
             <p>{ group.description }</p>
           </div>
-
-          <button onClick={() => {
+          <div>
+          <button className="btn blue lighten-1 z-depth-0" onClick={() => {
               props.joinGroup(groupId)
               props.history.push("/groups")
               }
           }>Join</button>
-
-          <button onClick={() => {
+          <div class="divider"/>
+          <button className="btn orange lighten-1 z-depth-0" onClick={() => {
               props.leaveGroup(groupId)
               props.history.push("/groups")
               }
           }>Leave</button>
-
-          <button onClick={() => {
+          <div class="divider"/>
+          <button className="btn pink lighten-1 z-depth-0" onClick={() => {
               props.removeGroup(groupId)
               props.history.push("/groups")
               }
           }>Delete</button>
 
+          </div>
           <div className="card-action grey lighten-4 grey-text">
             <div>Created by { authorName }</div>
             <div>
