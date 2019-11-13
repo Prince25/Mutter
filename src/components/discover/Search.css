@@ -112,3 +112,51 @@
 	background: #f1f1f1;
 	opacity: 0.5;
 }
+
+.nowplay {
+    font-weight: bold;
+    text-align: center;
+    height: 200px;
+}
+
+.searchbuttons {
+    text-align: center;
+}
+
+.checkbuttons {
+    text-align: center;
+}
+
+.totresults {
+    font-weight: bold;
+    width: 1100px;
+    height: 1200px;
+}
+
+.results1 {
+    float: left;
+    width: 250px;
+}
+
+.results2 {
+    float: left;
+    width: 250px;
+}
+
+.results3 {
+    float: left;
+    width: 250px;
+}
+
+.largefont {
+    text-align: center;
+    font-weight: bold;
+    font-size: 200%;
+}
+
+.largefont2 {
+    font-weight: bold;
+    font-size: 200%;
+}
+
+
