@@ -13,7 +13,7 @@ const redirect_uri = AppConfig.HOST;
 const client_id = AuthConfig.CLIENT_ID;
 const client_secret = AuthConfig.CLIENT_SECRET;
 
-
+var tempaccess=''
 
 class Discover extends Component {
   constructor(){
@@ -22,26 +22,31 @@ class Discover extends Component {
     const params = this.getHashParams();
     const token = params.access_token;
     if (token) {
-      //console.log(token);
       spotifyApi.setAccessToken(token);
     }
     this.state = {
       access_token :'',
       refresh_token :'',
-      searchvalue : {searchartistvalue :'', searchalbumvalue : ''},
+      searchvalue : {searchinput :''},
       searchloading : false,
       message:'',
       loggedIn: token ? true : false,
       nowPlaying: { name: 'Not Checked', albumArt: '' },
   
-      recentList: { name: ['','','','',''],
+      recentList: { name: ['recenttest','','','',''],
                     albumArtN: ['','','','',''],
                     albumArtL: ['','','','','']},
       mostRecommendedL: { songname: ['recommendedtest','','','',''],
                           albumArtN: ['','','','',''],
                           albumArtL: ['','','','','']},
-      searchingArtistL: { ArtistName: ['1','2','3','',''],
-                          ArtistImage: ['6','7','8','','']}
+      searchingArtistL: { ArtistName: ['','','','',''],
+                          ArtistImage: ['','','','','']},
+      searchingAlbumL:  { ArtistName: ['','','','',''],
+                          AlbumName: ['','','','',''],
+        AlbumImage:['','','','','']},
+      searchingTrackL:  { SongName: ['','',''],
+                          ArtistName: ['','',''],
+        AlbumImage:['','','']}
     }
     this.handleChange = this.handleChange.bind(this);
     this.handleSubmit = this.handleSubmit.bind(this);
@@ -49,15 +54,13 @@ class Discover extends Component {
 
   handleChange(event) {
     //var delayInMilliseconds = 200; //1 second
-
-
-  	const query = event.target.value;
+    const query = event.target.value;
     //window.alert("changing");
     var q = query;
     
     //setTimeout(function() {}, delayInMilliseconds);
     if(query){
-    this.setState({searchvalue:{searchartistvalue : query, searchalbumvalue :''},
+    this.setState({searchvalue:{searchinput : query},
                    searchloading : true});
     //window.alert("event target value is " +q);
     //window.alert("the search value is " +this.state.searchvalue.searchartistvalue);
@@ -81,15 +84,32 @@ class Discover extends Component {
     return hashParams;
   }
 
+  getaccesstoken()
+  {
+    tempaccess = spotifyApi.getAccessToken();
+    //window.alert(tempaccess);
+  }
+
   getNowPlaying(){
     spotifyApi.getMyCurrentPlaybackState()
       .then((response) => {
-        this.setState({
+        if (response == '' || response.item.name == null) {
+          this.setState({
           nowPlaying: { 
-              name: response.item.name, 
-              albumArt: response.item.album.images[0].url
+              name: "Not playing or advertisement", 
+              albumArt: ''
             }
-        });
+          });
+          return;
+        }
+        else {
+          this.setState({
+            nowPlaying: { 
+                name: response.item.name, 
+                albumArt: response.item.album.images[0].url
+              }
+          });
+        }
       })
   }
 
@@ -177,7 +197,7 @@ class Discover extends Component {
     })
     this.setState({access_token:returnaccesstoken, refresh_token:returnrefreshtoken});
   }
-  changeArtist(bodydata)
+    changeArtist(bodydata)
   {
     this.setState({
             searchingArtistL: { 
@@ -191,133 +211,115 @@ class Discover extends Component {
                                bodydata.artists.items[2].images[0].url,
                                bodydata.artists.items[3].images[0].url,
                                bodydata.artists.items[4].images[0].url]
-            }
-    });
+              }
+          });
+
+  }
+
+  changeAlbum(bodydata)
+  {
+    this.setState({
+            searchingAlbumL: { 
+                ArtistName: [bodydata.albums.items[0].artists[0].name,
+                              bodydata.albums.items[1].artists[0].name,
+                              bodydata.albums.items[2].artists[0].name,
+                              bodydata.albums.items[3].artists[0].name,
+                              bodydata.albums.items[4].artists[0].name,],
+    AlbumName : [bodydata.albums.items[0].name,
+                              bodydata.albums.items[1].name,
+                              bodydata.albums.items[2].name,
+                              bodydata.albums.items[3].name,
+                              bodydata.albums.items[4].name,],
+                AlbumImage: [bodydata.albums.items[0].images[0].url,
+                               bodydata.albums.items[1].images[0].url,
+                               bodydata.albums.items[2].images[0].url,
+                               bodydata.albums.items[3].images[0].url,
+                               bodydata.albums.items[4].images[0].url]
+              }
+          });
+
+  }
+
+  changeTrack(bodydata)
+  {
+    this.setState({
+            searchingTrackL: { 
+                ArtistName: [bodydata.tracks.items[0].artists[0].name,
+                              bodydata.tracks.items[1].artists[0].name,
+            bodydata.tracks.items[2].artists[0].name],
+    SongName  : [bodydata.tracks.items[0].name,
+                              bodydata.tracks.items[1].name,
+                              bodydata.tracks.items[2].name],
+                AlbumImage: [bodydata.tracks.items[0].album.images[0].url,
+                               bodydata.tracks.items[1].album.images[0].url,
+                               bodydata.tracks.items[2].album.images[0].url]
+              }
+          });
 
   }
 
 
+
+
+
+
   getSearchArtist()
   {
-  	//var Q = this.state.searchvalue.searchartistvalue;
-    //Q = Q + '-H "Accept: application/json" -H "Content-Type: application/json" -H "Authorization: Bearer BQCfOZVYMAZr54h6uJ6wEtfsYAPbgCKNLrYGI6chKSr3stYSCAwnt50Hd2i-SkTPnCEdxm8h-ngTCrrp47iz8_cLiClg2lTLkeLYrAo1BadxjpIaWidSag0lGYGYmV1thIGQDxlpMCaJ92Ia0epQnLpQ9Bk9hwPsHfPGh0UwovLVO6g'
-    //window.alert("the searching artist value in the function is " + Q);
-    //this.getrefreshtoken();
-    var searchartisturl = 'https://api.spotify.com/v1/search?q=' + this.state.searchvalue.searchartistvalue + '&type=artist&limit=5';
+    this.getaccesstoken();
+    if (this.state.searchvalue.searchinput == '') {
+      return;
+    }
+    var searchartisturl = 'https://api.spotify.com/v1/search?q=' + this.state.searchvalue.searchinput + '&type=artist&limit=5';
     //var passlist = searchingArtistL;
     //window.alert(this.state.searchvalue.searchartistvalue)
     var options3 = {
           url: searchartisturl,
-          headers: { 'Authorization': 'Bearer ' + 'BQDDLNjheLhY_YNJarl3jveWeBt9cXY3WXtDHw1H7Ccb-oJqo0l24zGQ01a4b5A29nXwpyoeGeWPtq_wCyYz9YQxSZ112C2m67Eqf9m0-CXH07IT3xRzNvMzz1rns0rHlFDoLAtfBdNLNmK2XC7vIiwX-La-yqGs8B2MWr-GhCT34vA' },
+          headers: { 'Authorization': 'Bearer ' + tempaccess},
           json: true
-    //limit 5
-        
         };
-
-    //window.alert(this.token);
-        // use the access token to access the most recommended song by artistID
-        var feed = this;
+    var feed = this;
         request.get(options3, function(error, response, body) {
-          //console.log(body);
-          window.alert("inside request");
-          window.alert("body is there " +body);
-          window.alert("artists is there" + body.artists);
-          window.alert(body.artists.items[0].name);
-          feed.changeArtist(body);
-           
-          // searchingArtistL.ArtistName[0] = body.artists.items[0].name;
-          // window.alert(searchingArtistL.ArtistName[0]);
-          // searchingArtistL.ArtistImage[0] = body.artists.items[0].images[0].url;
-          // searchingArtistL.ArtistName[1] = body.artists.items[1].name;
-          // searchingArtistL.ArtistImage[1] = body.artists.items[1].images[0].url;
-          // searchingArtistL.ArtistName[2] = body.artists.items[2].name;
-          // searchingArtistL.ArtistImage[2] = body.artists.items[2].images[0].url;
-          // searchingArtistL.ArtistName[3] = body.artists.items[3].name;
-          // searchingArtistL.ArtistImage[3] = body.artists.items[3].images[0].url;
-          // searchingArtistL.ArtistName[4] = body.artists.items[4].name;
-          // searchingArtistL.ArtistImage[4] = body.artists.items[4].images[0].url;
-/*
-          this.setState({
-          searchingArtistL: { 
-              ArtistName: [body.artists.items[0].name,
-                            body.artists.items[1].name,
-                            body.artists.items[2].name,
-                            body.artists.items[3].name,
-                            body.artists.items[4].name ],
-              ArtistImage: [body.artists.items[0].images[0].url,
-                             body.artists.items[1].images[0].url,
-                             body.artists.items[2].images[0].url,
-                             body.artists.items[3].images[0].url,
-                             body.artists.items[4].images[0].url]
-            }
-        });*/
+        feed.changeArtist(body);
 
         });
-        // window.alert(this.searchingArtistL.ArtistName[0]);
-  };
-
-  getSearchTrack()
-  {
-    //var Q = this.state.searchvalue.searchartistvalue;
-    //Q = Q + '-H "Accept: application/json" -H "Content-Type: application/json" -H "Authorization: Bearer BQCfOZVYMAZr54h6uJ6wEtfsYAPbgCKNLrYGI6chKSr3stYSCAwnt50Hd2i-SkTPnCEdxm8h-ngTCrrp47iz8_cLiClg2lTLkeLYrAo1BadxjpIaWidSag0lGYGYmV1thIGQDxlpMCaJ92Ia0epQnLpQ9Bk9hwPsHfPGh0UwovLVO6g'
-    //window.alert("the searching artist value in the function is " + Q);
-    //this.getrefreshtoken();
-    var searchtrackurl = 'https://api.spotify.com/v1/search?q=' + this.state.searchvalue.searchartistvalue + '&type=track&market=US&limit=5';
-    //var passlist = searchingArtistL;
-    //window.alert(this.state.searchvalue.searchartistvalue)
-    var options4 = {
-          url: searchtrackurl,
-          headers: { 'Authorization': 'Bearer '},
-          json: true
-        
-        };
-
-    //window.alert(this.token);
-        // use the access token to access the most recommended song by artistID
-        var feed = this;
-        request.get(options4, function(error, response, body) {
-          //console.log(body);
-          window.alert("inside request");
-          window.alert("body is there " +body);
-          window.alert("artists is there" + body.artists);
-          window.alert(body.artists.items[0].name);
-          //feed.changeArtist(body);
-           
-
-        });
-        // window.alert(this.searchingArtistL.ArtistName[0]);
   };
 
   getSearchAlbum()
   {
-    //var Q = this.state.searchvalue.searchartistvalue;
-    //Q = Q + '-H "Accept: application/json" -H "Content-Type: application/json" -H "Authorization: Bearer BQCfOZVYMAZr54h6uJ6wEtfsYAPbgCKNLrYGI6chKSr3stYSCAwnt50Hd2i-SkTPnCEdxm8h-ngTCrrp47iz8_cLiClg2lTLkeLYrAo1BadxjpIaWidSag0lGYGYmV1thIGQDxlpMCaJ92Ia0epQnLpQ9Bk9hwPsHfPGh0UwovLVO6g'
-    //window.alert("the searching artist value in the function is " + Q);
-    //this.getrefreshtoken();
-    var searchalbumurl = 'https://api.spotify.com/v1/search?q=' + this.state.searchvalue.searchartistvalue + '&type=album&market=US&limit=5';
-    //var passlist = searchingArtistL;
-    //window.alert(this.state.searchvalue.searchartistvalue)
-    var options5 = {
+    this.getaccesstoken();
+    if (this.state.searchvalue.searchinput == '') {
+      return;
+    }
+    var searchalbumurl = 'https://api.spotify.com/v1/search?q=' + this.state.searchvalue.searchinput + '&type=album&limit=5';
+    var options3 = {
           url: searchalbumurl,
-          headers: { 'Authorization': 'Bearer '},
+          headers: { 'Authorization': 'Bearer ' + tempaccess},
           json: true
-        
         };
-
-    //window.alert(this.token);
-        // use the access token to access the most recommended song by artistID
-        var feed = this;
-        request.get(options5, function(error, response, body) {
-          //console.log(body);
-          window.alert("inside request");
-          window.alert("body is there " +body);
-          window.alert("artists is there" + body.artists);
-          window.alert(body.artists.items[0].name);
-          //feed.changeArtist(body);
-           
+    var feed = this;
+        request.get(options3, function(error, response, body) {
+        feed.changeAlbum(body);
 
         });
-        // window.alert(this.searchingArtistL.ArtistName[0]);
+      };
+
+  getSearchTrack()
+  {
+    this.getaccesstoken(); 
+    if (this.state.searchvalue.searchinput == '') {
+      return;
+    }  
+    var searchtrackurl = 'https://api.spotify.com/v1/search?q=' + this.state.searchvalue.searchinput + '&type=track&limit=3';
+    var options3 = {
+          url: searchtrackurl,
+          headers: { 'Authorization': 'Bearer ' + tempaccess},
+          json: true
+        };
+    var feed = this;
+        request.get(options3, function(error, response, body) {
+        feed.changeTrack(body);
+
+        });
   };
 
   
@@ -394,19 +396,24 @@ class Discover extends Component {
       		   print 
   		      </button>
         }
-        { 
-          <button onClick={() => this.getSearchArtist()}>
-            Search Artists
-          </button>
+        {
+            <button onClick={() =>this.getaccesstoken()}> 
+             getaccesstoken 
+            </button>
         }
         { 
-          <button onClick={() => this.getSearchTrack()}>
-            Search Tracks
+          <button onClick={() => this.getSearchArtist()}>
+            SearchByArtist
           </button>
         }
         { 
           <button onClick={() => this.getSearchAlbum()}>
-            Search Albums
+            SearchByAlbum
+          </button>
+        }
+        { 
+          <button onClick={() => this.getSearchTrack()}>
+            SearchByTrack
           </button>
         }
         
@@ -423,32 +430,90 @@ class Discover extends Component {
                />
                <i className="fa fa-search search-icon" aria-hidden="true"/>
         </label>
-        <div> The searched artist </div>
+          <div> the search artist </div>
         <div>
-             Artist: {this.state.searchingArtistL.ArtistName[0]}
+             Artist Name: {this.state.searchingArtistL.ArtistName[0]}
         <br/>Artist image:  
         <br/><img src={this.state.searchingArtistL.ArtistImage[0]} style={{ height: 150 }}/>
         </div> 
         <div>
-             Artist: {this.state.searchingArtistL.ArtistName[1]}
+             Artist Name: {this.state.searchingArtistL.ArtistName[1]}
         <br/>Artist image:  
         <br/><img src={this.state.searchingArtistL.ArtistImage[1]} style={{ height: 150 }}/>
         </div> 
         <div>
-             Artist: {this.state.searchingArtistL.ArtistName[2]}
+             Artist Name: {this.state.searchingArtistL.ArtistName[2]}
         <br/>Artist image:  
         <br/><img src={this.state.searchingArtistL.ArtistImage[2]} style={{ height: 150 }}/>
         </div> 
         <div>
-             Artist: {this.state.searchingArtistL.ArtistName[3]}
+             Artist Name: {this.state.searchingArtistL.ArtistName[3]}
         <br/>Artist image:  
         <br/><img src={this.state.searchingArtistL.ArtistImage[3]} style={{ height: 150 }}/>
         </div> 
         <div>
-             Artist: {this.state.searchingArtistL.ArtistName[4]}
+             Artist Name: {this.state.searchingArtistL.ArtistName[4]}
         <br/>Artist image:  
         <br/><img src={this.state.searchingArtistL.ArtistImage[4]} style={{ height: 150 }}/>
-        </div>        
+        </div>
+
+
+
+
+        <div> the search album </div>
+        <div>
+             Artist Name: {this.state.searchingAlbumL.ArtistName[0]}
+        <br/>Album Name: {this.state.searchingAlbumL.AlbumName[0]}
+        <br/>Album image:  
+        <br/><img src={this.state.searchingAlbumL.AlbumImage[0]} style={{ height: 150 }}/>
+        </div> 
+        <div>
+             Artist Name: {this.state.searchingAlbumL.ArtistName[1]}
+        <br/>Album Name: {this.state.searchingAlbumL.AlbumName[1]}
+        <br/>Album image:  
+        <br/><img src={this.state.searchingAlbumL.AlbumImage[1]} style={{ height: 150 }}/>
+        </div> 
+        <div>
+             Artist Name: {this.state.searchingAlbumL.ArtistName[2]}
+        <br/>Album Name: {this.state.searchingAlbumL.AlbumName[2]}
+        <br/>Album image:  
+        <br/><img src={this.state.searchingAlbumL.AlbumImage[2]} style={{ height: 150 }}/>
+        </div> 
+        <div>
+             Artist Name: {this.state.searchingAlbumL.ArtistName[3]}
+        <br/>Album Name: {this.state.searchingAlbumL.AlbumName[3]}
+        <br/>Album image:  
+        <br/><img src={this.state.searchingAlbumL.AlbumImage[3]} style={{ height: 150 }}/>
+        </div> 
+        <div>
+             Artist Name: {this.state.searchingAlbumL.ArtistName[4]}
+        <br/>Album Name: {this.state.searchingAlbumL.AlbumName[4]}
+        <br/>Album image:  
+        <br/><img src={this.state.searchingAlbumL.AlbumImage[4]} style={{ height: 150 }}/>
+        </div> 
+
+
+
+        <div> the search track </div>
+        <div>
+             Artist Name: {this.state.searchingTrackL.ArtistName[0]}
+        <br/>Song Name: {this.state.searchingTrackL.SongName[0]}
+        <br/>Album image:  
+        <br/><img src={this.state.searchingTrackL.AlbumImage[0]} style={{ height: 150 }}/>
+        </div> 
+        <div>
+             Artist Name: {this.state.searchingTrackL.ArtistName[1]}
+        <br/>Song Name: {this.state.searchingTrackL.SongName[1]}
+        <br/>Album image:  
+        <br/><img src={this.state.searchingTrackL.AlbumImage[1]} style={{ height: 150 }}/>
+        </div> 
+        <div>
+             Artist Name: {this.state.searchingTrackL.ArtistName[2]}
+        <br/>Song Name: {this.state.searchingTrackL.SongName[2]}
+        <br/>Album image:  
+        <br/><img src={this.state.searchingTrackL.AlbumImage[2]} style={{ height: 150 }}/>
+        </div> 
+                
          
         <div>
            Most Recommended Song: 
