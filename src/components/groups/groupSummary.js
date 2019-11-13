@@ -11,10 +11,12 @@ const GroupSummary = ({group}) => {
       <div className="card-content grey-text text-darken-3">
 
         <span className="card-title">{group.name}</span>
-        <p>Category: {group.category} </p>
-        <p>Number of Members: {group.numberOfMembers}</p>
+        { group.numberOfMembers === 1 ? 
+          <p>{group.numberOfMembers} Mutterer</p> : 
+          <p>{group.numberOfMembers} Mutterers</p> }
 
         <p className="grey-text">
+          Category: {group.category} <br />
           { moment(group.createdAt.toDate()).calendar() }
         </p>
         
