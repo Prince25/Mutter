@@ -8,7 +8,8 @@ const initState = {
       createdBy: 123,
       createdAt: new Date(),
       members: ["1", "2", "3"],
-      posts: ["1", "2", "3"]
+      posts: ["1", "2", "3"],
+      numberOfMembers: 0,
     }
   ]
 }

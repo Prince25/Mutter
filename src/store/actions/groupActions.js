@@ -14,7 +14,8 @@ export const createGroup = (group) => {
       createdBy: authorId,
       createdAt: new Date(),
       members: null,
-      posts: null
+      posts: null,
+      numberOfMembers: 0,
     }).then(() => {
       dispatch({ type: 'CREATE_GROUP', group })
     }).catch((err) => {
@@ -29,7 +30,6 @@ export const removeGroup = (groupId) => {
 
     // Make async call to database
     const firestore = getFirestore()
-    const authorId = getState().firebase.auth.uid
 
     firestore.collection('groups').doc(groupId).delete()
     .then(() => {
@@ -47,9 +47,9 @@ export const joinGroup = (groupId) => {
     // Make async call to database
     const firestore = getFirestore()
     const userId = getState().firebase.auth.uid
-
     firestore.collection('groups').doc(groupId).update({
-      members: firestore.FieldValue.arrayUnion(userId)
+      members: firestore.FieldValue.arrayUnion(userId),
+      numberOfMembers: firestore.FieldValue.increment(1),
     }).then(() => {
       dispatch({ type: 'ADD_MEMBER', groupId })
     }).catch((err) => {
@@ -65,9 +65,9 @@ export const leaveGroup = (groupId) => {
     // Make async call to database
     const firestore = getFirestore()
     const userId = getState().firebase.auth.uid
-
     firestore.collection('groups').doc(groupId).update({
-      members: firestore.FieldValue.arrayRemove(userId)
+      members: firestore.FieldValue.arrayRemove(userId),
+      numberOfMembers: firestore.FieldValue.increment(-1)
     }).then(() => {
       dispatch({ type: 'REMOVE_MEMBER', groupId })
     }).catch((err) => {
