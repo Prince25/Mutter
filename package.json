@@ -3,6 +3,8 @@
   "version": "0.1.0",
   "private": true,
   "dependencies": {
+    "cookie-parser": "^1.4.4",
+    "cors": "^2.8.5",
     "firebase": "^7.2.3",
     "moment": "^2.24.0",
     "react": "^16.11.0",
@@ -15,7 +17,8 @@
     "redux": "^4.0.4",
     "redux-firestore": "^0.9.0",
     "redux-thunk": "^2.3.0",
-    "styled-components": "^4.4.1"
+    "styled-components": "^4.4.1",
+    "spotify-web-api-js": "^1.2.0"
   },
   "scripts": {
     "start": "react-scripts start",

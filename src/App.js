@@ -43,7 +43,7 @@ class App extends Component {
         <div className="App">
           { showNavbar }
           <Switch>
-            <Route exact path='/'       component={Dashboard} />        {/* change to discover.js once implemented */}
+            <Route exact path='/'       component={Discover} />
             <Route path='/splash'       component={Splash} />
             <Route path='/groups'       component={Groups} />           
             <Route path='/group/:id'    component={GroupDetails} />           
