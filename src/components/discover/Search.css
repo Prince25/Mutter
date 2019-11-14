@@ -1,8 +1,11 @@
-.container {
+.smallbutton {
+  margin: 10px;
+}
+/*.container {
 	margin: 36px auto;
 	width: 100%;
 	max-width: 800px;
-}
+}*/
 
 
 .heading {
@@ -16,7 +19,7 @@
 	position: relative;
 }
 
-.container input {
+/*.container input {
 	width: 100%;
 	padding: 16px;
 	font-size: 36px;
@@ -25,7 +28,7 @@
 	box-sizing: border-box;
 	outline: none;
 }
-
+*/
 .search-icon {
 	position: absolute;
 	top: -10px;
@@ -129,23 +132,23 @@
 
 .totresults {
     font-weight: bold;
-    width: 1100px;
-    height: 1200px;
+    width: 1300px;
+    height: 1250px;
 }
 
 .results1 {
     float: left;
-    width: 250px;
+    width: 400px;
 }
 
 .results2 {
     float: left;
-    width: 250px;
+    width: 400px;
 }
 
 .results3 {
     float: left;
-    width: 250px;
+    width: 400px;
 }
 
 .largefont {

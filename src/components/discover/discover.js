@@ -2,7 +2,7 @@ import React, { Component } from 'react'
 import { connect } from 'react-redux'
 import { Redirect } from 'react-router-dom'
 
-// import './Search.css';
+import './Search.css';
 
 import SpotifyWebApi from 'spotify-web-api-js';
 const spotifyApi = new SpotifyWebApi();
@@ -388,40 +388,40 @@ class Discover extends Component {
         </div>
         <div className="searchbuttons">
         { 
-          <button onClick={() => this.getSearchArtist()}>
+          <button className="smallbutton" onClick={() => this.getSearchArtist()}>
             SearchByArtist
           </button>
         }
         { 
-          <button onClick={() => this.getSearchAlbum()}>
+          <button className="smallbutton" onClick={() => this.getSearchAlbum()}>
             SearchByAlbum
           </button>
         }
         { 
-          <button onClick={() => this.getSearchTrack()}>
+          <button className="smallbutton" onClick={() => this.getSearchTrack()}>
             SearchByTrack
           </button>
         }
         </div>
         <div className="checkbuttons">
         {
-          <button onClick={() => this.getNowPlaying()}>
+          <button className="smallbutton" onClick={() => this.getNowPlaying()}>
             Check Now Playing
           </button>
         }
         { 
-          <button onClick={() => this.getRecentList()}>
+          <button className="smallbutton" onClick={() => this.getRecentList()}>
             Check Recently played
           </button>
         }
 
   		{ 
-          <button onClick={() => this.getMostReommended()}>
+          <button className="smallbutton" onClick={() => this.getMostReommended()}>
             Check Most Recommended Song
           </button>
         }
         { 
-          <button onClick={() => this.getHottestSong()}>
+          <button className="smallbutton" onClick={() => this.getHottestSong()}>
             Hottest Song
           </button>
         }
