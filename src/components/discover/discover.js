@@ -17,7 +17,7 @@ const client_secret = AuthConfig.CLIENT_SECRET;
 
 var tempaccess=''
 
-class Discover extends Component {
+export class Discover extends Component {
   constructor(){
      
     super();
