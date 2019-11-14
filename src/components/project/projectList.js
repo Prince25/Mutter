@@ -1,3 +1,5 @@
+// DELETE: FOR REFERENCE 
+
 import React from 'react'
 import ProjectSummary from './projectSummary'
 import { Link } from 'react-router-dom'

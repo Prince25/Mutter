@@ -1,3 +1,5 @@
+// DELETE: FOR REFERENCE 
+
 
 const initState = {
   projects: [
