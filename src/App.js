@@ -13,6 +13,7 @@ import Navbar from './components/layout/navbar'
 import Dashboard from './components/dashboard/dashboard'
 import ProjectDetails from './components/project/projectDetails'
 import CreateProject from './components/project/createProject'
+import CreatePost from './components/feed/createPost'
 import Discover from './components/discover/discover'
 import Groups from './components/groups/groups'
 import GroupDetails from './components/groups/groupDetails'
@@ -48,6 +49,7 @@ class App extends Component {
             <Route path='/group/:id'    component={GroupDetails} />           
             <Route path='/feed'         component={Feed} />
             <Route path='/profile'      component={Profile} />
+            <Route path='/newpost'      component={CreatePost} />
             <Route path='/project/:id'  component={ProjectDetails} />
           </Switch>
         </div>
