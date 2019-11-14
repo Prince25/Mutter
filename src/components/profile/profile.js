@@ -14,6 +14,7 @@ export class Profile extends Component {
 	};
 
   handleClick = (e) => {
+  	if (e.target.id == '' || e.target.id == this.state.display) return;
   	document.getElementById(this.state.display).innerHTML = this.state.display;
   	this.setState({
   		display: e.target.id
