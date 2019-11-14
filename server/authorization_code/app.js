@@ -13,8 +13,8 @@ var cors = require('cors');
 var querystring = require('querystring');
 var cookieParser = require('cookie-parser');
 
-const AppConfig = require('../../../config/app');
-const AuthConfig = require('../../../config/auth');
+const AppConfig = require('../../src/components/config/app');
+const AuthConfig = require('../../src/components/config/auth');
 
 const redirect_uri = AppConfig.HOST;
 const client_id = AuthConfig.CLIENT_ID;
@@ -218,7 +218,7 @@ console.log("*******************************************************************
 
 
         // we can also pass the token to the browser to make requests from there
-        res.redirect('http://localhost:3000/discover/#' +
+        res.redirect('http://localhost:3000/#' +
           querystring.stringify({
             access_token: access_token,
             refresh_token: refresh_token
