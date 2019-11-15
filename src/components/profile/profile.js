@@ -5,6 +5,7 @@ import { compose } from 'redux';
 import { firestoreConnect } from 'react-redux-firebase';
 import { Redirect } from 'react-router-dom';
 import PostList from '../feed/PostList';
+import UserList from './UserList';
 
 // import './AppNew.css';
 import SpotifyWebApi from 'spotify-web-api-js';
@@ -47,9 +48,9 @@ export class Profile extends Component {
   }
 
   getContent = () => {
+    const { posts, auth, users } = this.props;
   	switch(this.state.display) {
   		case 'Mutters':
-  			const { posts, auth} = this.props;
   			const uid = auth.uid;
   			const myPosts = (posts != null ? posts.filter(post => post.authorId == uid) : []); 
   			return (
@@ -63,40 +64,14 @@ export class Profile extends Component {
   		case 'Followers':
   			return (
   				<div className="collection followers">
-    				<a href="#!" className="collection-item">Stacy's Mom</a>
-	    			<a href="#!" className="collection-item">Chad Johnson</a>
-	    			<a href="#!" className="collection-item">Tom Bradyr</a>
-    				<a href="https://google.com" className="collection-item">Old McDonald</a>
-    				<a href="#!" className="collection-item">LeBron James</a>
-    				<a href="#!" className="collection-item">Kobe Bryant</a>
-    				<a href="#!" className="collection-item">Bill Walton</a>
-    				<a href="#!" className="collection-item">Luke Walton</a>
-    				<a href="#!" className="collection-item">Stacy's Mom</a>
-	    			<a href="#!" className="collection-item">Chad Johnson</a>
-	    			<a href="#!" className="collection-item">Tom Bradyr</a>
-    				<a href="https://google.com" className="collection-item">Old McDonald</a>
-    				<a href="#!" className="collection-item">LeBron James</a>
-    				<a href="#!" className="collection-item">Kobe Bryant</a>
-    				<a href="#!" className="collection-item">Bill Walton</a>
-    				<a href="#!" className="collection-item">Luke Walton</a>
-  				</div>
+            <UserList users={users} />
+          </div>
   			);
   			break;
   		case 'Following':
   			return (
   				<div className="collection followers">
-    				<a href="#!" className="collection-item">John Adams</a>
-	    			<a href="#!" className="collection-item">Paul Revere</a>
-	    			<a href="#!" className="collection-item">George Washington</a>
-    				<a href="https://google.com" className="collection-item">Thomas Jefferson</a>
-    				<a href="#!" className="collection-item">Barack Obama</a>
-    				<a href="#!" className="collection-item">Bill Clinton</a>
-    				<a href="#!" className="collection-item">John Adams</a>
-	    			<a href="#!" className="collection-item">Paul Revere</a>
-	    			<a href="#!" className="collection-item">George Washington</a>
-    				<a href="https://google.com" className="collection-item">Thomas Jefferson</a>
-    				<a href="#!" className="collection-item">Barack Obama</a>
-    				<a href="#!" className="collection-item">Bill Clinton</a>
+    				<UserList users={users} />
   				</div>
   			);
   			break;
@@ -141,7 +116,8 @@ const mapStateToProps = (state) => {
   return {
     posts: state.firestore.ordered.posts,
     profile: state.firebase.profile,
-    auth: state.firebase.auth
+    auth: state.firebase.auth,
+    users: state.firestore.ordered.users
   }
 }
 
@@ -149,6 +125,7 @@ const mapStateToProps = (state) => {
 export default compose(
   connect(mapStateToProps),
   firestoreConnect([
-    { collection: 'posts', orderBy: ['createdAt', 'desc'] }
+    { collection: 'posts', orderBy: ['createdAt', 'desc'] },
+    { collection: 'users' }
   ])
 )(Profile);
