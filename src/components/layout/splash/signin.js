@@ -40,7 +40,7 @@ export class SignIn extends Component {
 
           <div className="input-field ">
 
-            <button className="btn-large waves-effect waves-light red" type="submit" name="action">Sign In
+            <button id="signin_btn" className="btn-large waves-effect waves-light red" type="submit" name="action">Sign In
               <i className="small material-icons right">music_note</i>
             </button>
             <br />
