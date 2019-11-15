@@ -37,6 +37,13 @@ $ npm start
 ```
 
 
+### Running Unit Tests
+```sh
+$ npm start
+$ npm run s-test
+```
+
+
 ### Todos
 * Make App
 
@@ -51,10 +58,39 @@ $ npm start
 
 
 ### Directory Structure
-.
-├── ...
-├── server      # Spotify Auhentication Server
-│   └── ...
-├── src
-│   ├──
+    .
+    ├── ...
+    ├── server      # Spotify Auhentication Server
+    │   └── ...
+    ├── src
+    │   ├── components      # All frontend components used to display web pages 
+    |   |   ├── ...
+    |   |   ├── discover    # Discover Page
+    |   |   ├── feed        # Feed Page
+    |   |   ├── groups      # Groups Page
+    |   |   ├── layout      # Splash and Navbar
+    |   |   ├── profile     # Profile Page
+    |   |   └── ...
+    │   ├── config
+    |   |   └── fbConfig.js # Firebase configuration
+    │   ├── store
+    |   |   ├── actions     # Backend methods used to communicate with Firebase
+    |   |   |   ├── authActions.js  # User Authentication
+    |   |   |   ├── groupActions.js # Groups Database
+    |   |   |   ├── postActions.js  # Posts Database
+    |   |   |   └── ...
+    │   |   ├── reducers    # Backend reducers keeping track of state changes
+    |   |   |   ├── authReducer.js  
+    |   |   |   ├── groupReducer.js 
+    |   |   |   ├── postReducer.js 
+    |   |   |   ├── rootReducer.js  # Combines Other Reducers
+    |   |   |   └── ...
+    │   ├── App.js      # Main Component responsible for routing
+    │   ├── index.css   # Main CSS File
+    │   ├── loading.js  # Component That Displays While Page is Loading
+    │   └── ...
+    ├── test
+    │   └── test.js # Unit Test Cases Using Selenium 
+    ├── README.md   # This file
+    └── ...
 
