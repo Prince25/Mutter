@@ -15,10 +15,24 @@ say about top music.
 Mutter requires [node.js](https://nodejs.org/) to run.
 Clone repository, install the dependencies and start the server.
 
+Clone and install dependencies
 ```sh
 $ git clone git@gitlab.com:etanboga/cs130-mutter.git
 $ cd cs130-mutter
-$ npm install -d
+$ npm install
+```
+
+Run Spotify Server
+```sh
+$ cd server
+$ npm install
+$ cd authorization_code
+$ node app.js
+```
+
+Run Mutter
+```sh
+$ cd ../..
 $ npm start
 ```
 
@@ -34,3 +48,13 @@ $ npm start
 * Prabhjot Singh
 * Ege Tanboğa
 * Fuwei Zhang
+
+
+### Directory Structure
+.
+├── ...
+├── server      # Spotify Auhentication Server
+│   └── ...
+├── src
+│   ├──
+
