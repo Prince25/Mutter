@@ -1,0 +1,836 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="utf-8">
+    <title>JSDoc: Source: discover.js</title>
+
+    <script src="scripts/prettify/prettify.js"> </script>
+    <script src="scripts/prettify/lang-css.js"> </script>
+    <!--[if lt IE 9]>
+      <script src="//html5shiv.googlecode.com/svn/trunk/html5.js"></script>
+    <![endif]-->
+    <link type="text/css" rel="stylesheet" href="styles/prettify-tomorrow.css">
+    <link type="text/css" rel="stylesheet" href="styles/jsdoc-default.css">
+</head>
+
+<body>
+
+<div id="main">
+
+    <h1 class="page-title">Source: discover.js</h1>
+
+    
+
+
+
+    
+    <section>
+        <article>
+            <pre class="prettyprint source linenums"><code>import React, { Component } from 'react'
+
+import './Search.css';
+
+import SpotifyWebApi from 'spotify-web-api-js';
+const spotifyApi = new SpotifyWebApi();
+var request = require('request');
+
+const AppConfig = require('../config/app');
+const AuthConfig = require('../config/auth');
+var querystring = require('querystring');
+const redirect_uri = AppConfig.HOST;
+const client_id = AuthConfig.CLIENT_ID;
+const client_secret = AuthConfig.CLIENT_SECRET;
+
+var tempaccess=''
+
+export class Discover extends Component {
+  /**
+   * @method constructor
+   * @description Represents the discover page
+   * @returns {null}
+  */
+  constructor(){
+     
+    super();
+    const params = this.getHashParams();
+    const token = params.access_token;
+  window.alert(token);
+    if (token) {
+  /**
+   * @method setAccessToken
+   * @description passing the access token for setting the client credential in order to use spotify authorization service
+   * @param {string} token - The access_token get from spotify server after login in spotify or 
+   * @returns {null}  
+  */
+      spotifyApi.setAccessToken(token);
+    }
+    this.state = {
+      access_token :'',
+      refresh_token :'',
+      searchvalue : {searchinput :''},
+    checkclicked: {ClickSearchArtist: false, ClickSearchAlbum: false, ClickSearchTrack: false,
+                     ClickNowPlaying: false, ClickRecommended: false, ClickHottest: false, ClickRecent: false},
+      searchloading : false,
+      message:'',
+      loggedIn: token ? true : false,
+      nowPlaying: { SongName: 'Not Checked', AlbumImage: '' },
+  
+      recentList: { SongName: ['recenttest','','','',''],
+                    AlbumName: ['','','','',''],
+                    AlbumImage: ['','','','','']},
+      mostRecommendedL: { SongName: ['recommendedtest','','','',''],
+                          AlbumName: ['','','','',''],
+                          AlbumImage: ['','','','','']},
+   hottestL: { SongName: ['','','','',''],
+                          ArtistName: ['','','','',''],
+                          AlbumImage: ['','','','','']},
+      searchingArtistL: { ArtistName: ['','','','',''],
+                          ArtistImage: ['','','','','']},
+      searchingAlbumL:  { ArtistName: ['','','','',''],
+                          AlbumName: ['','','','',''],
+        AlbumImage:['','','','','']},
+      searchingTrackL:  { SongName: ['','',''],
+                          ArtistName: ['','',''],
+        AlbumImage:['','','']}
+    }
+    this.handleChange = this.handleChange.bind(this);
+    //this.handleSubmit = this.handleSubmit.bind(this);
+  }
+
+  /**
+   * @method handleChange
+   * @description detecting the type or deley event, then update the input value to searchingvalue in discover class
+   * @param {event} - the change while the user type or delete characters in the searching input bar
+   * @returns {null}
+  */
+  handleChange(event) {
+    const query = event.target.value;
+    var q = query;
+    if(query || query ==""){
+    this.setState({searchvalue:{searchinput : query},
+                   searchloading : true});
+    }
+  }
+
+    /**
+   * @method getHashParams
+   * @description obtain the parameters from the hash of URL from spotify 
+   * @returns {string} hashParams - the  query string that spotify sends back when log in
+  */
+  getHashParams() {
+    var hashParams = {};
+    var e, r = /([^&amp;;=]+)=?([^&amp;;]*)/g,
+        q = window.location.hash.substring(1);
+    e = r.exec(q)
+    while (e) {
+       hashParams[e[1]] = decodeURIComponent(e[2]);
+       e = r.exec(q);
+    }
+    return hashParams;
+  }
+  
+  /**
+   * @method getaccesstoken
+   * @description by using the getAccessToken() function from spotifyAPI, getting a new access_token from spotify server. Then, update the token in discover class
+   * @returns {null} 
+  */
+  getaccesstoken()
+  {
+    tempaccess = spotifyApi.getAccessToken();
+    //window.alert(tempaccess);
+  }
+  
+  /**
+   * @method getNowPlaying
+   * @description by using the response from getMyCurrentPlaybackState() function from spotifyAPI, getting a object from spotify server.
+    Then, update the nowPlaying list's SongName and AlbumImage with the object's element
+   * @returns {null}
+  */
+    /**
+   * @method getMyCurrentPlaybackState
+   * @description get information about the user's current playback state, including track, track progress and active device
+   * @returns {response} - a object of user's current playback state or object of error message 
+  */
+  getNowPlaying(){
+
+    
+
+    spotifyApi.getMyCurrentPlaybackState().then((response) => {
+        if (response == '' || response.item.name == null) {
+          this.setState({
+          nowPlaying: { SongName: "Not playing or advertisement", AlbumImage: ''}
+          });
+          return;
+        }
+        else {
+          this.setState({
+            nowPlaying: { SongName: response.item.name, AlbumImage: response.item.album.images[0].url}
+          });
+        }
+     })
+  }
+  
+  /**
+   * @method changeRecent
+   * @description updating the recentList's ArtistName, SongName, and AlbumImage in discover class with the recently played tracks object 
+   * @param {object} bodydata - the object tracks from the current user's recently played tracks
+   * @returns {null}
+  */
+  
+  /*
+  changeRecent(bodydata){
+  
+  window.alert("recentisinorder");
+  var recentL = this.state.recentList;
+  for (var i  =0; i &lt; 5; i++)
+  {
+    window.alert("wrost order")
+    recentL.ArtistName[i] = bodydata.items[i].track.name;
+    recentL.SongName[i] = bodydata.items[i].track.album.name;
+    recentL.AlbumImage[i] = bodydata.items[i].track.album.images[0].url;
+  }
+  this.setState({recentList: recentL});
+  }
+  */
+  getRecentList(){
+    this.state.checkclicked.ClickRecent = true;
+    spotifyApi.getMyRecentlyPlayedTracks()
+    .then((response)=>{
+      this.setState({
+        recentList:{
+          name: [response.items[0].track.name,
+           response.items[1].track.name,           
+           response.items[2].track.name,
+           response.items[3].track.name,      
+           response.items[4].track.name],
+          albumArtN:[
+            response.items[0].track.album.name,
+            response.items[1].track.album.name,
+            response.items[2].track.album.name,
+            response.items[3].track.album.name,
+            response.items[4].track.album.name
+              ],
+          albumArtL: [response.items[0].track.album.images[0].url,
+            response.items[1].track.album.images[0].url,
+            response.items[2].track.album.images[0].url,
+            response.items[3].track.album.images[0].url,
+            response.items[4].track.album.images[0].url
+               ]
+        }
+      });
+    })
+  }
+  
+  /**
+   * @method changeArtist
+   * @description updating the searchingArtistL's ArtistName, and ArtistImage in discover class with the artists object from spotify catalog
+   * @param {object} bodydata - the object of Artists list 
+   * @returns {null}
+  */
+  /*
+    changeArtist(bodydata)
+  {
+   var ArtistL = this.state.searchingArtistL;
+   for (var i  =0; i &lt; 5; i++)
+   {
+     ArtistL.ArtistName[i] = bodydata.artists.items[i].name;
+     ArtistL.ArtistImage[i] = bodydata.artists.items[i].images[0].url;
+   }
+    this.setState({searchingArtistL: ArtistL});
+  }
+  */
+  changeArtist(bodydata)
+  {
+    this.setState({
+            searchingArtistL: { 
+                ArtistName: [bodydata.artists.items[0].name,
+                              bodydata.artists.items[1].name,
+                              bodydata.artists.items[2].name,
+                              bodydata.artists.items[3].name,
+                              bodydata.artists.items[4].name ],
+                ArtistImage: [bodydata.artists.items[0].images[0].url,
+                               bodydata.artists.items[1].images[0].url,
+                               bodydata.artists.items[2].images[0].url,
+                               bodydata.artists.items[3].images[0].url,
+                               bodydata.artists.items[4].images[0].url]
+              }
+          });
+
+  }
+
+  /**
+   * @method changeAlbum
+   * @description updating the searchingAlbumL's ArtistName, AlbumName, and AlbumImage in discover class with the albums object from the Spotify catalog
+   * @param {object} bodydata - the object of albums list
+   * @returns {null}
+  */
+  /*
+  changeAlbum(bodydata)
+  {
+   var AlbumL = this.searchingAlbumL;
+   for (var i  =0; i &lt; 5; i++)
+   {
+     AlbumL.ArtistName[i] = bodydata.albums.items[i].artists[0].name;
+     AlbumL. AlbumName[i] = bodydata.albums.items[i].name;
+     AlbumL.AlbumImage[i] = bodydata.albums.items[i].album.images[0].url;
+   }
+    this.setState({searchingTrackL: AlbumL});
+  }*/
+  changeAlbum(bodydata)
+  {
+    this.setState({
+            searchingAlbumL: { 
+                ArtistName: [bodydata.albums.items[0].artists[0].name,
+                              bodydata.albums.items[1].artists[0].name,
+                              bodydata.albums.items[2].artists[0].name,
+                              bodydata.albums.items[3].artists[0].name,
+                              bodydata.albums.items[4].artists[0].name,],
+    AlbumName : [bodydata.albums.items[0].name,
+                              bodydata.albums.items[1].name,
+                              bodydata.albums.items[2].name,
+                              bodydata.albums.items[3].name,
+                              bodydata.albums.items[4].name,],
+                AlbumImage: [bodydata.albums.items[0].images[0].url,
+                               bodydata.albums.items[1].images[0].url,
+                               bodydata.albums.items[2].images[0].url,
+                               bodydata.albums.items[3].images[0].url,
+                               bodydata.albums.items[4].images[0].url]
+              }
+          });
+
+  }
+
+  /**
+   * @method changeTrack
+   * @description updating the searchingTrackL's ArtistName, SongName, and AlbumImage in discover class with the  Tracks object from the Spotify catalog
+   * @param {object} bodydata - the object of tracks list
+   * @returns {null}
+  */
+  /*
+  changeTrack(bodydata)
+  {
+   var TrackL = this.state.searchingTrackL;
+   for (var i  =0; i &lt; 3; i++)
+   {
+     TrackL.ArtistName[i] = bodydata.tracks.items[i].artists[0].name;
+     TrackL. SongName[i] = bodydata.tracks.items[i].name;
+     TrackL.AlbumImage[i] = bodydata.tracks.items[i].album.images[0].url;
+   }
+    this.setState({searchingTrackL: TrackL});
+  }*/
+  changeTrack(bodydata)
+  {
+    this.setState({
+            searchingTrackL: { 
+                ArtistName: [bodydata.tracks.items[0].artists[0].name,
+                  bodydata.tracks.items[1].artists[0].name,
+                  bodydata.tracks.items[2].artists[0].name],
+        SongName  : [bodydata.tracks.items[0].name,
+                  bodydata.tracks.items[1].name,
+                  bodydata.tracks.items[2].name],
+                AlbumImage: [bodydata.tracks.items[0].album.images[0].url,
+                  bodydata.tracks.items[1].album.images[0].url,
+                  bodydata.tracks.items[2].album.images[0].url]
+              }
+          });
+
+  }
+  
+  /**
+   * @method changeRecommandation
+   * @description updating the mostRecommendedL's ArtistName, SongName, and AlbumImage in discover class with the tracks object from the Spotify catalog
+   * @param {object} bodydata - the object of most recommended tracks list base on user's database
+   * @returns {null}
+  */
+  /*
+  changeRecommandation(bodydata)
+  {
+  var RecommendedL = this.state.mostRecommendedL;
+  for (var i =0; i &lt; 5; i++)
+  {
+    this.mostRecommendedL.SongName[i] = bodydata.tracks[i].name;
+    this.mostRecommendedL.ArtistName[i] = bodydata.tracks[i].album.artists[0].name; //it may need to change for mutiple artists
+    this.mostRecommendedL.AlbumImage[i] = bodydata.tracks[i].album.images[0].url;
+  }
+  this.setState({ mostRecommendedL : RecommendedL});
+  }*/
+  changeRecommandation(bodydata)
+  {
+    this.setState({
+        mostRecommendedL:{
+          songname: [bodydata.tracks[0].name,
+           bodydata.tracks[1].name,        
+           bodydata.tracks[2].name,
+           bodydata.tracks[3].name,   
+           bodydata.tracks[4].name],
+        //it may need to change for mutiple artists
+          albumArtN:[
+            bodydata.tracks[0].album.artists[0].name,
+            bodydata.tracks[1].album.artists[0].name,        
+            bodydata.tracks[2].album.artists[0].name,
+            bodydata.tracks[3].album.artists[0].name,   
+            bodydata.tracks[4].album.artists[0].name],
+          albumArtL: [bodydata.tracks[0].album.images[0].url,
+            bodydata.tracks[1].album.images[0].url,
+            bodydata.tracks[2].album.images[0].url,
+            bodydata.tracks[3].album.images[0].url,
+            bodydata.tracks[4].album.images[0].url]
+        }
+      });
+
+  }
+
+  /**
+   * @method changeHottest
+   * @description updating the hottestL's ArtistName, SongName, and AlbumImage in discover class with the tracks object from the Spotify catalog
+   * @param {object} bodydata - the object of most hottest tracks list base on the top 50 global playlist from spotify database
+   * @returns {null}
+  */
+  /*
+  changeHottest(bodydata)
+  {
+    var HottestSongL = this.state.hottestL;
+    
+   for (var i = 0; i &lt; 5; i++)
+   {
+     HottestSongL.ArtistName[i] = bodydata.tracks.items[i].track.artists[0].name;
+     HottestSongL.SongName[i] = bodydata.tracks.items[i].track.name;
+     HottestSongL.AlbumImage[i] = bodydata.tracks.items[i].track.album.images[0].url;
+   }
+    this.setState({hottestL: HottestSongL});
+  }*/
+  changeHottest(bodydata)
+  {
+    this.setState({
+         hottestL: { 
+                ArtistName: [bodydata.tracks.items[0].track.artists[0].name,
+                                      bodydata.tracks.items[1].track.artists[0].name,
+                                      bodydata.tracks.items[2].track.artists[0].name,
+                                      bodydata.tracks.items[3].track.artists[0].name,
+                                      bodydata.tracks.items[4].track.artists[0].name],
+                SongName  : [bodydata.tracks.items[0].track.name,
+                                        bodydata.tracks.items[1].track.name,
+                                        bodydata.tracks.items[2].track.name,
+                                        bodydata.tracks.items[3].track.name,
+                                        bodydata.tracks.items[4].track.name],
+                AlbumImage: [bodydata.tracks.items[0].track.album.images[0].url,
+                                        bodydata.tracks.items[1].track.album.images[0].url,
+                                        bodydata.tracks.items[2].track.album.images[0].url,
+                                        bodydata.tracks.items[3].track.album.images[0].url,
+                                        bodydata.tracks.items[4].track.album.images[0].url]
+              }
+          });
+  }
+
+  /*
+  getRecentList()
+  {
+    this.getaccesstoken();
+    var recenturl = 'https://api.spotify.com/v1/me/player/recently-played?limit=5';
+    var Endpoint = {
+          url: recenturl,
+          headers: { 'Authorization': 'Bearer ' + tempaccess},
+          json: true
+        };
+    var feed = this;
+        request.get(Endpoint, function(error, response, body) {
+        feed.changeRecent(body);
+        });
+  }; 
+  */
+  
+
+  
+  /**
+   *@method requestget 
+   *@description  using the access_token and differecnt endpoint to access the corresponding spotify API  by HTTP request method GET 
+   *@param {object} Endpoint - including the endpoint URL and the access_token with json file
+   *@param {object} function - a callback function  
+   *@param {object} function.error - the error log object that record the error message
+   *@param {object} function.response - the object of spotify server response
+   *@param {object} function.body - the corresponding return object from spotifyAPI
+   *@returns {object} replied message
+  */
+    /**
+   * @method getSearchArtist
+   * @description updating searchingartistL by calling changeArtist() and providing user input and the endpointurl for using HTTP request method GET to get the artists object from spotify catalog callback
+   * @returns {null}
+  */
+
+  getSearchArtist()
+  {
+    this.getaccesstoken();
+    if (this.state.searchvalue.searchinput == '') {
+      return;
+    }
+    var searchartisturl = 'https://api.spotify.com/v1/search?q=' + this.state.searchvalue.searchinput + '&amp;type=artist&amp;limit=5';
+    var Endpoint = {
+          url: searchartisturl,
+          headers: { 'Authorization': 'Bearer ' + tempaccess},
+          json: true
+        };
+    var feed = this;
+    
+        request.get(Endpoint, function(error, response, body) {
+        feed.changeArtist(body);
+        });
+  };
+
+
+   /**
+   * @method getSearchAlbum
+   * @description updating searchingAlbumL by calling changeAlbum() and providing user input and the endpointurl for using HTTP request method GET to get the Album object from spotify catalog callback
+   * @returns {null}
+  */
+  getSearchAlbum()
+  {
+    this.getaccesstoken();
+    if (this.state.searchvalue.searchinput == '') {
+      return;
+    }
+    var searchalbumurl = 'https://api.spotify.com/v1/search?q=' + this.state.searchvalue.searchinput + '&amp;type=album&amp;limit=5';
+    var Endpoint = {
+          url: searchalbumurl,
+          headers: { 'Authorization': 'Bearer ' + tempaccess},
+          json: true
+        };
+    var feed = this;
+        request.get(Endpoint, function(error, response, body) {
+        feed.changeAlbum(body);
+        });
+      };
+
+  /**
+   * @method getSearchTrack
+   * @description updating searchingTrackL by calling changeTrack() and providing user input and the endpointurl for using HTTP request method GET to get the Tracks object from spotify catalog callback
+   * @returns {null}
+  */
+  getSearchTrack()
+  {
+    this.getaccesstoken(); 
+    if (this.state.searchvalue.searchinput == '') {
+      return;
+    }  
+    var searchtrackurl = 'https://api.spotify.com/v1/search?q=' + this.state.searchvalue.searchinput + '&amp;type=track&amp;limit=3';
+    var Endpoint = {
+          url: searchtrackurl,
+          headers: { 'Authorization': 'Bearer ' + tempaccess},
+          json: true
+        };
+    var feed = this;
+        request.get(Endpoint, function(error, response, body) {
+        feed.changeTrack(body);
+        });
+  };
+  
+   /**
+   * @method getHottestSong
+   * @description updating hottestL by calling changeHottest() and the endpointurl of globaltop50 playlist ID for using HTTP request method GET to get the Tracks object from spotify catalog callback
+   * @returns {null}
+  */
+  getHottestSong()
+  {
+    this.getaccesstoken();
+    var globaltop50url = 'https://api.spotify.com/v1/playlists/37i9dQZEVXbMDoHDwVN2tF';
+    var Endpoint = {
+          url: globaltop50url,
+          headers: { 'Authorization': 'Bearer ' + tempaccess},
+          json: true
+        };
+    var feed = this;
+        request.get(Endpoint, function(error, response, body) {
+        feed.changeHottest(body);
+        });
+  };
+
+  /**
+   * @method getMostReommended
+   * @description updating mostRecommendedL by calling changeRecommandation() and the endpointurl with the topartists ID from two HTTP requests to get the Tracks object from spotify catalog callback
+   * @returns {null}
+  */
+  getMostReommended()
+  {
+  this.getaccesstoken(); 
+  var TopArtistEndpoint = {
+         url: 'https://api.spotify.com/v1/me/top/artists?limit=1',
+         headers: { 'Authorization': 'Bearer ' + tempaccess },
+         json: true
+     };
+  var feed = this;
+  request.get(TopArtistEndpoint, function(error, response, body) {
+              
+    var topartists = body.items[0].id;
+    var recommendedurl ='https://api.spotify.com/v1/recommendations?limit=5&amp;market=US&amp;seed_artists=' + topartists + '&amp;min_energy=0.4&amp;min_popularity=50';
+    var RecommendedEndpoint = {
+      url: recommendedurl,
+      headers: { 'Authorization': 'Bearer ' + tempaccess },
+      json: true
+    };
+    
+    request.get(RecommendedEndpoint, function(error, response, body) {
+      feed.changeRecommandation(body);
+        });
+  });
+  }
+  
+  printsearch(){
+    window.alert(this.state.searchvalue.searchinput);
+  }
+
+
+
+
+  render() {
+    const {searchvalue} = this.state;
+    return (
+      &lt;div className="container">
+        &lt;div>
+        &lt;label className="searchartists-label" htmlFor = "searchartists_input">
+              &lt;p>Fill your search content below:&lt;/p>
+              &lt;input type="text"
+                   name ="searchvalue" 
+                   value={searchvalue.searchartistvalue}
+                   id= "searchartists_input" 
+                   onChange={this.handleChange}
+               />
+               &lt;i className="fa fa-search search-icon" aria-hidden="true"/>
+        &lt;/label>
+        &lt;/div>
+        &lt;div className="searchbuttons">
+        { 
+          &lt;button onClick={() => this.getSearchArtist()}>
+            SearchByArtist
+          &lt;/button>
+        }
+        { 
+          &lt;button onClick={() => this.getSearchAlbum()}>
+            SearchByAlbum
+          &lt;/button>
+        }
+        { 
+          &lt;button onClick={() => this.getSearchTrack()}>
+            SearchByTrack
+          &lt;/button>
+        }
+        &lt;/div>
+        &lt;div className="checkbuttons">
+        {
+          &lt;button onClick={() => this.getNowPlaying()}>
+            Check Now Playing
+          &lt;/button>
+        }
+        { 
+          &lt;button onClick={() => this.getRecentList()}>
+            Check Recently played
+          &lt;/button>
+        }
+
+      { 
+          &lt;button onClick={() => this.getMostReommended()}>
+            Check Most Recommended Song
+          &lt;/button>
+        }
+        { 
+          &lt;button onClick={() => this.getHottestSong()}>
+            Hottest Song
+          &lt;/button>
+        }
+        &lt;/div>
+        { this.state.checkclicked.ClickNowPlaying &amp;&amp; &lt;div className="nowplay">
+          Now Playing: { this.state.nowPlaying.name }
+          &lt;br/>&lt;img src={this.state.nowPlaying.albumArt} style={{ height: 150 }}/>
+        &lt;/div>
+        }
+
+        { (this.state.checkclicked.ClickSearchArtist || this.state.checkclicked.ClickSearchAlbum || this.state.checkclicked.ClickSearchTrack) &amp;&amp; &lt;div className="largefont">
+        &lt;hr style={{
+            
+            backgroundColor: "pink",
+            height: 3
+        }}/>
+        &lt;p>Search Results&lt;/p>
+        &lt;/div>
+        }
+
+        { (this.state.checkclicked.ClickSearchArtist || this.state.checkclicked.ClickSearchAlbum || this.state.checkclicked.ClickSearchTrack) &amp;&amp; &lt;div className="totresults">
+        { this.state.checkclicked.ClickSearchArtist &amp;&amp; &lt;div className="results1"> The Searched Artists: 
+        &lt;br/>Artist Name: {this.state.searchingArtistL.ArtistName[0]}
+        &lt;br/>Artist image:  
+        &lt;br/>&lt;img src={this.state.searchingArtistL.ArtistImage[0]} style={{ height: 150 }}/>
+        &lt;br/>Artist Name: {this.state.searchingArtistL.ArtistName[1]}
+        &lt;br/>Artist image:  
+        &lt;br/>&lt;img src={this.state.searchingArtistL.ArtistImage[1]} style={{ height: 150 }}/>
+        &lt;br/>Artist Name: {this.state.searchingArtistL.ArtistName[2]}
+        &lt;br/>Artist image:  
+        &lt;br/>&lt;img src={this.state.searchingArtistL.ArtistImage[2]} style={{ height: 150 }}/>
+        &lt;br/>Artist Name: {this.state.searchingArtistL.ArtistName[3]}
+        &lt;br/>Artist image:  
+        &lt;br/>&lt;img src={this.state.searchingArtistL.ArtistImage[3]} style={{ height: 150 }}/>
+        &lt;br/>Artist Name: {this.state.searchingArtistL.ArtistName[4]}
+        &lt;br/>Artist image:  
+        &lt;br/>&lt;img src={this.state.searchingArtistL.ArtistImage[4]} style={{ height: 150 }}/>
+        &lt;/div>
+        }
+
+        { this.state.checkclicked.ClickSearchAlbum &amp;&amp; &lt;div className="results2"> The Searched Albums: 
+        &lt;br/>Artist Name: {this.state.searchingAlbumL.ArtistName[0]}
+        &lt;br/>Album Name: {this.state.searchingAlbumL.AlbumName[0]}
+        &lt;br/>Album image:  
+        &lt;br/>&lt;img src={this.state.searchingAlbumL.AlbumImage[0]} style={{ height: 150 }}/>
+        &lt;br/>Artist Name: {this.state.searchingAlbumL.ArtistName[1]}
+        &lt;br/>Album Name: {this.state.searchingAlbumL.AlbumName[1]}
+        &lt;br/>Album image:  
+        &lt;br/>&lt;img src={this.state.searchingAlbumL.AlbumImage[1]} style={{ height: 150 }}/>
+        &lt;br/>Artist Name: {this.state.searchingAlbumL.ArtistName[2]}
+        &lt;br/>Album Name: {this.state.searchingAlbumL.AlbumName[2]}
+        &lt;br/>Album image:  
+        &lt;br/>&lt;img src={this.state.searchingAlbumL.AlbumImage[2]} style={{ height: 150 }}/>
+        &lt;br/>Artist Name: {this.state.searchingAlbumL.ArtistName[3]}
+        &lt;br/>Album Name: {this.state.searchingAlbumL.AlbumName[3]}
+        &lt;br/>Album image:  
+        &lt;br/>&lt;img src={this.state.searchingAlbumL.AlbumImage[3]} style={{ height: 150 }}/>
+        &lt;br/>Artist Name: {this.state.searchingAlbumL.ArtistName[4]}
+        &lt;br/>Album Name: {this.state.searchingAlbumL.AlbumName[4]}
+        &lt;br/>Album image:  
+        &lt;br/>&lt;img src={this.state.searchingAlbumL.AlbumImage[4]} style={{ height: 150 }}/>
+        &lt;/div>
+        } 
+
+        { this.state.checkclicked.ClickSearchTrack &amp;&amp; &lt;div className="results3"> The Searched Tracks: 
+        &lt;br/>Artist Name: {this.state.searchingTrackL.ArtistName[0]}
+        &lt;br/>Song Name: {this.state.searchingTrackL.SongName[0]}
+        &lt;br/>Album image:  
+        &lt;br/>&lt;img src={this.state.searchingTrackL.AlbumImage[0]} style={{ height: 150 }}/>
+        &lt;br/>Artist Name: {this.state.searchingTrackL.ArtistName[1]}
+        &lt;br/>Song Name: {this.state.searchingTrackL.SongName[1]}
+        &lt;br/>Album image:  
+        &lt;br/>&lt;img src={this.state.searchingTrackL.AlbumImage[1]} style={{ height: 150 }}/>
+        &lt;br/>Artist Name: {this.state.searchingTrackL.ArtistName[2]}
+        &lt;br/>Song Name: {this.state.searchingTrackL.SongName[2]}
+        &lt;br/>Album image:  
+        &lt;br/>&lt;img src={this.state.searchingTrackL.AlbumImage[2]} style={{ height: 150 }}/>
+        &lt;/div>
+        }
+        &lt;/div>
+        }
+
+        { (this.state.checkclicked.ClickRecent || this.state.checkclicked.ClickRecommended || this.state.checkclicked.ClickHottest) &amp;&amp;&lt;div className="largefont">
+        &lt;hr style={{
+            
+            backgroundColor: "pink",
+            height: 3
+        }}/>
+        &lt;/div>
+        }
+
+
+        { (this.state.checkclicked.ClickRecent || this.state.checkclicked.ClickRecommended || this.state.checkclicked.ClickHottest) &amp;&amp; &lt;div className="totresults">
+         { this.state.checkclicked.ClickRecent &amp;&amp; &lt;div className="results1"> 
+          &lt;div className="largefont2">Recent:&lt;/div> 
+          &lt;br/>Song Name: { this.state.recentList.name[0] }
+          &lt;br/>Album Name:  {this.state.recentList.albumArtN[0]}
+          &lt;br/>Album image:     
+          &lt;br/>&lt;img src={this.state.recentList.albumArtL[0]} style={{ height: 150 }}/>
+              
+          &lt;br/> Song Name: { this.state.recentList.name[1] }
+          &lt;br/>Album Name: {this.state.recentList.albumArtN[1]}
+          &lt;br/>Album image:    
+          &lt;br/>     &lt;img src={this.state.recentList.albumArtL[1]} style={{ height: 150 }}/>
+              
+          &lt;br/> Song Name: { this.state.recentList.name[2] }
+          &lt;br/>Album Name: {this.state.recentList.albumArtN[2]}
+          &lt;br/>Album image:  
+          &lt;br/>     &lt;img src={this.state.recentList.albumArtL[2]} style={{ height: 150 }}/>
+              
+          &lt;br/> Song Name: { this.state.recentList.name[3] }
+          &lt;br/>Album Name: {this.state.recentList.albumArtN[3]}
+          &lt;br/>Album image: 
+          &lt;br/>     &lt;img src={this.state.recentList.albumArtL[3]} style={{ height: 150 }}/>
+              
+          &lt;br/> Song Name: { this.state.recentList.name[4] }
+          &lt;br/>Album Name: {this.state.recentList.albumArtN[4]}
+          &lt;br/>Album image:     
+          &lt;br/>     &lt;img src={this.state.recentList.albumArtL[4]} style={{ height: 150 }}/>
+        &lt;/div>
+        }
+
+        { this.state.checkclicked.ClickRecommended &amp;&amp; &lt;div className="results2">
+          &lt;div className="largefont2">Recommended:&lt;/div> 
+          &lt;br/>Song Name: { this.state.mostRecommendedL.songname[0] }
+          &lt;br/>Album Name: {this.state.mostRecommendedL.albumArtN[0]}
+          &lt;br/>Album image: 
+          &lt;br/>&lt;img src={this.state.mostRecommendedL.albumArtL[0]} style={{ height: 150 }}/>
+          &lt;br/>Song Name: { this.state.mostRecommendedL.songname[1] }
+          &lt;br/>Album Name: {this.state.mostRecommendedL.albumArtN[1]}
+          &lt;br/>Album image: 
+          &lt;br/>&lt;img src={this.state.mostRecommendedL.albumArtL[1]} style={{ height: 150 }}/>
+          &lt;br/>Song Name: { this.state.mostRecommendedL.songname[2] }
+          &lt;br/>Album Name: {this.state.mostRecommendedL.albumArtN[2]}
+          &lt;br/>Album image: 
+          &lt;br/>&lt;img src={this.state.mostRecommendedL.albumArtL[2]} style={{ height: 150 }}/>
+          &lt;br/>Song Name: { this.state.mostRecommendedL.songname[3] }
+          &lt;br/>Album Name: {this.state.mostRecommendedL.albumArtN[3]}
+          &lt;br/>Album image: 
+          &lt;br/>&lt;img src={this.state.mostRecommendedL.albumArtL[3]} style={{ height: 150 }}/>
+          &lt;br/>Song Name: { this.state.mostRecommendedL.songname[4] }
+          &lt;br/>Album Name: {this.state.mostRecommendedL.albumArtN[4]}
+          &lt;br/>Album image: 
+          &lt;br/>&lt;img src={this.state.mostRecommendedL.albumArtL[4]} style={{ height: 150 }}/>
+        &lt;/div>
+        }
+
+        { this.state.checkclicked.ClickHottest &amp;&amp; &lt;div className="results3"> 
+            &lt;div className="largefont2">Global Hottest:&lt;/div>
+            &lt;br/>Artist Name: {this.state.hottestL.ArtistName[0]}
+            &lt;br/>Song Name: {this.state.hottestL.SongName[0]}
+            &lt;br/>Album image:  
+            &lt;br/>&lt;img src={this.state.hottestL.AlbumImage[0]} style={{ height: 150 }}/>
+            &lt;br/>Artist Name: {this.state.hottestL.ArtistName[1]}
+            &lt;br/>Song Name: {this.state.hottestL.SongName[1]}
+            &lt;br/>Album image:  
+            &lt;br/>&lt;img src={this.state.hottestL.AlbumImage[1]} style={{ height: 150 }}/>
+            &lt;br/>Artist Name: {this.state.hottestL.ArtistName[2]}
+            &lt;br/>Song Name: {this.state.hottestL.SongName[2]}
+            &lt;br/>Album image:  
+            &lt;br/>&lt;img src={this.state.hottestL.AlbumImage[2]} style={{ height: 150 }}/>
+            &lt;br/>Artist Name: {this.state.hottestL.ArtistName[3]}
+            &lt;br/>Song Name: {this.state.hottestL.SongName[3]}
+            &lt;br/>Album image:  
+            &lt;br/>&lt;img src={this.state.hottestL.AlbumImage[3]} style={{ height: 150 }}/>
+            &lt;br/>Artist Name: {this.state.hottestL.ArtistName[4]}
+            &lt;br/>Song Name: {this.state.hottestL.SongName[4]}
+            &lt;br/>Album image:  
+            &lt;br/>&lt;img src={this.state.hottestL.AlbumImage[4]} style={{ height: 150 }}/>
+        &lt;/div>
+        }
+        &lt;/div>
+  }
+      &lt;/div>
+    );
+  }
+}
+
+export default Discover
+</code></pre>
+        </article>
+    </section>
+
+
+
+
+</div>
+
+<nav>
+    <h2><a href="index.html">Home</a></h2><h3>Global</h3><ul><li><a href="global.html#changeAlbum">changeAlbum</a></li><li><a href="global.html#changeArtist">changeArtist</a></li><li><a href="global.html#changeHottest">changeHottest</a></li><li><a href="global.html#changeRecent">changeRecent</a></li><li><a href="global.html#changeRecommandation">changeRecommandation</a></li><li><a href="global.html#changeTrack">changeTrack</a></li><li><a href="global.html#constructor">constructor</a></li><li><a href="global.html#getaccesstoken">getaccesstoken</a></li><li><a href="global.html#getHashParams">getHashParams</a></li><li><a href="global.html#getHottestSong">getHottestSong</a></li><li><a href="global.html#getMostReommended">getMostReommended</a></li><li><a href="global.html#getMyCurrentPlaybackState">getMyCurrentPlaybackState</a></li><li><a href="global.html#getNowPlaying">getNowPlaying</a></li><li><a href="global.html#getSearchAlbum">getSearchAlbum</a></li><li><a href="global.html#getSearchArtist">getSearchArtist</a></li><li><a href="global.html#getSearchTrack">getSearchTrack</a></li><li><a href="global.html#handleChange">handleChange</a></li><li><a href="global.html#requestget">requestget</a></li><li><a href="global.html#setAccessToken">setAccessToken</a></li></ul>
+</nav>
+
+<br class="clear">
+
+<footer>
+    Documentation generated by <a href="https://github.com/jsdoc/jsdoc">JSDoc 3.6.3</a> on Thu Nov 14 2019 19:12:10 GMT-0800 (Pacific Standard Time)
+</footer>
+
+<script> prettyPrint(); </script>
+<script src="scripts/linenumber.js"> </script>
+</body>
+</html>

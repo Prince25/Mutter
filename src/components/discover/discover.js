@@ -18,12 +18,23 @@ const client_secret = AuthConfig.CLIENT_SECRET;
 var tempaccess=''
 
 export class Discover extends Component {
+  /**
+   * @method constructor
+   * @description Represents the discover page
+   * @returns {null}
+  */
   constructor(){
      
     super();
     const params = this.getHashParams();
     const token = params.access_token;
     if (token) {
+  /**
+   * @method setAccessToken
+   * @description passing the access token for setting the client credential in order to use spotify authorization service
+   * @param {string} token - The access_token get from spotify server after login in spotify or 
+   * @returns {null}  
+  */
       spotifyApi.setAccessToken(token);
     }
     this.state = {
@@ -59,6 +70,12 @@ export class Discover extends Component {
     this.handleSubmit = this.handleSubmit.bind(this);
   }
 
+  /**
+   * @method handleChange
+   * @description detecting the type or deley event, then update the input value to searchingvalue in discover class
+   * @param {event} - the change while the user type or delete characters in the searching input bar
+   * @returns {null}
+  */
   handleChange(event) {
     //var delayInMilliseconds = 200; //1 second
     const query = event.target.value;
@@ -79,6 +96,12 @@ export class Discover extends Component {
     window.alert('A name was submitted: ' + this.state.searchvalue);
     event.preventDefault();
   }
+
+  /**
+   * @method getHashParams
+   * @description obtain the parameters from the hash of URL from spotify 
+   * @returns {string} hashParams - the  query string that spotify sends back when log in
+  */
   getHashParams() {
     var hashParams = {};
     var e, r = /([^&;=]+)=?([^&;]*)/g,
@@ -91,12 +114,28 @@ export class Discover extends Component {
     return hashParams;
   }
 
+  /**
+   * @method getaccesstoken
+   * @description by using the getAccessToken() function from spotifyAPI, getting a new access_token from spotify server. Then, update the token in discover class
+   * @returns {null} 
+  */
   getaccesstoken()
   {
     tempaccess = spotifyApi.getAccessToken();
     //window.alert(tempaccess);
   }
 
+  /**
+   * @method getNowPlaying
+   * @description by using the response from getMyCurrentPlaybackState() function from spotifyAPI, getting a object from spotify server.
+    Then, update the nowPlaying list's SongName and AlbumImage with the object's element
+   * @returns {null}
+  */
+    /**
+   * @method getMyCurrentPlaybackState
+   * @description get information about the user's current playback state, including track, track progress and active device
+   * @returns {response} - a object of user's current playback state or object of error message 
+  */
   getNowPlaying(){
     this.state.checkclicked.ClickNowPlaying = true;
     spotifyApi.getMyCurrentPlaybackState()
@@ -121,6 +160,12 @@ export class Discover extends Component {
       })
   }
 
+  /**
+   * @method changeRecent
+   * @description updating the recentList's ArtistName, SongName, and AlbumImage in discover class with the recently played tracks object 
+   * @param {object} bodydata - the object tracks from the current user's recently played tracks
+   * @returns {null}
+  */
   getRecentList(){
     this.state.checkclicked.ClickRecent = true;
     spotifyApi.getMyRecentlyPlayedTracks()
@@ -150,6 +195,12 @@ export class Discover extends Component {
     })
   }
   
+  /**
+   * @method changeArtist
+   * @description updating the searchingArtistL's ArtistName, and ArtistImage in discover class with the artists object from spotify catalog
+   * @param {object} bodydata - the object of Artists list 
+   * @returns {null}
+  */
   changeArtist(bodydata)
   {
     this.setState({
@@ -169,6 +220,12 @@ export class Discover extends Component {
 
   }
 
+  /**
+   * @method changeAlbum
+   * @description updating the searchingAlbumL's ArtistName, AlbumName, and AlbumImage in discover class with the albums object from the Spotify catalog
+   * @param {object} bodydata - the object of albums list
+   * @returns {null}
+  */
   changeAlbum(bodydata)
   {
     this.setState({
@@ -193,6 +250,12 @@ export class Discover extends Component {
 
   }
 
+  /**
+   * @method changeTrack
+   * @description updating the searchingTrackL's ArtistName, SongName, and AlbumImage in discover class with the  Tracks object from the Spotify catalog
+   * @param {object} bodydata - the object of tracks list
+   * @returns {null}
+  */
   changeTrack(bodydata)
   {
     this.setState({
@@ -211,6 +274,12 @@ export class Discover extends Component {
 
   }
 
+  /**
+   * @method changeRecommandation
+   * @description updating the mostRecommendedL's ArtistName, SongName, and AlbumImage in discover class with the tracks object from the Spotify catalog
+   * @param {object} bodydata - the object of most recommended tracks list base on user's database
+   * @returns {null}
+  */
   changeRecommandation(bodydata)
   {
     this.setState({
@@ -237,6 +306,12 @@ export class Discover extends Component {
 
   }
 
+  /**
+   * @method changeHottest
+   * @description updating the hottestL's ArtistName, SongName, and AlbumImage in discover class with the tracks object from the Spotify catalog
+   * @param {object} bodydata - the object of most hottest tracks list base on the top 50 global playlist from spotify database
+   * @returns {null}
+  */
   changeHottest(bodydata)
   {
     this.setState({
@@ -260,7 +335,21 @@ export class Discover extends Component {
           });
   }
 
-
+  /**
+   *@method requestget 
+   *@description  using the access_token and differecnt endpoint to access the corresponding spotify API  by HTTP request method GET 
+   *@param {object} Endpoint - including the endpoint URL and the access_token with json file
+   *@param {object} function - a callback function  
+   *@param {object} function.error - the error log object that record the error message
+   *@param {object} function.response - the object of spotify server response
+   *@param {object} function.body - the corresponding return object from spotifyAPI
+   *@returns {object} replied message
+  */
+  /**
+   * @method getSearchArtist
+   * @description updating searchingartistL by calling changeArtist() and providing user input and the endpointurl for using HTTP request method GET to get the artists object from spotify catalog callback
+   * @returns {null}
+  */
   getSearchArtist()
   {
     this.getaccesstoken();
@@ -281,6 +370,11 @@ export class Discover extends Component {
         });
   };
 
+  /**
+   * @method getSearchAlbum
+   * @description updating searchingAlbumL by calling changeAlbum() and providing user input and the endpointurl for using HTTP request method GET to get the Album object from spotify catalog callback
+   * @returns {null}
+  */
   getSearchAlbum()
   {
     this.getaccesstoken();
@@ -299,8 +393,13 @@ export class Discover extends Component {
         feed.changeAlbum(body);
 
         });
-      };
+  };
 
+  /**
+   * @method getSearchTrack
+   * @description updating searchingTrackL by calling changeTrack() and providing user input and the endpointurl for using HTTP request method GET to get the Tracks object from spotify catalog callback
+   * @returns {null}
+  */
   getSearchTrack()
   {
     this.getaccesstoken(); 
@@ -321,6 +420,11 @@ export class Discover extends Component {
         });
   };
 
+  /**
+   * @method getHottestSong
+   * @description updating hottestL by calling changeHottest() and the endpointurl of globaltop50 playlist ID for using HTTP request method GET to get the Tracks object from spotify catalog callback
+   * @returns {null}
+  */
   getHottestSong()
   {
     this.getaccesstoken();
@@ -342,7 +446,11 @@ export class Discover extends Component {
   printsearch(){
     window.alert(this.state.searchvalue.searchartistvalue);
   }
-
+  /**
+   * @method getMostReommended
+   * @description updating mostRecommendedL by calling changeRecommandation() and the endpointurl with the topartists ID from two HTTP requests to get the Tracks object from spotify catalog callback
+   * @returns {null}
+  */
   getMostReommended()
   {
     this.getaccesstoken();
@@ -388,40 +496,40 @@ export class Discover extends Component {
         </div>
         <div className="searchbuttons">
         { 
-          <button className="smallbutton" onClick={() => this.getSearchArtist()}>
+          <button className="smallbutton" id="artist_search" onClick={() => this.getSearchArtist()}>
             SearchByArtist
           </button>
         }
         { 
-          <button className="smallbutton" onClick={() => this.getSearchAlbum()}>
+          <button className="smallbutton" id="album_search" onClick={() => this.getSearchAlbum()}>
             SearchByAlbum
           </button>
         }
         { 
-          <button className="smallbutton" onClick={() => this.getSearchTrack()}>
+          <button className="smallbutton" id="track_search" onClick={() => this.getSearchTrack()}>
             SearchByTrack
           </button>
         }
         </div>
         <div className="checkbuttons">
         {
-          <button className="smallbutton" onClick={() => this.getNowPlaying()}>
+          <button className="smallbutton" id="check_now_playing" onClick={() => this.getNowPlaying()}>
             Check Now Playing
           </button>
         }
         { 
-          <button className="smallbutton" onClick={() => this.getRecentList()}>
+          <button className="smallbutton" id="check_recently_played"onClick={() => this.getRecentList()}>
             Check Recently played
           </button>
         }
 
   		{ 
-          <button className="smallbutton" onClick={() => this.getMostReommended()}>
+          <button className="smallbutton" id="check_recommended" onClick={() => this.getMostReommended()}>
             Check Most Recommended Song
           </button>
         }
         { 
-          <button className="smallbutton" onClick={() => this.getHottestSong()}>
+          <button className="smallbutton" id="check_hottest" onClick={() => this.getHottestSong()}>
             Hottest Song
           </button>
         }
