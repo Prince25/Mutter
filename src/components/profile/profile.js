@@ -87,7 +87,8 @@ export class Profile extends Component {
 
     return (
       <div className="container">
-				<a href='http://localhost:8888' > Login to Spotify </a>
+        <br/>
+				<a className="waves-effect waves-yellow btn" href='http://localhost:8888' > Login to Spotify </a>
 
         {/*Profile Header block*/}
         <div className="profile-header">

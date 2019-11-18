@@ -28,6 +28,7 @@ export class Discover extends Component {
     super();
     const params = this.getHashParams();
     const token = params.access_token;
+    const getToken = spotifyApi.getAccessToken();
     if (token) {
   /**
    * @method setAccessToken
@@ -37,14 +38,21 @@ export class Discover extends Component {
   */
       spotifyApi.setAccessToken(token);
     }
+    else if(getToken){
+    	spotifyApi.setAccessToken(getToken);
+    }
+
     this.state = {
       access_token :'',
       refresh_token :'',
+      manual_token: spotifyApi.getAccessToken(),
+      showonce : true,
       searchvalue : {searchinput :''},
       searchloading : false,
       message:'',
-      loggedIn: token ? true : false,
-      checkclicked: {ClickSearchArtist: false, ClickSearchAlbum: false, ClickSearchTrack: false,
+      loggedIn: (token || spotifyApi.getAccessToken()) ? true : false,
+      loading : false,
+      checkclicked: {ClickStartSearch: false, ClickSearchArtist: false, ClickSearchAlbum: false, ClickSearchTrack: false,
                      ClickNowPlaying: false, ClickRecommended: false, ClickHottest: false, ClickRecent: false},
       nowPlaying: { name: 'Not Checked', albumArt: '' },
   
@@ -68,6 +76,9 @@ export class Discover extends Component {
     }
     this.handleChange = this.handleChange.bind(this);
     this.handleSubmit = this.handleSubmit.bind(this);
+    // window.alert("constructor is called");
+    // window.alert("token is " + this.token);
+    // window.alert("getToken is " + this.getToken);
   }
 
   /**
@@ -167,6 +178,8 @@ export class Discover extends Component {
    * @returns {null}
   */
   getRecentList(){
+    //this.state.checking = this.state.chekcing + 1;
+    //window.alert(this.state.checking);
     this.state.checkclicked.ClickRecent = true;
     spotifyApi.getMyRecentlyPlayedTracks()
     .then((response)=>{
@@ -453,6 +466,7 @@ export class Discover extends Component {
   */
   getMostReommended()
   {
+  	this.state.loading = true;
     this.getaccesstoken();
     this.state.checkclicked.ClickRecommended = true; 
     var options = {
@@ -475,65 +489,150 @@ export class Discover extends Component {
             feed.changeRecommandation(body);
         });
     });
+    this.state.loading = false;
   }
+  getStartSearch() 
+  { 
+  	if (this.state.loggedIn == false) {
+  	  window.alert("Cannot search, please login with Spotify");
+  	  return;
+  	}
+    if (this.state.checkclicked.ClickStartSearch == true) 
+    {
+      this.setState({checkclicked: {ClickStartSearch : false}});
+    }
+    else
+    {
+      this.setState({checkclicked: {ClickStartSearch : true}});
+    }
+
+  }
+  authshow()
+  {
+    //window.alert("called");
+    if (this.state.loggedIn == true && this.state.showonce && !this.state.loading)
+    // if (this.state.loggedIn == true && !this.state.loading) 
+    {
+    //this.state.checkclicked.ClickStartSearch = true;
+      // this.getaccesstoken();
+
+      this.getMostReommended();
+      this.getHottestSong();
+      this.getRecentList();
+      this.state.showonce = false;
+
+      // if accesstoken not in url, append it 
+      this.appendToUrl();
+
+    }
+    // else if (!this.state.loggedIn && this.state.showonce){
+    // 	window.alert("Not logged with spotify, please go to profile page and login!");
+    	// window.alert("Recent list");
+    	// if(this.recentList){
+    	// 	window.alert(this.recentList.name);
+    	// }
+    	// else{
+    	// 	window.alert("not set");
+    	// }
+    // }
+    // this.state.showonce = true;
+  }
+  // debugclick()
+  // {
+  // 	window.alert();
+  // }
+  
+  appendToUrl()
+  {
+  	var url = window.location.href; 
+  	// window.alert("the url is " + url);   
+	if (url.indexOf('#') > -1){
+	   
+	}else{
+	   url += '#' +'access_token=' +spotifyApi.getAccessToken();
+	   //url += '&' +'refresh_token=' + spotifyApi.getRefreshToken();
+	   // window.alert("the new url is " + url);
+	}
+	// window.location.href = url;
+  }
+
 
 
   render() {
   	const {searchvalue} = this.state;
     return (
       <div className="container">
+        <br/>
+        <button className="waves-effect waves-yellow btn" id="discover_search" onClick={() => this.getStartSearch()}>
+          Start searching
+        </button>
         <div>
+        { this.state.checkclicked.ClickStartSearch && 
         <label className="searchartists-label" htmlFor = "searchartists_input">
               <p>Fill your search content below:</p>
               <input type="text"
                    name ="searchvalue" 
                    value={searchvalue.searchartistvalue}
                    id= "searchartists_input" 
+                   placeholder="Search..."
                    onChange={this.handleChange}
                />
                <i className="fa fa-search search-icon" aria-hidden="true"/>
         </label>
+        }
         </div>
+        {this.state.checkclicked.ClickStartSearch && 
         <div className="searchbuttons">
         { 
-          <button className="smallbutton" id="artist_search" onClick={() => this.getSearchArtist()}>
+          <button className="waves-effect waves-yellow btn" id="artist_search" onClick={() => this.getSearchArtist()}>
             SearchByArtist
           </button>
         }
+        <span>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;</span>
         { 
-          <button className="smallbutton" id="album_search" onClick={() => this.getSearchAlbum()}>
+          <button className="waves-effect waves-yellow btn" id="album_search" onClick={() => this.getSearchAlbum()}>
             SearchByAlbum
           </button>
         }
+        <span>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;</span>
         { 
-          <button className="smallbutton" id="track_search" onClick={() => this.getSearchTrack()}>
+          <button className="waves-effect waves-yellow btn" id="track_search" onClick={() => this.getSearchTrack()}>
             SearchByTrack
           </button>
         }
         </div>
-        <div className="checkbuttons">
+        }
+        <br/>
+        {this.state.checkclicked.ClickStartSearch && <div className="checkbuttons">
+        { 
+          <button className="waves-effect waves-yellow btn" id="check_recently_played"onClick={() => this.getRecentList()}>
+            Recently played
+          </button>
+        }
+        <span>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;</span>
+  		  { 
+          <button className="waves-effect waves-yellow btn" id="check_recommended" onClick={() => this.getMostReommended()}>
+            Recommended Songs
+          </button>
+        }
+        <span>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;</span>
         {
-          <button className="smallbutton" id="check_now_playing" onClick={() => this.getNowPlaying()}>
-            Check Now Playing
+          <button className="waves-effect waves-yellow btn" id="check_hottest" onClick={() => this.getHottestSong()}>
+            Hottest Songs
           </button>
-        }
-        { 
-          <button className="smallbutton" id="check_recently_played"onClick={() => this.getRecentList()}>
-            Check Recently played
-          </button>
-        }
-
-  		{ 
-          <button className="smallbutton" id="check_recommended" onClick={() => this.getMostReommended()}>
-            Check Most Recommended Song
-          </button>
-        }
-        { 
-          <button className="smallbutton" id="check_hottest" onClick={() => this.getHottestSong()}>
-            Hottest Song
-          </button>
+            
         }
         </div>
+        }
+        {
+        <script>
+          this.showonce = true;
+          window.onload = function() {
+             this.authshow()
+        }
+        </script>
+        }
+        
         { this.state.checkclicked.ClickNowPlaying && <div className="nowplay">
           Now Playing: { this.state.nowPlaying.name }
           <br/><img src={this.state.nowPlaying.albumArt} style={{ height: 150 }}/>
@@ -628,23 +727,19 @@ export class Discover extends Component {
           <br/>Song Name: { this.state.recentList.name[0] }
           <br/>Album Name:  {this.state.recentList.albumArtN[0]}
           <br/>Album image:     
-          <br/><img src={this.state.recentList.albumArtL[0]} style={{ height: 150 }}/>
-              
+          <br/><img src={this.state.recentList.albumArtL[0]} style={{ height: 150 }}/>             
           <br/> Song Name: { this.state.recentList.name[1] }
           <br/>Album Name: {this.state.recentList.albumArtN[1]}
           <br/>Album image:    
-          <br/>     <img src={this.state.recentList.albumArtL[1]} style={{ height: 150 }}/>
-              
+          <br/>     <img src={this.state.recentList.albumArtL[1]} style={{ height: 150 }}/>              
           <br/> Song Name: { this.state.recentList.name[2] }
           <br/>Album Name: {this.state.recentList.albumArtN[2]}
           <br/>Album image:  
-          <br/>     <img src={this.state.recentList.albumArtL[2]} style={{ height: 150 }}/>
-              
+          <br/>     <img src={this.state.recentList.albumArtL[2]} style={{ height: 150 }}/>              
           <br/> Song Name: { this.state.recentList.name[3] }
           <br/>Album Name: {this.state.recentList.albumArtN[3]}
           <br/>Album image: 
-          <br/>     <img src={this.state.recentList.albumArtL[3]} style={{ height: 150 }}/>
-              
+          <br/>     <img src={this.state.recentList.albumArtL[3]} style={{ height: 150 }}/>              
           <br/> Song Name: { this.state.recentList.name[4] }
           <br/>Album Name: {this.state.recentList.albumArtN[4]}
           <br/>Album image:     
