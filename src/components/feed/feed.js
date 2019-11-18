@@ -10,7 +10,7 @@ class Feed extends Component {
   
   render() {
 
-    const { posts, auth } = this.props;
+    const { posts, users, auth } = this.props;
     if (!auth.uid) return <Redirect to='/splash' />
 
     return (
@@ -18,7 +18,7 @@ class Feed extends Component {
         <div className="row">
 
           <div className="col"> {/* https://youtu.be/hZswcXSd5GA?t=130 */}
-            <PostList posts={posts} />
+            <PostList posts={posts} users={users} />
           </div>
  
         </div>
@@ -30,6 +30,7 @@ class Feed extends Component {
 const mapStateToProps = (state) => {
   return {
     posts: state.firestore.ordered.posts,
+    users: state.firestore.ordered.users,
     auth: state.firebase.auth
   }
 }
@@ -38,6 +39,7 @@ const mapStateToProps = (state) => {
 export default compose(
   connect(mapStateToProps),
   firestoreConnect([
-    { collection: 'posts', orderBy: ['createdAt', 'desc'] }
+    { collection: 'posts', orderBy: ['createdAt', 'desc'] },
+    { collection: 'users' }
   ])
 )(Feed);
