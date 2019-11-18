@@ -7,24 +7,31 @@ import { signOut } from '../../store/actions/authActions'
 
 
 const SignedInLinks = (props) => {
+  
+  const { profile, auth } = props
+  const uid = auth.isLoaded ? auth.uid : null
+  const imageUrl = profile.isLoaded && profile.imageUrl ? profile.imageUrl : null
+  
   return (
+  
     <ul className="right">
       <li><NavLink to='/'>Discover</NavLink></li>
       <li><NavLink to='/groups'>Groups</NavLink></li>
       <li><NavLink to='/feed'>Feed</NavLink></li>
-      <li><NavLink to='/newpost'>New Post</NavLink></li>
-      <li><NavLink to='/profile' className='btn btn-floating pink lighten-1'>
-        { props.profile.initials }
+      <li><NavLink to={'/profile/' + uid} className='btn btn-floating pink lighten-1'>
+        <img src={imageUrl} alt="" className="circle responsive-img" />
       </NavLink></li>
-      <li><a href='/' onClick={props.signOut}>Log Out</a></li>
+      <li><a href='/splash' onClick={props.signOut}>Log Out</a></li>
     </ul>
   )
 }
+
 
 const mapDispatchToProps = (dispatch) => {
   return {
     signOut: () => dispatch(signOut())
   }
 }
+
 
 export default connect(null, mapDispatchToProps)(SignedInLinks)

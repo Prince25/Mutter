@@ -57,9 +57,10 @@ textarea.materialize-textarea:focus:not([readonly]){
   border: 1px solid black; /* Green border */
   color: white; /* White text */
   padding: 10px 120px; /* Some padding */
-  width: 310px;
+  width: 33.33%;
   cursor: pointer; /* Pointer/hand icon */
   float: left; /* Float the buttons side by side */
+  margin-bottom: 0;
 }
 
 /* Clear floats (clearfix hack) */
@@ -83,10 +84,11 @@ textarea.materialize-textarea:focus:not([readonly]){
   border: 1px solid black;
   color: black;
   height: 150px;
-  width: 930px;
+  width: 100%;
 }
 
 .profile-name {
+  margin-top: 5px;
   font-size: 150%;
 }
 
@@ -94,4 +96,11 @@ textarea.materialize-textarea:focus:not([readonly]){
   width:50px;
   height:auto;
   display:inline-block;
+}
+
+.postBtn {
+  position:fixed;
+  right:0;
+  bottom:0;
+  padding: 25px;
 }

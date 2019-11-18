@@ -30,7 +30,7 @@ const GroupDetails = (props) => {
 
               <div className="card">
               <div className="card-image">
-                { group.imageUrl && <img src={group.imageUrl} />}
+                { group.imageUrl && <img src={group.imageUrl} alt="" />}
               </div>
               </div>
             </div>

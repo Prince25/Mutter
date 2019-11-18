@@ -1,11 +1,13 @@
 import React, { Component } from 'react';
-import { NavLink } from 'react-router-dom';
+import { Link } from 'react-router-dom';
 import { connect } from 'react-redux';
 import { compose } from 'redux';
 import { firestoreConnect } from 'react-redux-firebase';
 import { Redirect } from 'react-router-dom';
 import PostList from '../feed/PostList';
 import UserList from './UserList';
+import styled from 'styled-components'
+import UploadPicture from './uploadPicture'
 
 // import './AppNew.css';
 import SpotifyWebApi from 'spotify-web-api-js';
@@ -13,10 +15,12 @@ const spotifyApi = new SpotifyWebApi();
 
 
 export class Profile extends Component {
+
 	constructor(){
     super();
     const params = this.getHashParams();
-    const token = params.access_token;
+		const token = params.access_token;
+		this.user = null
     if (token) {
       spotifyApi.setAccessToken(token);
     }
@@ -25,7 +29,7 @@ export class Profile extends Component {
 			display: 'Mutters'
 		}
 	}
-
+	
   getHashParams() {
     var hashParams = {};
     var e, r = /([^&;=]+)=?([^&;]*)/g,
@@ -39,7 +43,7 @@ export class Profile extends Component {
   }
 
   handleClick = (e) => {
-  	if (e.target.id == '' || e.target.id == this.state.display) return;
+  	if (e.target.id === '' || e.target.id === this.state.display) return;
   	document.getElementById(this.state.display).innerHTML = this.state.display;
   	this.setState({
   		display: e.target.id
@@ -48,63 +52,105 @@ export class Profile extends Component {
   }
 
   getContent = () => {
-    const { posts, auth, users } = this.props;
+    const { posts, users } = this.props;
   	switch(this.state.display) {
   		case 'Mutters':
-  			const uid = auth.uid;
-  			const myPosts = (posts != null ? posts.filter(post => post.authorId == uid) : []); 
+				const myPosts = (posts != null && this.user ? posts.filter(post => post.authorId === this.user.id) : []);
+				 
   			return (
-  				<div className="row">
-          			<div className="col">
-            			<PostList posts={myPosts} />
-         	 		</div>
-        		</div>
+  				<div>
+						<PostList posts={myPosts} />
+					</div>
   			);
-  			break;
+  			
   		case 'Followers':
   			return (
-  				<div className="collection followers">
-            <UserList users={users} />
-          </div>
+					<div className="collection followers">
+						<UserList users={users} />
+					</div>
   			);
-  			break;
+  			
   		case 'Following':
   			return (
   				<div className="collection followers">
     				<UserList users={users} />
   				</div>
   			);
-  			break;
+				
   		default:
   			break;
   	}
   }
 
+	
   render() {
+		const { auth, users, match } = this.props;
+		if (!auth.uid) return <Redirect to='/splash' />
 
-  	const { posts, profile, auth } = this.props;
-    if (!auth.uid) return <Redirect to='/splash' />
+		this.user = users && match ? users.filter(user => user.id === match.params.id)[0] : null
+	
+		const imageUrl = this.user ? this.user.imageUrl : null
+		const ProfileImg = styled.img`
+			width: 100px;
+			max-height: 100px;
+			margin-top: 5px;
+			margin-bottom: 0;
+			vertical-align: text-bottom;
+		`;
+
+		const Form = styled.form`
+			background-color: light-grey;
+			padding: 5px;
+			padding-bottom: 1px;
+			margin-top: 5px;
+			margin-bottom: 5px;
+			vertical-align: middle;
+			line-height: 14px;
+		`;
 
     return (
       <div className="container">
-				<a href='http://localhost:8888' > Login to Spotify </a>
+				{ auth.uid && this.user && auth.uid === this.user.id ?
+					<Form>
+						<div className="row">
+							<div className="col s6 center">
+								<a href='http://localhost:8888' className="waves-effect waves-light btn center">Login to Spotify</a>
+							</div>
+							<div className="col s6">
+							<UploadPicture uId={auth.uid} /> 
+							</div>
+						</div>
+					</Form>
+					: null }
+				
 
         {/*Profile Header block*/}
         <div className="profile-header">
-        	<p className="profile-name center">{ profile.name }</p>
-        </div>
+						<div className="center-align">
+							<a href={imageUrl} ><ProfileImg src={imageUrl} alt="" className="circle responsive-img" /> </a>
+							<p className="profile-name">{ this.user ? this.user.name : null }</p>					
+						</div>
+				</div>
+
 
         {/*navbar: mutters (Default active) | # followers | # following*/}
         <div className="btn-group">
-  			<button onClick={this.handleClick} id="Mutters"><b><u>Mutters</u></b></button>
-  			<button onClick={this.handleClick} id="Followers">Followers</button>
-  			<button onClick={this.handleClick} id="Following">Following</button>
-		</div>
+					<button onClick={this.handleClick} id="Mutters"><b><u>Mutters</u></b></button>
+					<button onClick={this.handleClick} id="Followers">Followers</button>
+					<button onClick={this.handleClick} id="Following">Following</button>
+				</div>
 
-    	{/*users posts (mutters), or list of users following/followers*/}
-    	<div id="profile-content">
-    		{this.getContent() }    	
-    	</div>
+
+				{/*users posts (mutters), or list of users following/followers*/}
+				<div id="profile-content">
+					{this.getContent() }    	
+				</div>
+
+
+				{ auth.uid && this.user && auth.uid === this.user.id ?
+					<div className="postBtn">
+						<Link to="/newpost" className="btn-floating btn-large waves-effect waves-light red"><i className="material-icons">add</i></Link>
+					</div> : null }
       
       </div>
     );
@@ -115,7 +161,6 @@ export class Profile extends Component {
 const mapStateToProps = (state) => {
   return {
     posts: state.firestore.ordered.posts,
-    profile: state.firebase.profile,
     auth: state.firebase.auth,
     users: state.firestore.ordered.users
   }

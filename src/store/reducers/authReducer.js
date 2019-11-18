@@ -25,11 +25,11 @@ const authReducer = (state = initState, action) => {
       return state
 
     case 'SIGNUP_SUCCESS':
-    console.log('signup success')
-    return {
-      ...state,
-      authError: null
-    }
+      console.log('signup success')
+      return {
+        ...state,
+        authError: null
+      }
 
     case 'SIGNUP_ERROR':
       console.log('signup error')
@@ -37,6 +37,14 @@ const authReducer = (state = initState, action) => {
         ...state,
         authError: action.err.message
       }
+
+    case 'USER_IMAGE': 
+      console.log('Updated user image', action.uId, action.imageUrl)
+      return state
+
+    case 'USER_IMAGE_ERROR': 
+      console.log('Update user image error', action.err)
+      return state
 
     default:
       return state

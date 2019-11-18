@@ -46,7 +46,7 @@ export const signUp = (newUser) => {
     ).then((resp) => {
       firestore.collection('users').doc(resp.user.uid).set({
         name: newUser.name,
-        initials: newUser.name[0]
+        imageUrl: 'https://firebasestorage.googleapis.com/v0/b/mutter-ucla.appspot.com/o/users%2Fdefault_stick.png?alt=media&token=817a47dd-6485-45e4-91d1-18718b06947f'
       })
     }).then(() => {
       dispatch({ type: 'SIGNUP_SUCCESS' })
@@ -68,6 +68,23 @@ export const signOut = () => {
   return (dispatch, getState) => {
     firebase.auth().signOut().then(() => {
       dispatch({type: 'SIGNOUT_SUCCESS'})
+    })
+  }
+}
+
+
+export const updateImage = (uId, imageUrl) => {
+  return (dispatch, getState, { getFirebase, getFirestore }) => {
+
+    // Make async call to database
+    const firestore = getFirestore()
+
+    firestore.collection('users').doc(uId).update({
+      imageUrl: imageUrl
+    }).then(() => {
+      dispatch({ type: 'USER_IMAGE', uId })
+    }).catch((err) => {
+      dispatch({ type: 'USER_IMAGE_ERROR', err })
     })
   }
 }

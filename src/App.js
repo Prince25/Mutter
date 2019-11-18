@@ -10,9 +10,7 @@ import { BrowserRouter, Switch, Route } from 'react-router-dom'
 import { connect } from 'react-redux'
 import { Redirect } from 'react-router-dom'
 import Navbar from './components/layout/navbar'
-import Dashboard from './components/dashboard/dashboard'
 import ProjectDetails from './components/project/projectDetails'
-import CreateProject from './components/project/createProject'
 import CreatePost from './components/feed/createPost'
 import Discover from './components/discover/discover'
 import Groups from './components/groups/groups'
@@ -48,7 +46,7 @@ class App extends Component {
             <Route path='/groups'       component={Groups} />           
             <Route path='/group/:id'    component={GroupDetails} />           
             <Route path='/feed'         component={Feed} />
-            <Route path='/profile'      component={Profile} />
+            <Route path='/profile/:id'  component={Profile} />
             <Route path='/newpost'      component={CreatePost} />
             <Route path='/project/:id'  component={ProjectDetails} />
           </Switch>
