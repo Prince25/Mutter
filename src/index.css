@@ -1,5 +1,6 @@
 html {
   min-height: 100%;
+  overflow-y: scroll;
 }
 
 body {
@@ -9,11 +10,11 @@ body {
     sans-serif;
   -webkit-font-smoothing: antialiased;
   -moz-osx-font-smoothing: grayscale;
-  background: url(/img/music-bg.png);
+  background: url(/img/bg.jpg) no-repeat;
   background-size: cover;
-  background-color: #E4E8E9;
-  position: scroll; top: 0; left: 0; right: 0; bottom: 0;
-  min-height: 100%;
+  background-color: #ceeafd;
+  background-attachment: fixed;
+  height: 95%;
 }
 
 .splash {
@@ -53,13 +54,13 @@ textarea.materialize-textarea:focus:not([readonly]){
 }
 
 .btn-group button {
-  background-color: #EC407A; /* Green background */
-  border: 1px solid black; /* Green border */
-  color: white; /* White text */
-  padding: 10px 120px; /* Some padding */
+  background-color: #00b7f4;  /* background */
+  border: 1px solid black;    /* border */
+  color: white;               /* White text */
+  padding: 10px 120px;          /* Some padding */
   width: 33.33%;
-  cursor: pointer; /* Pointer/hand icon */
-  float: left; /* Float the buttons side by side */
+  cursor: pointer;              /* Pointer/hand icon */
+  float: left;                  /* Float the buttons side by side */
   margin-bottom: 0;
 }
 
@@ -76,7 +77,7 @@ textarea.materialize-textarea:focus:not([readonly]){
 
 /* Add a background color on hover */
 .btn-group button:hover {
-  background-color: #e91e63;
+  background-color: #fe7d2a;
 }
 
 .profile-header {

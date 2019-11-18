@@ -114,7 +114,7 @@ export class Profile extends Component {
 					<Form>
 						<div className="row">
 							<div className="col s6 center">
-								<a href='http://localhost:8888' className="waves-effect waves-light btn center">Login to Spotify</a>
+								<a href='http://localhost:8888' className="waves-effect waves-light btn center yellow darken-4">Login to Spotify</a>
 							</div>
 							<div className="col s6">
 							<UploadPicture uId={auth.uid} /> 
@@ -149,7 +149,7 @@ export class Profile extends Component {
 
 				{ auth.uid && this.user && auth.uid === this.user.id ?
 					<div className="postBtn">
-						<Link to="/newpost" className="btn-floating btn-large waves-effect waves-light red"><i className="material-icons">add</i></Link>
+						<Link to="/newpost" className="btn-floating btn-large waves-effect waves-light yellow darken-4"><i className="material-icons">add</i></Link>
 					</div> : null }
       
       </div>

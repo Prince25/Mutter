@@ -21,7 +21,7 @@ export class Groups extends Component {
       <div className="container">
         <br/>
         
-        <button className="waves-effect waves-yellow btn" onClick={
+        <button className="waves-effect waves-red btn yellow darken-4" onClick={
           () => this.setState({ showCreate: !showCreate })}>
           <i className="material-icons left">add</i>Create</button>
         { showCreate ? <CreateGroup /> : null }

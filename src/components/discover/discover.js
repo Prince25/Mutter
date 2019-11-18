@@ -563,8 +563,8 @@ export class Discover extends Component {
     return (
       <div className="container">
         <br/>
-        <button className="waves-effect waves-yellow btn" id="discover_search" onClick={() => this.getStartSearch()}>
-          Start searching
+        <button className="waves-effect waves-yellow btn yellow darken-4" id="discover_search" onClick={() => this.getStartSearch()}>
+          Search
         </button>
         <div>
         { this.state.checkclicked.ClickStartSearch && 
