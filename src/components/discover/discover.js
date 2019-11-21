@@ -17,6 +17,23 @@ const client_secret = AuthConfig.CLIENT_SECRET;
 
 var tempaccess=''
 
+/* 
+COMMENTS FROM EGE FOR RESTRUCTURING:
+- The main problem here is that we are not using props in React. Through props, we can have subcomponents,
+then pass in information for that subcomponent through the main component.
+1. Generally react files have the .jsx extension, instead of .js
+2. Information about props: https://reactjs.org/docs/components-and-props.html
+3. Here is an example implementation of a search bar: https://www.youtube.com/watch?v=OlVkYnVXPl0
+4. Component structure could be something similar to this
+Main Component: Discover.jsx
+Subcomponents: NowPlaying.jsx, RecentlyPlayed.jsx, MostRecommended.jsx, Hottest.jsx
+
+Now, the main Discover.jsx component can load the list, but it doesn't have to display the lists, hence, you can pass
+the lists as props to the other components, and they can display the lists. Try breaking down now playing first,
+as that seems to be the simplest component
+
+*/
+
 export class Discover extends Component {
   /**
    * @method constructor
