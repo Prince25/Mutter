@@ -1,6 +1,7 @@
 import React, { Component } from 'react'
 import { connect } from 'react-redux'
 import { Redirect } from 'react-router-dom'
+import { Link } from 'react-router-dom';
 
 import './Search.css';
 
@@ -50,29 +51,47 @@ export class Discover extends Component {
       searchvalue : {searchinput :''},
       searchloading : false,
       message:'',
+      url: null,
       loggedIn: (token || spotifyApi.getAccessToken()) ? true : false,
       loading : false,
+      PostSongName : 'fuck you',
+      PostUrl: 'https://www.google.com/', 
       checkclicked: {ClickStartSearch: false, ClickSearchArtist: false, ClickSearchAlbum: false, ClickSearchTrack: false,
                      ClickNowPlaying: false, ClickRecommended: false, ClickHottest: false, ClickRecent: false},
-      nowPlaying: { name: 'Not Checked', albumArt: '' },
+      nowPlaying: { SongName: 'Not Checked', albumArt: '' },
   
-      recentList: { name: ['','','','',''],
-                    albumArtN: ['','','','',''],
-                    albumArtL: ['','','','','']},
-      mostRecommendedL: { songname: ['','','','',''],
-                          albumArtN: ['','','','',''],
-                          albumArtL: ['','','','','']},
-      hottestL: { SongName: ['','','','',''],
+      recentList: { SongName: ['','','','',''],
+                    SongLink: ['','','','',''],
+                    ArtistName: ['','','','',''],
+                    ArtistLink: ['','','','',''],
+                    AlbumLink: ['','','','',''],
+                    AlbumImage: ['','','','','']},
+      mostRecommendedL: { SongName: ['','','','',''],
+                          SongLink: ['','','','',''],
                           ArtistName: ['','','','',''],
+                          ArtistLink: ['','','','',''],
+                          AlbumLink: ['','','','',''],
                           AlbumImage: ['','','','','']},
+      hottestL: { SongName: ['','','','',''],
+                          SongLink: ['','','','',''],
+                          ArtistName: ['','','','',''],
+                          ArtistLink: ['','','','',''],
+                          AlbumImage: ['','','','',''],
+                          AlbumLink: ['','','','','']},
       searchingArtistL: { ArtistName: ['','','','',''],
-                          ArtistImage: ['','','','','']},
+                          ArtistImage: ['','','','',''],
+                          ArtistLink: ['','','','','']},
       searchingAlbumL:  { ArtistName: ['','','','',''],
                           AlbumName: ['','','','',''],
-                          AlbumImage:['','','','','']},
+                          AlbumImage:['','','','',''],
+                          ArtistLink:['','','','',''],
+                          AlbumLink:['','','','','']},
       searchingTrackL:  { SongName: ['','',''],
                           ArtistName: ['','',''],
-                          AlbumImage:['','','']}
+                          AlbumImage:['','',''],
+                          SongLink: ['','',''],
+                          ArtistLink:['','','',],
+                          AlbumLink:['','','']}
     }
     this.handleChange = this.handleChange.bind(this);
     this.handleSubmit = this.handleSubmit.bind(this);
@@ -154,7 +173,7 @@ export class Discover extends Component {
         if (response == '' || response.item.name == null) {
           this.setState({
           nowPlaying: { 
-              name: "Not playing a song", 
+              SongName: "Not playing a song", 
               albumArt: ''
             }
           });
@@ -163,7 +182,7 @@ export class Discover extends Component {
         else {
           this.setState({
             nowPlaying: { 
-                name: response.item.name, 
+                SongName: response.item.name, 
                 albumArt: response.item.album.images[0].url
               }
           });
@@ -185,24 +204,43 @@ export class Discover extends Component {
     .then((response)=>{
       this.setState({
         recentList:{
-          name: [response.items[0].track.name,
+          SongName: [response.items[0].track.name,
            response.items[1].track.name,           
            response.items[2].track.name,
            response.items[3].track.name,      
            response.items[4].track.name],
-          albumArtN:[
-            response.items[0].track.album.name,
-            response.items[1].track.album.name,
-            response.items[2].track.album.name,
-            response.items[3].track.album.name,
-            response.items[4].track.album.name
+          SongLink: [response.items[0].track.external_urls.spotify,
+           response.items[1].track.external_urls.spotify,           
+           response.items[2].track.external_urls.spotify,
+           response.items[3].track.external_urls.spotify,      
+           response.items[4].track.external_urls.spotify],
+          ArtistName:[
+            response.items[0].track.artists[0].name,
+            response.items[1].track.artists[0].name,
+            response.items[2].track.artists[0].name,
+            response.items[3].track.artists[0].name,
+            response.items[4].track.artists[0].name
               ],
-          albumArtL: [response.items[0].track.album.images[0].url,
+          ArtistLink:[
+            response.items[0].track.artists[0].external_urls.spotify,
+            response.items[1].track.artists[0].external_urls.spotify,
+            response.items[2].track.artists[0].external_urls.spotify,
+            response.items[3].track.artists[0].external_urls.spotify,
+            response.items[4].track.artists[0].external_urls.spotify
+              ],
+          AlbumImage: [response.items[0].track.album.images[0].url,
             response.items[1].track.album.images[0].url,
             response.items[2].track.album.images[0].url,
             response.items[3].track.album.images[0].url,
             response.items[4].track.album.images[0].url
+               ],
+          AlbumLink: [response.items[0].track.album.external_urls.spotify,
+            response.items[1].track.album.external_urls.spotify,
+            response.items[2].track.album.external_urls.spotify,
+            response.items[3].track.album.external_urls.spotify,
+            response.items[4].track.album.external_urls.spotify
                ]
+
         }
       });
     })
@@ -227,7 +265,12 @@ export class Discover extends Component {
                                bodydata.artists.items[1].images[0].url,
                                bodydata.artists.items[2].images[0].url,
                                bodydata.artists.items[3].images[0].url,
-                               bodydata.artists.items[4].images[0].url]
+                               bodydata.artists.items[4].images[0].url],
+                ArtistLink:  [bodydata.artists.items[0].external_urls.spotify,
+                               bodydata.artists.items[1].external_urls.spotify,
+                               bodydata.artists.items[2].external_urls.spotify,
+                               bodydata.artists.items[3].external_urls.spotify,
+                               bodydata.artists.items[4].external_urls.spotify]
               }
           });
 
@@ -248,11 +291,21 @@ export class Discover extends Component {
                               bodydata.albums.items[2].artists[0].name,
                               bodydata.albums.items[3].artists[0].name,
                               bodydata.albums.items[4].artists[0].name,],
-    AlbumName : [bodydata.albums.items[0].name,
+                ArtistLink: [bodydata.albums.items[0].artists[0].external_urls.spotify,
+                              bodydata.albums.items[1].artists[0].external_urls.spotify,
+                              bodydata.albums.items[2].artists[0].external_urls.spotify,
+                              bodydata.albums.items[3].artists[0].external_urls.spotify,
+                              bodydata.albums.items[4].artists[0].external_urls.spotify,],
+                AlbumName : [bodydata.albums.items[0].name,
                               bodydata.albums.items[1].name,
                               bodydata.albums.items[2].name,
                               bodydata.albums.items[3].name,
                               bodydata.albums.items[4].name,],
+                AlbumLink: [bodydata.albums.items[0].external_urls.spotify,
+                               bodydata.albums.items[1].external_urls.spotify,
+                               bodydata.albums.items[2].external_urls.spotify,
+                               bodydata.albums.items[3].external_urls.spotify,
+                               bodydata.albums.items[4].external_urls.spotify],
                 AlbumImage: [bodydata.albums.items[0].images[0].url,
                                bodydata.albums.items[1].images[0].url,
                                bodydata.albums.items[2].images[0].url,
@@ -275,13 +328,22 @@ export class Discover extends Component {
             searchingTrackL: { 
                 ArtistName: [bodydata.tracks.items[0].artists[0].name,
                               bodydata.tracks.items[1].artists[0].name,
-            bodydata.tracks.items[2].artists[0].name],
-    SongName  : [bodydata.tracks.items[0].name,
+                              bodydata.tracks.items[2].artists[0].name],
+                SongName  : [bodydata.tracks.items[0].name,
                               bodydata.tracks.items[1].name,
                               bodydata.tracks.items[2].name],
                 AlbumImage: [bodydata.tracks.items[0].album.images[0].url,
                                bodydata.tracks.items[1].album.images[0].url,
-                               bodydata.tracks.items[2].album.images[0].url]
+                               bodydata.tracks.items[2].album.images[0].url],
+                ArtistLink: [bodydata.tracks.items[0].artists[0].external_urls.spotify,
+                              bodydata.tracks.items[1].artists[0].external_urls.spotify,
+                              bodydata.tracks.items[2].artists[0].external_urls.spotify],
+                SongLink  : [bodydata.tracks.items[0].external_urls.spotify,
+                              bodydata.tracks.items[1].external_urls.spotify,
+                              bodydata.tracks.items[2].external_urls.spotify],
+                AlbumLink: [bodydata.tracks.items[0].album.external_urls.spotify,
+                               bodydata.tracks.items[1].album.external_urls.spotify,
+                               bodydata.tracks.items[2].album.external_urls.spotify]
               }
           });
 
@@ -297,24 +359,40 @@ export class Discover extends Component {
   {
     this.setState({
         mostRecommendedL:{
-          songname: [bodydata.tracks[0].name,
+          SongName: [bodydata.tracks[0].name,
            bodydata.tracks[1].name,        
            bodydata.tracks[2].name,
            bodydata.tracks[3].name,   
            bodydata.tracks[4].name],
+          SongLink: [bodydata.tracks[0].external_urls.spotify,
+           bodydata.tracks[1].external_urls.spotify,        
+           bodydata.tracks[2].external_urls.spotify,
+           bodydata.tracks[3].external_urls.spotify,   
+           bodydata.tracks[4].external_urls.spotify],
         //it may need to change for mutiple artists
-          albumArtN:[
+          ArtistName:[
             bodydata.tracks[0].album.artists[0].name,
             bodydata.tracks[1].album.artists[0].name,        
             bodydata.tracks[2].album.artists[0].name,
             bodydata.tracks[3].album.artists[0].name,   
             bodydata.tracks[4].album.artists[0].name],
-          albumArtL: [bodydata.tracks[0].album.images[0].url,
+          ArtistLink:[
+            bodydata.tracks[0].album.artists[0].external_urls.spotify,
+            bodydata.tracks[1].album.artists[0].external_urls.spotify,        
+            bodydata.tracks[2].album.artists[0].external_urls.spotify,
+            bodydata.tracks[3].album.artists[0].external_urls.spotify,   
+            bodydata.tracks[4].album.artists[0].external_urls.spotify],
+          AlbumImage: [bodydata.tracks[0].album.images[0].url,
             bodydata.tracks[1].album.images[0].url,
             bodydata.tracks[2].album.images[0].url,
             bodydata.tracks[3].album.images[0].url,
-            bodydata.tracks[4].album.images[0].url]
-        }
+            bodydata.tracks[4].album.images[0].url],
+          AlbumLink: [bodydata.tracks[0].album.external_urls.spotify,
+            bodydata.tracks[1].album.external_urls.spotify,
+            bodydata.tracks[2].album.external_urls.spotify,
+            bodydata.tracks[3].album.external_urls.spotify,
+            bodydata.tracks[4].album.external_urls.spotify]
+            }
       });
 
   }
@@ -343,7 +421,22 @@ export class Discover extends Component {
                                         bodydata.tracks.items[1].track.album.images[0].url,
                                         bodydata.tracks.items[2].track.album.images[0].url,
                                         bodydata.tracks.items[3].track.album.images[0].url,
-                                        bodydata.tracks.items[4].track.album.images[0].url]
+                                        bodydata.tracks.items[4].track.album.images[0].url],
+                ArtistLink: [bodydata.tracks.items[0].track.artists[0].external_urls.spotify,
+                                      bodydata.tracks.items[1].track.artists[0].external_urls.spotify,
+                                      bodydata.tracks.items[2].track.artists[0].external_urls.spotify,
+                                      bodydata.tracks.items[3].track.artists[0].external_urls.spotify,
+                                      bodydata.tracks.items[4].track.artists[0].external_urls.spotify],
+                SongLink  : [bodydata.tracks.items[0].track.external_urls.spotify,
+                                        bodydata.tracks.items[1].track.external_urls.spotify,
+                                        bodydata.tracks.items[2].track.external_urls.spotify,
+                                        bodydata.tracks.items[3].track.external_urls.spotify,
+                                        bodydata.tracks.items[4].track.external_urls.spotify],
+                AlbumLink: [bodydata.tracks.items[0].track.album.external_urls.spotify,
+                                        bodydata.tracks.items[1].track.album.external_urls.spotify,
+                                        bodydata.tracks.items[2].track.album.external_urls.spotify,
+                                        bodydata.tracks.items[3].track.album.external_urls.spotify,
+                                        bodydata.tracks.items[4].track.album.external_urls.spotify]
               }
           });
   }
@@ -556,6 +649,28 @@ export class Discover extends Component {
 	// window.location.href = url;
   }
 
+  getrecent1post(SongName, SongUrl)
+  {
+    
+    //while(this.state.url == null)
+    //{
+    //this.setState({ PostSongName : SongName, PostUrl: SongUrl});
+    this.state.PostSongName = SongName;
+    this.state.PostUrl = SongUrl
+    //url = "http://localhost:3000/newpost/#SongName=" + this.state.PostSongName + "&SongUrl=" + this.state.PostUrl ;
+    //this.setState({ url : "http://localhost:3000/newpost/#SongName=" + this.state.PostSongName + "&SongUrl=" + this.state.PostUrl });
+    this.state.url = "http://localhost:3000/newpost/#SongName=" + this.state.PostSongName + "&SongUrl=" + this.state.PostUrl ;
+    // window.alert("the this state PostSongName is:" + this.state.PostSongName);
+    // window.alert("the this state PostSongurl is:" + this.state.PostUrl);
+    // window.alert("the this state url is:" + this.state.url);
+    if(this.state.url)
+    {
+      window.location.href = this.state.url;
+    }
+   //}
+    
+  }
+
 
 
   render() {
@@ -622,6 +737,9 @@ export class Discover extends Component {
           </button>
             
         }
+        <div className="PostButton">
+            <Link to={"/newpost/#SongName=" + this.state.PostSongName + "&SongUrl=" + this.state.PostUrl} className="btn-floating btn-large waves-effect waves-light yellow darken-4"><i className="material-icons">add</i></Link>
+          </div>
         </div>
         }
         {
@@ -634,7 +752,7 @@ export class Discover extends Component {
         }
         
         { this.state.checkclicked.ClickNowPlaying && <div className="nowplay">
-          Now Playing: { this.state.nowPlaying.name }
+          Now Playing: { this.state.nowPlaying.SongName }
           <br/><img src={this.state.nowPlaying.albumArt} style={{ height: 150 }}/>
         </div>
         }
@@ -651,61 +769,100 @@ export class Discover extends Component {
 
         { (this.state.checkclicked.ClickSearchArtist || this.state.checkclicked.ClickSearchAlbum || this.state.checkclicked.ClickSearchTrack) && <div className="totresults">
         { this.state.checkclicked.ClickSearchArtist && <div className="results1"> The Searched Artists: 
-        <br/>Artist Name: {this.state.searchingArtistL.ArtistName[0]}
+        <br/>Artist Name: <a href= {this.state.searchingArtistL.ArtistLink[0]}>
+                          {this.state.searchingArtistL.ArtistName[0]}</a>
         <br/>Artist image:  
-        <br/><img src={this.state.searchingArtistL.ArtistImage[0]} style={{ height: 150 }}/>
-        <br/>Artist Name: {this.state.searchingArtistL.ArtistName[1]}
+        <br/><a href= {this.state.searchingArtistL.ArtistLink[0]}>
+             <img src={this.state.searchingArtistL.ArtistImage[0]} style={{ height: 150 }}/>
+             </a>
+        <br/>Artist Name: <a href= {this.state.searchingArtistL.ArtistLink[1]}>
+                          {this.state.searchingArtistL.ArtistName[1]}</a>
         <br/>Artist image:  
-        <br/><img src={this.state.searchingArtistL.ArtistImage[1]} style={{ height: 150 }}/>
-        <br/>Artist Name: {this.state.searchingArtistL.ArtistName[2]}
+        <br/><a href= {this.state.searchingArtistL.ArtistLink[1]}>
+             <img src={this.state.searchingArtistL.ArtistImage[1]} style={{ height: 150 }}/>
+             </a>
+        <br/>Artist Name: <a href= {this.state.searchingArtistL.ArtistLink[2]}>
+                          {this.state.searchingArtistL.ArtistName[2]}</a>
         <br/>Artist image:  
-        <br/><img src={this.state.searchingArtistL.ArtistImage[2]} style={{ height: 150 }}/>
-        <br/>Artist Name: {this.state.searchingArtistL.ArtistName[3]}
+        <br/><a href= {this.state.searchingArtistL.ArtistLink[2]}>
+             <img src={this.state.searchingArtistL.ArtistImage[2]} style={{ height: 150 }}/>
+             </a>
+        <br/>Artist Name: <a href= {this.state.searchingArtistL.ArtistLink[3]}>
+                          {this.state.searchingArtistL.ArtistName[3]}</a>
         <br/>Artist image:  
-        <br/><img src={this.state.searchingArtistL.ArtistImage[3]} style={{ height: 150 }}/>
-        <br/>Artist Name: {this.state.searchingArtistL.ArtistName[4]}
+        <br/><a href= {this.state.searchingArtistL.ArtistLink[3]}>
+             <img src={this.state.searchingArtistL.ArtistImage[3]} style={{ height: 150 }}/>
+             </a>
+        <br/>Artist Name: <a href= {this.state.searchingArtistL.ArtistLink[4]}>
+                          {this.state.searchingArtistL.ArtistName[4]}</a>
         <br/>Artist image:  
-        <br/><img src={this.state.searchingArtistL.ArtistImage[4]} style={{ height: 150 }}/>
+        <br/><a href= {this.state.searchingArtistL.ArtistLink[4]}>
+             <img src={this.state.searchingArtistL.ArtistImage[4]} style={{ height: 150 }}/>
+             </a>
         </div>
         }
 
         { this.state.checkclicked.ClickSearchAlbum && <div className="results2"> The Searched Albums: 
-        <br/>Artist Name: {this.state.searchingAlbumL.ArtistName[0]}
-        <br/>Album Name: {this.state.searchingAlbumL.AlbumName[0]}
+        <br/>Artist Name: <a href= {this.state.searchingAlbumL.ArtistLink[0]}>
+                          {this.state.searchingAlbumL.ArtistName[0]}</a>
+        <br/>Album Name: <a href= {this.state.searchingAlbumL.AlbumLink[0]}>
+                         {this.state.searchingAlbumL.AlbumName[0]}</a>
         <br/>Album image:  
-        <br/><img src={this.state.searchingAlbumL.AlbumImage[0]} style={{ height: 150 }}/>
-        <br/>Artist Name: {this.state.searchingAlbumL.ArtistName[1]}
-        <br/>Album Name: {this.state.searchingAlbumL.AlbumName[1]}
+        <br/><a href= {this.state.searchingAlbumL.AlbumLink[0]}>
+             <img src={this.state.searchingAlbumL.AlbumImage[0]} style={{ height: 150 }}/></a>
+        <br/>Artist Name: <a href= {this.state.searchingAlbumL.ArtistLink[1]}>
+                          {this.state.searchingAlbumL.ArtistName[1]}</a>
+        <br/>Album Name: <a href= {this.state.searchingAlbumL.AlbumLink[1]}>
+                         {this.state.searchingAlbumL.AlbumName[1]}</a>
         <br/>Album image:  
-        <br/><img src={this.state.searchingAlbumL.AlbumImage[1]} style={{ height: 150 }}/>
-        <br/>Artist Name: {this.state.searchingAlbumL.ArtistName[2]}
-        <br/>Album Name: {this.state.searchingAlbumL.AlbumName[2]}
+        <br/><a href= {this.state.searchingAlbumL.AlbumLink[1]}>
+             <img src={this.state.searchingAlbumL.AlbumImage[1]} style={{ height: 150 }}/></a>
+        <br/>Artist Name: <a href= {this.state.searchingAlbumL.ArtistLink[2]}>
+                          {this.state.searchingAlbumL.ArtistName[2]}</a>
+        <br/>Album Name: <a href= {this.state.searchingAlbumL.AlbumLink[2]}>
+                         {this.state.searchingAlbumL.AlbumName[2]}</a>
         <br/>Album image:  
-        <br/><img src={this.state.searchingAlbumL.AlbumImage[2]} style={{ height: 150 }}/>
-        <br/>Artist Name: {this.state.searchingAlbumL.ArtistName[3]}
-        <br/>Album Name: {this.state.searchingAlbumL.AlbumName[3]}
+        <br/><a href= {this.state.searchingAlbumL.AlbumLink[2]}>
+             <img src={this.state.searchingAlbumL.AlbumImage[2]} style={{ height: 150 }}/></a>
+        <br/>Artist Name: <a href= {this.state.searchingAlbumL.ArtistLink[3]}>
+                          {this.state.searchingAlbumL.ArtistName[3]}</a>
+        <br/>Album Name: <a href= {this.state.searchingAlbumL.AlbumLink[3]}>
+                         {this.state.searchingAlbumL.AlbumName[3]}</a>
         <br/>Album image:  
-        <br/><img src={this.state.searchingAlbumL.AlbumImage[3]} style={{ height: 150 }}/>
-        <br/>Artist Name: {this.state.searchingAlbumL.ArtistName[4]}
-        <br/>Album Name: {this.state.searchingAlbumL.AlbumName[4]}
+        <br/><a href= {this.state.searchingAlbumL.AlbumLink[3]}>
+             <img src={this.state.searchingAlbumL.AlbumImage[3]} style={{ height: 150 }}/></a>
+        <br/>Artist Name: <a href= {this.state.searchingAlbumL.ArtistLink[4]}>
+                          {this.state.searchingAlbumL.ArtistName[4]}</a>
+        <br/>Album Name: <a href= {this.state.searchingAlbumL.AlbumLink[4]}>
+                         {this.state.searchingAlbumL.AlbumName[4]}</a>
         <br/>Album image:  
-        <br/><img src={this.state.searchingAlbumL.AlbumImage[4]} style={{ height: 150 }}/>
+        <br/><a href= {this.state.searchingAlbumL.AlbumLink[4]}>
+             <img src={this.state.searchingAlbumL.AlbumImage[4]} style={{ height: 150 }}/></a>
         </div>
         } 
 
         { this.state.checkclicked.ClickSearchTrack && <div className="results3"> The Searched Tracks: 
-        <br/>Artist Name: {this.state.searchingTrackL.ArtistName[0]}
-        <br/>Song Name: {this.state.searchingTrackL.SongName[0]}
+        <br/>Artist Name: <a href= {this.state.searchingTrackL.ArtistLink[0]}>
+                          {this.state.searchingTrackL.ArtistName[0]}</a>
+        <br/>Song Name: <a href= {this.state.searchingTrackL.SongLink[0]}>
+                          {this.state.searchingTrackL.SongName[0]}</a>
         <br/>Album image:  
-        <br/><img src={this.state.searchingTrackL.AlbumImage[0]} style={{ height: 150 }}/>
-        <br/>Artist Name: {this.state.searchingTrackL.ArtistName[1]}
-        <br/>Song Name: {this.state.searchingTrackL.SongName[1]}
+        <br/><a href= {this.state.searchingTrackL.AlbumLink[0]}>
+             <img src={this.state.searchingTrackL.AlbumImage[0]} style={{ height: 150 }}/></a>
+        <br/>Artist Name: <a href= {this.state.searchingTrackL.ArtistLink[1]}>
+                          {this.state.searchingTrackL.ArtistName[1]}</a>
+        <br/>Song Name: <a href= {this.state.searchingTrackL.SongLink[1]}>
+                          {this.state.searchingTrackL.SongName[1]}</a>
         <br/>Album image:  
-        <br/><img src={this.state.searchingTrackL.AlbumImage[1]} style={{ height: 150 }}/>
-        <br/>Artist Name: {this.state.searchingTrackL.ArtistName[2]}
-        <br/>Song Name: {this.state.searchingTrackL.SongName[2]}
+        <br/><a href= {this.state.searchingTrackL.AlbumLink[1]}>
+             <img src={this.state.searchingTrackL.AlbumImage[1]} style={{ height: 150 }}/></a>
+        <br/>Artist Name: <a href= {this.state.searchingTrackL.ArtistLink[2]}>
+                          {this.state.searchingTrackL.ArtistName[2]}</a>
+        <br/>Song Name: <a href= {this.state.searchingTrackL.SongLink[2]}>
+                          {this.state.searchingTrackL.SongName[2]}</a>
         <br/>Album image:  
-        <br/><img src={this.state.searchingTrackL.AlbumImage[2]} style={{ height: 150 }}/>
+        <br/><a href= {this.state.searchingTrackL.AlbumLink[2]}>
+             <img src={this.state.searchingTrackL.AlbumImage[2]} style={{ height: 150 }}/></a>
         </div>
         }
         </div>
@@ -723,77 +880,127 @@ export class Discover extends Component {
 
         { (this.state.checkclicked.ClickRecent || this.state.checkclicked.ClickRecommended || this.state.checkclicked.ClickHottest) && <div className="totresults">
          { this.state.checkclicked.ClickRecent && <div className="results1"> 
-          <div className="largefont2">Recent:</div> 
-          <br/>Song Name: { this.state.recentList.name[0] }
-          <br/>Album Name:  {this.state.recentList.albumArtN[0]}
+          <div className="largefont2">Recent:</div>
+          {
+           <button className="waves-effect waves-yellow btn" id="postrecentsong1"onClick={() => this.getrecent1post(this.state.recentList.SongName[0], this.state.recentList.SongLink[0])}>
+            post about this song
+           </button>
+          } 
+          <br/>Song Name: <a href= {this.state.recentList.SongLink[0]}>
+                          { this.state.recentList.SongName[0] }</a>
+          <br/>Artist Name: <a href= {this.state.recentList.ArtistLink[0]}>
+                            {this.state.recentList.ArtistName[0]}</a>
           <br/>Album image:     
-          <br/><img src={this.state.recentList.albumArtL[0]} style={{ height: 150 }}/>             
-          <br/> Song Name: { this.state.recentList.name[1] }
-          <br/>Album Name: {this.state.recentList.albumArtN[1]}
-          <br/>Album image:    
-          <br/>     <img src={this.state.recentList.albumArtL[1]} style={{ height: 150 }}/>              
-          <br/> Song Name: { this.state.recentList.name[2] }
-          <br/>Album Name: {this.state.recentList.albumArtN[2]}
-          <br/>Album image:  
-          <br/>     <img src={this.state.recentList.albumArtL[2]} style={{ height: 150 }}/>              
-          <br/> Song Name: { this.state.recentList.name[3] }
-          <br/>Album Name: {this.state.recentList.albumArtN[3]}
-          <br/>Album image: 
-          <br/>     <img src={this.state.recentList.albumArtL[3]} style={{ height: 150 }}/>              
-          <br/> Song Name: { this.state.recentList.name[4] }
-          <br/>Album Name: {this.state.recentList.albumArtN[4]}
+          <br/><a href= {this.state.recentList.AlbumLink[0]}>
+               <img src={this.state.recentList.AlbumImage[0]} style={{ height: 150 }}/></a>         
+          <br/>Song Name: <a href= {this.state.recentList.SongLink[1]}>
+                          { this.state.recentList.SongName[1] }</a>
+          <br/>Artist Name: <a href= {this.state.recentList.ArtistLink[1]}>
+                            {this.state.recentList.ArtistName[1]}</a>
           <br/>Album image:     
-          <br/>     <img src={this.state.recentList.albumArtL[4]} style={{ height: 150 }}/>
+          <br/><a href= {this.state.recentList.AlbumLink[1]}>
+               <img src={this.state.recentList.AlbumImage[1]} style={{ height: 150 }}/></a>
+          <br/>Song Name: <a href= {this.state.recentList.SongLink[2]}>
+                          { this.state.recentList.SongName[2] }</a>
+          <br/>Artist Name: <a href= {this.state.recentList.ArtistLink[2]}>
+                            {this.state.recentList.ArtistName[2]}</a>
+          <br/>Album image:     
+          <br/><a href= {this.state.recentList.AlbumLink[2]}>
+               <img src={this.state.recentList.AlbumImage[2]} style={{ height: 150 }}/></a>
+          <br/>Song Name: <a href= {this.state.recentList.SongLink[3]}>
+                          { this.state.recentList.SongName[3] }</a>
+          <br/>Artist Name: <a href= {this.state.recentList.ArtistLink[3]}>
+                            {this.state.recentList.ArtistName[3]}</a>
+          <br/>Album image:     
+          <br/><a href= {this.state.recentList.AlbumLink[3]}>
+               <img src={this.state.recentList.AlbumImage[3]} style={{ height: 150 }}/></a>
+          <br/>Song Name: <a href= {this.state.recentList.SongLink[4]}>
+                          { this.state.recentList.SongName[4] }</a>
+          <br/>Artist Name: <a href= {this.state.recentList.ArtistLink[4]}>
+                            {this.state.recentList.ArtistName[4]}</a>
+          <br/>Album image:     
+          <br/><a href= {this.state.recentList.AlbumLink[4]}>
+               <img src={this.state.recentList.AlbumImage[4]} style={{ height: 150 }}/></a>  
         </div>
         }
 
         { this.state.checkclicked.ClickRecommended && <div className="results2">
           <div className="largefont2">Recommended:</div> 
-          <br/>Song Name: { this.state.mostRecommendedL.songname[0] }
-          <br/>Album Name: {this.state.mostRecommendedL.albumArtN[0]}
+          <br/>Song Name: <a href= {this.state.mostRecommendedL.SongLink[0]}>
+                          { this.state.mostRecommendedL.SongName[0] }</a>
+          <br/>Artist Name: <a href= {this.state.mostRecommendedL.ArtistLink[0]}>
+                            {this.state.mostRecommendedL.ArtistName[0]}</a>
           <br/>Album image: 
-          <br/><img src={this.state.mostRecommendedL.albumArtL[0]} style={{ height: 150 }}/>
-          <br/>Song Name: { this.state.mostRecommendedL.songname[1] }
-          <br/>Album Name: {this.state.mostRecommendedL.albumArtN[1]}
+          <br/><a href= {this.state.mostRecommendedL.AlbumLink[0]}>
+               <img src={this.state.mostRecommendedL.AlbumImage[0]} style={{ height: 150 }}/></a>
+          <br/>Song Name: <a href= {this.state.mostRecommendedL.SongLink[1]}>
+                          { this.state.mostRecommendedL.SongName[1] }</a>
+          <br/>Artist Name: <a href= {this.state.mostRecommendedL.ArtistLink[1]}>
+                            {this.state.mostRecommendedL.ArtistName[1]}</a>
           <br/>Album image: 
-          <br/><img src={this.state.mostRecommendedL.albumArtL[1]} style={{ height: 150 }}/>
-          <br/>Song Name: { this.state.mostRecommendedL.songname[2] }
-          <br/>Album Name: {this.state.mostRecommendedL.albumArtN[2]}
+          <br/><a href= {this.state.mostRecommendedL.AlbumLink[1]}>
+               <img src={this.state.mostRecommendedL.AlbumImage[1]} style={{ height: 150 }}/></a>
+          <br/>Song Name: <a href= {this.state.mostRecommendedL.SongLink[2]}>
+                          { this.state.mostRecommendedL.SongName[2] }</a>
+          <br/>Artist Name: <a href= {this.state.mostRecommendedL.ArtistLink[2]}>
+                            {this.state.mostRecommendedL.ArtistName[2]}</a>
           <br/>Album image: 
-          <br/><img src={this.state.mostRecommendedL.albumArtL[2]} style={{ height: 150 }}/>
-          <br/>Song Name: { this.state.mostRecommendedL.songname[3] }
-          <br/>Album Name: {this.state.mostRecommendedL.albumArtN[3]}
+          <br/><a href= {this.state.mostRecommendedL.AlbumLink[2]}>
+               <img src={this.state.mostRecommendedL.AlbumImage[2]} style={{ height: 150 }}/></a>
+          <br/>Song Name: <a href= {this.state.mostRecommendedL.SongLink[3]}>
+                          { this.state.mostRecommendedL.SongName[3] }</a>
+          <br/>Artist Name: <a href= {this.state.mostRecommendedL.ArtistLink[3]}>
+                            {this.state.mostRecommendedL.ArtistName[3]}</a>
           <br/>Album image: 
-          <br/><img src={this.state.mostRecommendedL.albumArtL[3]} style={{ height: 150 }}/>
-          <br/>Song Name: { this.state.mostRecommendedL.songname[4] }
-          <br/>Album Name: {this.state.mostRecommendedL.albumArtN[4]}
+          <br/><a href= {this.state.mostRecommendedL.AlbumLink[3]}>
+               <img src={this.state.mostRecommendedL.AlbumImage[3]} style={{ height: 150 }}/></a>
+          <br/>Song Name: <a href= {this.state.mostRecommendedL.SongLink[4]}>
+                          { this.state.mostRecommendedL.SongName[4] }</a>
+          <br/>Artist Name: <a href= {this.state.mostRecommendedL.ArtistLink[4]}>
+                            {this.state.mostRecommendedL.ArtistName[4]}</a>
           <br/>Album image: 
-          <br/><img src={this.state.mostRecommendedL.albumArtL[4]} style={{ height: 150 }}/>
+          <br/><a href= {this.state.mostRecommendedL.AlbumLink[4]}>
+               <img src={this.state.mostRecommendedL.AlbumImage[4]} style={{ height: 150 }}/></a>
         </div>
         }
 
         { this.state.checkclicked.ClickHottest && <div className="results3"> 
             <div className="largefont2">Global Hottest:</div>
-            <br/>Artist Name: {this.state.hottestL.ArtistName[0]}
-            <br/>Song Name: {this.state.hottestL.SongName[0]}
-            <br/>Album image:  
-            <br/><img src={this.state.hottestL.AlbumImage[0]} style={{ height: 150 }}/>
-            <br/>Artist Name: {this.state.hottestL.ArtistName[1]}
-            <br/>Song Name: {this.state.hottestL.SongName[1]}
-            <br/>Album image:  
-            <br/><img src={this.state.hottestL.AlbumImage[1]} style={{ height: 150 }}/>
-            <br/>Artist Name: {this.state.hottestL.ArtistName[2]}
-            <br/>Song Name: {this.state.hottestL.SongName[2]}
-            <br/>Album image:  
-            <br/><img src={this.state.hottestL.AlbumImage[2]} style={{ height: 150 }}/>
-            <br/>Artist Name: {this.state.hottestL.ArtistName[3]}
-            <br/>Song Name: {this.state.hottestL.SongName[3]}
-            <br/>Album image:  
-            <br/><img src={this.state.hottestL.AlbumImage[3]} style={{ height: 150 }}/>
-            <br/>Artist Name: {this.state.hottestL.ArtistName[4]}
-            <br/>Song Name: {this.state.hottestL.SongName[4]}
-            <br/>Album image:  
-            <br/><img src={this.state.hottestL.AlbumImage[4]} style={{ height: 150 }}/>
+            <br/>Song Name: <a href= {this.state.hottestL.SongLink[0]}>
+                          { this.state.hottestL.SongName[0] }</a>
+          <br/>Artist Name: <a href= {this.state.hottestL.ArtistLink[0]}>
+                            {this.state.hottestL.ArtistName[0]}</a>
+          <br/>Album image: 
+          <br/><a href= {this.state.hottestL.AlbumLink[0]}>
+               <img src={this.state.hottestL.AlbumImage[0]} style={{ height: 150 }}/></a>
+          <br/>Song Name: <a href= {this.state.hottestL.SongLink[1]}>
+                          { this.state.hottestL.SongName[1] }</a>
+          <br/>Artist Name: <a href= {this.state.hottestL.ArtistLink[1]}>
+                            {this.state.hottestL.ArtistName[1]}</a>
+          <br/>Album image: 
+          <br/><a href= {this.state.hottestL.AlbumLink[1]}>
+               <img src={this.state.hottestL.AlbumImage[1]} style={{ height: 150 }}/></a>
+          <br/>Song Name: <a href= {this.state.hottestL.SongLink[2]}>
+                          { this.state.hottestL.SongName[2] }</a>
+          <br/>Artist Name: <a href= {this.state.hottestL.ArtistLink[2]}>
+                            {this.state.hottestL.ArtistName[2]}</a>
+          <br/>Album image: 
+          <br/><a href= {this.state.hottestL.AlbumLink[2]}>
+               <img src={this.state.hottestL.AlbumImage[2]} style={{ height: 150 }}/></a>
+          <br/>Song Name: <a href= {this.state.hottestL.SongLink[3]}>
+                          { this.state.hottestL.SongName[3] }</a>
+          <br/>Artist Name: <a href= {this.state.hottestL.ArtistLink[3]}>
+                            {this.state.hottestL.ArtistName[3]}</a>
+          <br/>Album image: 
+          <br/><a href= {this.state.hottestL.AlbumLink[3]}>
+               <img src={this.state.hottestL.AlbumImage[3]} style={{ height: 150 }}/></a>
+          <br/>Song Name: <a href= {this.state.hottestL.SongLink[4]}>
+                          { this.state.hottestL.SongName[4] }</a>
+          <br/>Artist Name: <a href= {this.state.hottestL.ArtistLink[4]}>
+                            {this.state.hottestL.ArtistName[4]}</a>
+          <br/>Album image: 
+          <br/><a href= {this.state.hottestL.AlbumLink[4]}>
+               <img src={this.state.hottestL.AlbumImage[4]} style={{ height: 150 }}/></a>
         </div>
         }
         </div>
@@ -812,3 +1019,4 @@ const mapStateToProps = (state) => {
 
 
 export default connect(mapStateToProps)(Discover)
+
