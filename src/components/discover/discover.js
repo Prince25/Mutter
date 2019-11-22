@@ -11,10 +11,6 @@ var request = require('request');
 
 const AppConfig = require('../config/app');
 const AuthConfig = require('../config/auth');
-var querystring = require('querystring');
-const redirect_uri = AppConfig.HOST;
-const client_id = AuthConfig.CLIENT_ID;
-const client_secret = AuthConfig.CLIENT_SECRET;
 
 var tempaccess=''
 
@@ -54,10 +50,12 @@ export class Discover extends Component {
       url: null,
       loggedIn: (token || spotifyApi.getAccessToken()) ? true : false,
       loading : false,
-      PostSongName : 'fuck you',
-      PostUrl: 'https://www.google.com/', 
+      PostSongName : ' you',
+      PostUrl: 'https://www.google.com/',
+      SongSelectOption : "0",
+      TypeSelectOption : "R",
       checkclicked: {ClickStartSearch: false, ClickSearchArtist: false, ClickSearchAlbum: false, ClickSearchTrack: false,
-                     ClickNowPlaying: false, ClickRecommended: false, ClickHottest: false, ClickRecent: false},
+                      ClickRecommended: false, ClickHottest: false, ClickRecent: false},
       nowPlaying: { SongName: 'Not Checked', albumArt: '' },
   
       recentList: { SongName: ['','','','',''],
@@ -95,9 +93,9 @@ export class Discover extends Component {
     }
     this.handleChange = this.handleChange.bind(this);
     this.handleSubmit = this.handleSubmit.bind(this);
-    // window.alert("constructor is called");
-    // window.alert("token is " + this.token);
-    // window.alert("getToken is " + this.getToken);
+    this.handleTypeOptionChange = this.handleTypeOptionChange.bind(this);
+    this.handleSongOptionChange = this.handleSongOptionChange.bind(this);
+    this.handleFormSubmit = this.handleFormSubmit.bind(this);
   }
 
   /**
@@ -125,6 +123,28 @@ export class Discover extends Component {
   	//this.setState({searchvalue: event.target.value});
     window.alert('A name was submitted: ' + this.state.searchvalue);
     event.preventDefault();
+  }
+
+  handleTypeOptionChange(event) {
+    const option = event.target.value;
+    var op = option;
+    this.setState({
+      TypeSelectOption: event.target.value
+    });
+  }
+
+  handleSongOptionChange(event) {
+    const option = event.target.value;
+    var op = option;
+    this.setState({
+      SongSelectOption: event.target.value
+    });
+  }
+
+  handleFormSubmit(formSubmitEvent)
+  {
+    formSubmitEvent.preventDefault();
+    //window.alert("hello");
   }
 
   /**
@@ -602,18 +622,15 @@ export class Discover extends Component {
   }
   authshow()
   {
-    //window.alert("called");
     if (this.state.loggedIn == true && this.state.showonce && !this.state.loading)
     // if (this.state.loggedIn == true && !this.state.loading) 
     {
     //this.state.checkclicked.ClickStartSearch = true;
       // this.getaccesstoken();
-
       this.getMostReommended();
       this.getHottestSong();
       this.getRecentList();
       this.state.showonce = false;
-
       // if accesstoken not in url, append it 
       this.appendToUrl();
 
@@ -630,48 +647,59 @@ export class Discover extends Component {
     // }
     // this.state.showonce = true;
   }
-  // debugclick()
-  // {
-  // 	window.alert();
-  // }
   
   appendToUrl()
   {
   	var url = window.location.href; 
   	// window.alert("the url is " + url);   
-	if (url.indexOf('#') > -1){
-	   
-	}else{
-	   url += '#' +'access_token=' +spotifyApi.getAccessToken();
-	   //url += '&' +'refresh_token=' + spotifyApi.getRefreshToken();
-	   // window.alert("the new url is " + url);
-	}
-	// window.location.href = url;
+  	if (url.indexOf('#') > -1){
+  	   
+  	}else{
+  	   url += '#' +'access_token=' +spotifyApi.getAccessToken();
+  	   //url += '&' +'refresh_token=' + spotifyApi.getRefreshToken();
+  	   // window.alert("the new url is " + url);
+  	}
+	  // window.location.href = url;
   }
 
-  getrecent1post(SongName, SongUrl)
+  getPost()
   {
-    
-    //while(this.state.url == null)
-    //{
-    //this.setState({ PostSongName : SongName, PostUrl: SongUrl});
-    this.state.PostSongName = SongName;
-    this.state.PostUrl = SongUrl
-    //url = "http://localhost:3000/newpost/#SongName=" + this.state.PostSongName + "&SongUrl=" + this.state.PostUrl ;
-    //this.setState({ url : "http://localhost:3000/newpost/#SongName=" + this.state.PostSongName + "&SongUrl=" + this.state.PostUrl });
-    this.state.url = "http://localhost:3000/newpost/#SongName=" + this.state.PostSongName + "&SongUrl=" + this.state.PostUrl ;
-    // window.alert("the this state PostSongName is:" + this.state.PostSongName);
-    // window.alert("the this state PostSongurl is:" + this.state.PostUrl);
-    // window.alert("the this state url is:" + this.state.url);
+    //var SongNumber = document.getElementByID("RecentS").value;
+    //var SongNumber = Number(document.querySelector('input[name="RecentS"]:checked').value);
+    //this.state.PostSongName = this.state.RecentList.SongName[SongNumber];
+    //this.state.PostUrl = this.state.RecentList.SongLink[SongNumber];
+    var PostType = this.state.TypeSelectOption;
+    var SongNum = Number(this.state.SongSelectOption);
+    // window.alert("The PostType is "+ PostType);
+    // window.alert("The SongNum is "+ SongNum);
+    var SongName = '';
+    var SongUrl = '';
+     if(PostType == "R")
+     {
+      SongName = this.state.recentList.SongName[SongNum];
+      SongUrl = this.state.recentList.SongLink[SongNum];
+     }
+     else if(PostType =="RM")
+     {
+      SongName = this.state.mostRecommendedL.SongName[SongNum];
+      SongUrl = this.state.mostRecommendedL.SongLink[SongNum];
+     }
+     else if(PostType =="STRA")
+     {
+      SongName = this.state.searchingTrackL.SongName[SongNum];
+      SongUrl = this.state.searchingTrackL.SongLink[SongNum];
+     }
+     else if(PostType =="H")
+     {
+      SongName = this.state.hottestL.SongName[SongNum];
+      SongUrl = this.state.hottestL.SongLink[SongNum];
+     }
+    this.state.url = "http://localhost:3000/newpost/#SongName=" + SongName + "&SongUrl=" + SongUrl ;
     if(this.state.url)
     {
       window.location.href = this.state.url;
-    }
-   //}
-    
+    }    
   }
-
-
 
   render() {
   	const {searchvalue} = this.state;
@@ -696,6 +724,7 @@ export class Discover extends Component {
         </label>
         }
         </div>
+
         {this.state.checkclicked.ClickStartSearch && 
         <div className="searchbuttons">
         { 
@@ -734,12 +763,8 @@ export class Discover extends Component {
         {
           <button className="waves-effect waves-yellow btn" id="check_hottest" onClick={() => this.getHottestSong()}>
             Hottest Songs
-          </button>
-            
+          </button>          
         }
-        <div className="PostButton">
-            <Link to={"/newpost/#SongName=" + this.state.PostSongName + "&SongUrl=" + this.state.PostUrl} className="btn-floating btn-large waves-effect waves-light yellow darken-4"><i className="material-icons">add</i></Link>
-          </div>
         </div>
         }
         {
@@ -751,9 +776,149 @@ export class Discover extends Component {
         </script>
         }
         
-        { this.state.checkclicked.ClickNowPlaying && <div className="nowplay">
-          Now Playing: { this.state.nowPlaying.SongName }
-          <br/><img src={this.state.nowPlaying.albumArt} style={{ height: 150 }}/>
+        { (this.state.checkclicked.ClickRecent || this.state.checkclicked.ClickRecommended || this.state.checkclicked.ClickHottest || this.state.checkclicked.ClickSearchTrack) &&<div>
+          <div className="row mt-5">
+            <div className="col-sm-12">
+              <form onSubmit={this.handleFormSubmit}>
+                <div className="form-check">
+                  <label>
+                    <input
+                      type="radio"
+                      name="react-tips"
+                      value="0"
+                      checked={this.state.SongSelectOption === "0"}
+                      onChange={this.handleSongOptionChange}
+                      className="form-check-input"
+                    />
+                    <span>S1</span>
+                  </label>
+                </div>
+                <div className="form-check">
+                  <label>
+                    <input
+                      type="radio"
+                      name="react-tips"
+                      value="1"
+                      checked={this.state.SongSelectOption === "1"}
+                      onChange={this.handleSongOptionChange}
+                      className="form-check-input"
+                    />
+                    <span>S2</span>
+                  </label>
+                </div>
+                <div className="form-check">
+                  <label>
+                    <input
+                      type="radio"
+                      name="react-tips"
+                      value="2"
+                      checked={this.state.SongSelectOption === "2"}
+                      onChange={this.handleSongOptionChange}
+                      className="form-check-input"
+                    />
+                    <span>S3</span>
+                  </label>
+                </div>
+                { this.state.TypeSelectOption != "STRA" && <div className="form-check">
+                  <label>
+                    <input
+                      type="radio"
+                      name="react-tips"
+                      value="3"
+                      checked={this.state.SongSelectOption === "3"}
+                      onChange={this.handleSongOptionChange}
+                      className="form-check-input"
+                    />
+                    <span>S4</span>
+                  </label>
+                </div>
+                }
+                { this.state.TypeSelectOption != "STRA" && <div className="form-check">
+                  <label>
+                    <input
+                      type="radio"
+                      name="react-tips"
+                      value="4"
+                      checked={this.state.SongSelectOption === "4"}
+                      onChange={this.handleSongOptionChange}
+                      className="form-check-input"
+                    />
+                    <span>S5</span>
+                  </label>
+                </div>
+                }
+              </form>
+            </div>
+          </div>
+
+
+          <div className="row mt-5">
+            <div className="col-sm-12">
+              <form onSubmit={this.handleFormSubmit}>
+                { this.state.checkclicked.ClickRecent && <div className="form-check">
+                  <label>
+                    <input
+                      type="radio"
+                      name="react-tips"
+                      value="R"
+                      checked={this.state.TypeSelectOption === "R"}
+                      onChange={this.handleTypeOptionChange}
+                      className="form-check-input"
+                    />
+                    <span>Recent Song</span>
+                  </label>
+                </div>
+                }
+                { this.state.checkclicked.ClickRecommended && <div className="form-check">
+                  <label>
+                    <input
+                      type="radio"
+                      name="react-tips"
+                      value="RM"
+                      checked={this.state.TypeSelectOption === "RM"}
+                      onChange={this.handleTypeOptionChange}
+                      className="form-check-input"
+                    />
+                    <span>Recommended Song</span>
+                  </label>
+                </div>
+                }
+                { this.state.checkclicked.ClickHottest && <div className="form-check">
+                  <label>
+                    <input
+                      type="radio"
+                      name="react-tips"
+                      value="H"
+                      checked={this.state.TypeSelectOption === "H"}
+                      onChange={this.handleTypeOptionChange}
+                      className="form-check-input"
+                    />
+                    <span>Hottest Song</span>
+                  </label>
+                </div>
+                }
+                { this.state.checkclicked.ClickSearchTrack && <div className="form-check">
+                  <label>
+                    <input
+                      type="radio"
+                      name="react-tips"
+                      value="STRA"
+                      checked={this.state.TypeSelectOption === "STRA"}
+                      onChange={this.handleTypeOptionChange}
+                      className="form-check-input"
+                    />
+                    <span>Searched Song</span>
+                  </label>
+                </div>
+                }
+                <div className="form-group">
+                  <button className="btn btn-primary mt-2" id="PostSong"onClick={() => this.getPost()}>
+                  post about this song
+                  </button>
+                </div>
+              </form>
+            </div>
+          </div>
         </div>
         }
 
@@ -877,15 +1042,10 @@ export class Discover extends Component {
         </div>
         }
 
-
         { (this.state.checkclicked.ClickRecent || this.state.checkclicked.ClickRecommended || this.state.checkclicked.ClickHottest) && <div className="totresults">
          { this.state.checkclicked.ClickRecent && <div className="results1"> 
           <div className="largefont2">Recent:</div>
-          {
-           <button className="waves-effect waves-yellow btn" id="postrecentsong1"onClick={() => this.getrecent1post(this.state.recentList.SongName[0], this.state.recentList.SongLink[0])}>
-            post about this song
-           </button>
-          } 
+
           <br/>Song Name: <a href= {this.state.recentList.SongLink[0]}>
                           { this.state.recentList.SongName[0] }</a>
           <br/>Artist Name: <a href= {this.state.recentList.ArtistLink[0]}>
