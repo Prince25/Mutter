@@ -26,7 +26,9 @@ export class Profile extends Component {
     }
     this.state = {
 			loggedIn: token ? true : false,
-			display: 'Mutters'
+			display: 'Mutters',
+      ownProfile: false,
+      following: true
 		}
 	}
 	
@@ -82,6 +84,21 @@ export class Profile extends Component {
   	}
   }
 
+  getButton = () => {
+    const { following, ownProfile } = this.state;
+    
+    if (ownProfile) return (<div></div>);
+
+    let color = following ? "red" : "green accent-4";
+
+    return (
+      <button className={"waves-effect waves-red btn "+color} onClick={
+        () => this.setState({ following: !following })}>
+        <i className="material-icons left">{ this.state.following ? "remove" : "add" }
+        </i>{ this.state.following ? "Unfollow" : "Follow" }
+      </button>
+    );
+  }
 	
   render() {
 		const { auth, users, match } = this.props;
@@ -126,10 +143,16 @@ export class Profile extends Component {
 
         {/*Profile Header block*/}
         <div className="profile-header">
+
+            <div className="left-align">
+              { this.getButton() }
+            </div>
+
 						<div className="center-align">
 							<a href={imageUrl} ><ProfileImg src={imageUrl} alt="" className="circle responsive-img" /> </a>
-							<p className="profile-name">{ this.user ? this.user.name : null }</p>					
+							<p className="profile-name">{ this.user ? this.user.name : null }</p>
 						</div>
+
 				</div>
 
 

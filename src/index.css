@@ -84,7 +84,7 @@ textarea.materialize-textarea:focus:not([readonly]){
   background-color: #e0e0e0;
   border: 1px solid black;
   color: black;
-  height: 150px;
+  height: 200px;
   width: 100%;
 }
 
