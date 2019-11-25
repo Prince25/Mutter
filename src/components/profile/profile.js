@@ -78,7 +78,7 @@ export class Profile extends Component {
   }
 
   getContent = () => {
-    const { posts, users } = this.props;
+    const { posts, users, match } = this.props;
   	switch(this.state.display) {
   		case 'Mutters':
 				const myPosts = (posts != null && this.user ? posts.filter(post => post.authorId === this.user.id) : []);
@@ -90,16 +90,44 @@ export class Profile extends Component {
   			);
   			
   		case 'Followers':
+
+        if (users == undefined) return (<div></div>);
+
+        //get list of users this dude is following
+        let followers = [];
+        for (const user of users) {
+          if (user.id === match.params.id) {
+            followers = user.followers;
+            break;
+          }
+        }
+
+        const myFollowers = users.filter(user => followers.includes(user.id));
+
   			return (
 					<div className="collection followers">
-						<UserList users={users} />
+						<UserList users={myFollowers} />
 					</div>
   			);
   			
   		case 'Following':
+
+        if (users == undefined) return (<div></div>);
+
+        //get list of users this dude is following
+        let following = [];
+        for (const user of users) {
+          if (user.id === match.params.id) {
+            following = user.following;
+            break;
+          }
+        }
+
+        const myFollowing = users.filter(user => following.includes(user.id));
+
   			return (
   				<div className="collection followers">
-    				<UserList users={users} />
+    				<UserList users={myFollowing} />
   				</div>
   			);
 				
