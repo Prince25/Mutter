@@ -6,8 +6,9 @@ import { firestoreConnect } from 'react-redux-firebase';
 import { Redirect } from 'react-router-dom';
 import PostList from '../feed/PostList';
 import UserList from './UserList';
-import styled from 'styled-components'
-import UploadPicture from './uploadPicture'
+import styled from 'styled-components';
+import UploadPicture from './uploadPicture';
+import { followUser, unfollowUser } from '../../store/actions/authActions';
 
 // import './AppNew.css';
 import SpotifyWebApi from 'spotify-web-api-js';
@@ -24,11 +25,11 @@ export class Profile extends Component {
     if (token) {
       spotifyApi.setAccessToken(token);
     }
+
     this.state = {
 			loggedIn: token ? true : false,
 			display: 'Mutters',
-      ownProfile: false,
-      following: true
+      following: false
 		}
 	}
 	
@@ -44,7 +45,30 @@ export class Profile extends Component {
     return hashParams;
   }
 
-  handleClick = (e) => {
+  componentDidUpdate() {
+    const { auth, users, match } = this.props;
+    const { following } = this.state;
+
+    const currUserId = match.params.id;
+    const ownUserId = auth.uid;
+
+    if (users == undefined) {
+      console.log('users currently undefined');
+      return;
+    }
+
+    for (const user of users) {
+      if (user.id === ownUserId) {
+        let isFollowing = user.following.includes(currUserId);
+        if (following != isFollowing) {
+          this.setState({ following: !following });
+        }
+        break;
+      }
+    }
+  }
+
+  handleNavClick = (e) => {
   	if (e.target.id === '' || e.target.id === this.state.display) return;
   	document.getElementById(this.state.display).innerHTML = this.state.display;
   	this.setState({
@@ -84,16 +108,30 @@ export class Profile extends Component {
   	}
   }
 
+  handleFollowClick = () => {
+    const { following, ownProfile } = this.state;
+    const currUserId = this.props.match.params.id;
+    const ownUserId = this.props.auth.uid;
+
+    if (!following) 
+      this.props.followUser(ownUserId, currUserId);
+    else
+      this.props.unfollowUser(ownUserId, currUserId);
+
+    this.setState({ following: !following });
+  }
+
   getButton = () => {
     const { following, ownProfile } = this.state;
+    const currUserId = this.props.match.params.id;
+    const ownUserId = this.props.auth.uid;
     
-    if (ownProfile) return (<div></div>);
+    if (currUserId === ownUserId) return (<div></div>);
 
     let color = following ? "red" : "green accent-4";
 
     return (
-      <button className={"waves-effect waves-red btn "+color} onClick={
-        () => this.setState({ following: !following })}>
+      <button className={"waves-effect waves-red btn "+color} onClick={this.handleFollowClick} >
         <i className="material-icons left">{ this.state.following ? "remove" : "add" }
         </i>{ this.state.following ? "Unfollow" : "Follow" }
       </button>
@@ -158,9 +196,9 @@ export class Profile extends Component {
 
         {/*navbar: mutters (Default active) | # followers | # following*/}
         <div className="btn-group">
-					<button onClick={this.handleClick} id="Mutters"><b><u>Mutters</u></b></button>
-					<button onClick={this.handleClick} id="Followers">Followers</button>
-					<button onClick={this.handleClick} id="Following">Following</button>
+					<button onClick={this.handleNavClick} id="Mutters"><b><u>Mutters</u></b></button>
+					<button onClick={this.handleNavClick} id="Followers">Followers</button>
+					<button onClick={this.handleNavClick} id="Following">Following</button>
 				</div>
 
 
@@ -189,9 +227,15 @@ const mapStateToProps = (state) => {
   }
 }
 
+const mapDispatchToProps = (dispatch) => {
+  return {
+    followUser: (uId, followingId) => dispatch(followUser(uId, followingId)),
+    unfollowUser: (uId, followingId) => dispatch(unfollowUser(uId, followingId))
+  }
+}
 
 export default compose(
-  connect(mapStateToProps),
+  connect(mapStateToProps, mapDispatchToProps),
   firestoreConnect([
     { collection: 'posts', orderBy: ['createdAt', 'desc'] },
     { collection: 'users' }

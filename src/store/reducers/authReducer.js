@@ -46,6 +46,38 @@ const authReducer = (state = initState, action) => {
       console.log('Update user image error', action.err)
       return state
 
+    case 'FOLLOW_USER': 
+      console.log('User ', action.uId, 'followed new user', action.followingId)
+      return state
+
+    case 'FOLLOW_USER_ERROR': 
+      console.log('Follow new user error', action.err)
+      return state
+
+    case 'UNFOLLOW_USER': 
+      console.log('User ', action.uId, 'unfollowed new user', action.followingId)
+      return state
+
+    case 'UNFOLLOW_USER_ERROR': 
+      console.log('Unfollow new user error', action.err)
+      return state
+
+    case 'ADD_FOLLOWER': 
+      console.log('User', action.followingId, 'got new follower', action.uId)
+      return state
+
+    case 'ADD_FOLLOWER_ERROR': 
+      console.log('Add new follower error', action.err)
+      return state
+
+    case 'REMOVE_FOLLOWER': 
+      console.log('User', action.followingId, 'lost follower', action.uId)
+      return state
+
+    case 'REMOVE_FOLLOWER_ERROR': 
+      console.log('Remove follower error', action.err)
+      return state
+
     default:
       return state
   }

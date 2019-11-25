@@ -88,3 +88,63 @@ export const updateImage = (uId, imageUrl) => {
     })
   }
 }
+
+export const followUser = (uId, followingId) => {
+  return (dispatch, getState, { getFirebase, getFirestore }) => {
+
+    // Make async call to database
+    const firestore = getFirestore()
+
+    //get users collection
+    let userCollectionRef = firestore.collection('users');
+
+    //add to list of users user is following
+    userCollectionRef.doc(uId).update({
+      following: firestore.FieldValue.arrayUnion(followingId)
+    }).then(() => {
+      dispatch({ type: 'FOLLOW_USER', uId, followingId })
+    }).catch((err) => {
+      dispatch({ type: 'FOLLOW_USER_ERROR', err })
+    });
+
+    //add user to other user's followers list
+    userCollectionRef.doc(followingId).update({
+      followers: firestore.FieldValue.arrayUnion(uId)
+    }).then(() => {
+      dispatch({ type: 'ADD_FOLLOWER', uId, followingId })
+    }).catch((err) => {
+      dispatch({ type: 'ADD_FOLLOWER_ERROR', err })
+    });
+
+  }
+}
+
+export const unfollowUser = (uId, followingId) => {
+  return (dispatch, getState, { getFirebase, getFirestore }) => {
+
+    // Make async call to database
+    const firestore = getFirestore()
+
+    //get users collection
+    let userCollectionRef = firestore.collection('users');
+
+    //remove from list of users user is following
+    userCollectionRef.doc(uId).update({
+      following: firestore.FieldValue.arrayRemove(followingId)
+    }).then(() => {
+      dispatch({ type: 'UNFOLLOW_USER', uId, followingId })
+    }).catch((err) => {
+      dispatch({ type: 'UNFOLLOW_USER_ERROR', err })
+    });
+
+    //remove user from other user's followers list
+    userCollectionRef.doc(followingId).update({
+      followers: firestore.FieldValue.arrayRemove(uId)
+    }).then(() => {
+      dispatch({ type: 'REMOVE_FOLLOWER', uId, followingId })
+    }).catch((err) => {
+      dispatch({ type: 'REMOVE_FOLLOWER_ERROR', err })
+    });
+
+  }
+}
