@@ -46,6 +46,8 @@ export const signUp = (newUser) => {
     ).then((resp) => {
       firestore.collection('users').doc(resp.user.uid).set({
         name: newUser.name,
+        following: [],
+        followers: [],
         imageUrl: 'https://firebasestorage.googleapis.com/v0/b/mutter-ucla.appspot.com/o/users%2Fdefault_stick.png?alt=media&token=817a47dd-6485-45e4-91d1-18718b06947f'
       })
     }).then(() => {
