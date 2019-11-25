@@ -14,7 +14,7 @@ class Feed extends Component {
     if (!auth.uid) return <Redirect to='/splash' />
 
 
-    if (users == undefined) return (<div></div>);
+    if (users == undefined || posts == undefined) return (<div></div>);
     const userId = this.props.auth.uid;
 
     //get list of users this dude is following
