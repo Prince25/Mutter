@@ -2,6 +2,7 @@ import React, { Component } from 'react'
 import { connect } from 'react-redux'
 import { Redirect } from 'react-router-dom'
 import { Link } from 'react-router-dom';
+//import ReactHtmlParser from 'react-html-parser';
 
 import './Search.css';
 
@@ -36,7 +37,7 @@ export class Discover extends Component {
       spotifyApi.setAccessToken(token);
     }
     else if(getToken){
-    	spotifyApi.setAccessToken(getToken);
+      spotifyApi.setAccessToken(getToken);
     }
 
     this.state = {
@@ -54,9 +55,13 @@ export class Discover extends Component {
       PostUrl: 'https://www.google.com/',
       SongSelectOption : "0",
       TypeSelectOption : "R",
+    SearchSelectOption: "Artist",
       checkclicked: {ClickStartSearch: false, ClickSearchArtist: false, ClickSearchAlbum: false, ClickSearchTrack: false,
                       ClickRecommended: false, ClickHottest: false, ClickRecent: false},
-      nowPlaying: { SongName: 'Not Checked', albumArt: '' },
+      SearchResultNumber: {RecentNum : 0 ,RecommendedNum : 0 ,HottestNum : 0,
+                           SearchArtNum : 0,SearchTraNum : 0,SearchAlbNum : 0},
+      ArtistReturnElement:[],
+      ArtistReturnItem : [],
   
       recentList: { SongName: ['','','','',''],
                     SongLink: ['','','','',''],
@@ -84,17 +89,18 @@ export class Discover extends Component {
                           AlbumImage:['','','','',''],
                           ArtistLink:['','','','',''],
                           AlbumLink:['','','','','']},
-      searchingTrackL:  { SongName: ['','',''],
-                          ArtistName: ['','',''],
-                          AlbumImage:['','',''],
-                          SongLink: ['','',''],
-                          ArtistLink:['','','',],
-                          AlbumLink:['','','']}
+      searchingTrackL:  { SongName: ['','','','',''],
+                          ArtistName: ['','','','',''],
+                          AlbumImage:['','','','',''],
+                          SongLink: ['','','','',''],
+                          ArtistLink:['','','','',''],
+                          AlbumLink:['','','','','']}
     }
     this.handleChange = this.handleChange.bind(this);
     this.handleSubmit = this.handleSubmit.bind(this);
     this.handleTypeOptionChange = this.handleTypeOptionChange.bind(this);
     this.handleSongOptionChange = this.handleSongOptionChange.bind(this);
+  this.handleSearchOptionChangel = this.handleSearchOptionChangel.bind(this);
     this.handleFormSubmit = this.handleFormSubmit.bind(this);
   }
 
@@ -105,22 +111,75 @@ export class Discover extends Component {
    * @returns {null}
   */
   handleChange(event) {
-    //var delayInMilliseconds = 200; //1 second
-    const query = event.target.value;
-    //window.alert("changing");
-    var q = query;
-    
-    //setTimeout(function() {}, delayInMilliseconds);
-    if(query){
-    this.setState({searchvalue:{searchinput : query},
-                   searchloading : true});
-    //window.alert("event target value is " +q);
-    //window.alert("the search value is " +this.state.searchvalue.searchartistvalue);
+    var changeFlag = false;
+    var searched = false;
+    while (!changeFlag) {
+      const query = event.target.value;
+
+      if(query){
+        this.state.searchvalue.searchinput = query;
+        changeFlag = true;
+      }
+      else if (query == '') {
+        this.state.searchvalue.searchinput = '';
+        changeFlag = true;
+      }
     }
+
+    while(!searched) {
+      if (changeFlag) {
+      if(this.state.SearchSelectOption == "Artist")
+      {this.getSearchArtist();
+       this.setState({ searchingAlbumL:  { ArtistName: ['','','','',''],
+                                AlbumName: ['','','','',''],
+                                AlbumImage:['','','','',''],
+                                ArtistLink:['','','','',''],
+                                AlbumLink:['','','','','']}});
+      this.setState({searchingTrackL:  { SongName: ['','','','',''],
+                                ArtistName: ['','','','',''],
+                                AlbumImage:['','','','',''],
+                                SongLink: ['','','','',''],
+                                ArtistLink:['','','','',''],
+      AlbumLink:['','','','','']}});
+      }
+      else if(this.state.SearchSelectOption == "Album")
+      {
+       window.alert("inside the album");
+      this.getSearchAlbum();
+      this.setState({searchingArtistL : { ArtistName: ['','','','',''],
+                               ArtistImage: ['','','','',''],
+                               ArtistLink: ['','','','','']}});
+      this.setState({searchingTrackL:  { SongName: ['','','','',''],
+                                ArtistName: ['','','','',''],
+                                AlbumImage:['','','','',''],
+                                SongLink: ['','','','',''],
+                                ArtistLink:['','','','',''],
+      AlbumLink:['','','','','']}});
+      }
+      else if(this.state.SearchSelectOption == "Track")
+      {
+       window.alert("inside the track");
+      this.getSearchTrack();
+      this.setState({searchingArtistL : { ArtistName: ['','','','',''],
+                              ArtistImage: ['','','','',''],
+                              ArtistLink: ['','','','','']}});
+                              
+       this.setState({ searchingAlbumL:  { ArtistName: ['','','','',''],
+                                AlbumName: ['','','','',''],
+                                AlbumImage:['','','','',''],
+                                ArtistLink:['','','','',''],
+                                AlbumLink:['','','','','']}});
+      }
+      
+        searched = true;
+      }
+    }
+    //window.alert("exit second while");
+    //window.alert(this.state.searchingArtistL.ArtistName[0]);
   }
 
   handleSubmit(event) {
-  	//this.setState({searchvalue: event.target.value});
+    //this.setState({searchvalue: event.target.value});
     window.alert('A name was submitted: ' + this.state.searchvalue);
     event.preventDefault();
   }
@@ -131,6 +190,60 @@ export class Discover extends Component {
     this.setState({
       TypeSelectOption: event.target.value
     });
+  }
+  handleSearchOptionChangel(event){
+  const option = event.target.value;
+  var op = option;
+  
+  this.state.SearchSelectOption = event.target.value;
+   window.alert("inside handle search option change , the option value is "+ this.state.SearchSelectOption);
+    if(this.state.SearchSelectOption == "Artist")
+      {this.getSearchArtist();
+       this.setState({ searchingAlbumL:  { ArtistName: ['','','','',''],
+                                AlbumName: ['','','','',''],
+                                AlbumImage:['','','','',''],
+                                ArtistLink:['','','','',''],
+                                AlbumLink:['','','','','']}});
+      this.setState({searchingTrackL:  { SongName: ['','','','',''],
+                                ArtistName: ['','','','',''],
+                                AlbumImage:['','','','',''],
+                                SongLink: ['','','','',''],
+                                ArtistLink:['','','','',''],
+      AlbumLink:['','','','','']}});
+      //this.getSearchAlbum();
+      //this.getSearchTrack();
+      }
+      else if(this.state.SearchSelectOption == "Album")
+      {
+       window.alert("inside the album");
+      this.getSearchAlbum();
+      this.setState({searchingArtistL : { ArtistName: ['','','','',''],
+                               ArtistImage: ['','','','',''],
+                               ArtistLink: ['','','','','']}});
+      this.setState({searchingTrackL:  { SongName: ['','','','',''],
+                                ArtistName: ['','','','',''],
+                                AlbumImage:['','','','',''],
+                                SongLink: ['','','','',''],
+                                ArtistLink:['','','','',''],
+      AlbumLink:['','','','','']}});
+      window.alert("inside the handleselectoptionchange , in side the else if option = album the search artist name is " + this.state.searchingArtistL)
+      //this.getSearch
+      }
+      else if(this.state.SearchSelectOption == "Track")
+      {
+       window.alert("inside the track");
+      this.getSearchTrack();
+      this.setState({searchingArtistL : { ArtistName: ['','','','',''],
+                              ArtistImage: ['','','','',''],
+                              ArtistLink: ['','','','','']}});
+                              
+       this.setState({ searchingAlbumL:  { ArtistName: ['','','','',''],
+                                AlbumName: ['','','','',''],
+                                AlbumImage:['','','','',''],
+                                ArtistLink:['','','','',''],
+                                AlbumLink:['','','','','']}});
+      }
+   
   }
 
   handleSongOptionChange(event) {
@@ -176,41 +289,6 @@ export class Discover extends Component {
   }
 
   /**
-   * @method getNowPlaying
-   * @description by using the response from getMyCurrentPlaybackState() function from spotifyAPI, getting a object from spotify server.
-    Then, update the nowPlaying list's SongName and AlbumImage with the object's element
-   * @returns {null}
-  */
-    /**
-   * @method getMyCurrentPlaybackState
-   * @description get information about the user's current playback state, including track, track progress and active device
-   * @returns {response} - a object of user's current playback state or object of error message 
-  */
-  getNowPlaying(){
-    this.state.checkclicked.ClickNowPlaying = true;
-    spotifyApi.getMyCurrentPlaybackState()
-      .then((response) => {
-        if (response == '' || response.item.name == null) {
-          this.setState({
-          nowPlaying: { 
-              SongName: "Not playing a song", 
-              albumArt: ''
-            }
-          });
-          return;
-        }
-        else {
-          this.setState({
-            nowPlaying: { 
-                SongName: response.item.name, 
-                albumArt: response.item.album.images[0].url
-              }
-          });
-        }
-      })
-  }
-
-  /**
    * @method changeRecent
    * @description updating the recentList's ArtistName, SongName, and AlbumImage in discover class with the recently played tracks object 
    * @param {object} bodydata - the object tracks from the current user's recently played tracks
@@ -222,6 +300,10 @@ export class Discover extends Component {
     this.state.checkclicked.ClickRecent = true;
     spotifyApi.getMyRecentlyPlayedTracks()
     .then((response)=>{
+      if (response.next == null) {
+        this.state.checkclicked.ClickRecent = false;
+        return;
+      }
       this.setState({
         recentList:{
           SongName: [response.items[0].track.name,
@@ -274,25 +356,67 @@ export class Discover extends Component {
   */
   changeArtist(bodydata)
   {
-    this.setState({
-            searchingArtistL: { 
-                ArtistName: [bodydata.artists.items[0].name,
-                              bodydata.artists.items[1].name,
-                              bodydata.artists.items[2].name,
-                              bodydata.artists.items[3].name,
-                              bodydata.artists.items[4].name ],
-                ArtistImage: [bodydata.artists.items[0].images[0].url,
-                               bodydata.artists.items[1].images[0].url,
-                               bodydata.artists.items[2].images[0].url,
-                               bodydata.artists.items[3].images[0].url,
-                               bodydata.artists.items[4].images[0].url],
-                ArtistLink:  [bodydata.artists.items[0].external_urls.spotify,
-                               bodydata.artists.items[1].external_urls.spotify,
-                               bodydata.artists.items[2].external_urls.spotify,
-                               bodydata.artists.items[3].external_urls.spotify,
-                               bodydata.artists.items[4].external_urls.spotify]
-              }
-          });
+    
+    if(bodydata.artists.total < 5){
+      var templist = this.state.searchingArtistL;
+      
+      var Num = bodydata.artists.total;
+      this.setState({SearchResultNumber:{SearchArtNum : Num}});
+      //window.alert("the search artist number is " + this.state.SearchResultNumber.SearchArtNum);
+      for(var i = 0 ; i<Num ; i++)
+      {
+        templist.ArtistName[i] = bodydata.artists.items[i].name;
+        if (bodydata.artists.items[i].images[0]) {
+          templist.ArtistImage[i] = bodydata.artists.items[i].images[0].url;
+        }
+        templist.ArtistLink[i] = bodydata.artists.items[i].external_urls.spotify;
+      }
+      for(var i = Num; i < 5-Num + 1; i++)
+      {
+        templist.ArtistName[i] = "";
+        templist.ArtistImage[i] = "";
+        templist.ArtistLink[i] = "";
+      }
+      if (Num == 0) {
+        this.state.checkclicked.ClickSearchArtist = false;
+      }
+      this.setState({ searchingArtistL: templist });
+    }
+    else
+    {
+      var templist = this.state.searchingArtistL;
+      for(var i = 0; i < 5; i++)
+      {
+        templist.ArtistName[i] = bodydata.artists.items[i].name;
+        if (bodydata.artists.items[i].images[0]) {
+          templist.ArtistImage[i] = bodydata.artists.items[i].images[0].url;
+        }
+        templist.ArtistLink[i] = bodydata.artists.items[i].external_urls.spotify;
+      }
+      this.setState({SearchResultNumber:{SearchArtNum : 5}});
+      this.setState({ searchingArtistL: templist });
+    }
+
+    
+    // this.setState({
+    //         searchingArtistL: { 
+    //             ArtistName: [bodydata.artists.items[0].name,
+    //                           bodydata.artists.items[1].name,
+    //                           bodydata.artists.items[2].name,
+    //                           bodydata.artists.items[3].name,
+    //                           bodydata.artists.items[4].name ],
+    //             ArtistImage: [bodydata.artists.items[0].images[0].url,
+    //                            bodydata.artists.items[1].images[0].url,
+    //                            bodydata.artists.items[2].images[0].url,
+    //                            bodydata.artists.items[3].images[0].url,
+    //                            bodydata.artists.items[4].images[0].url],
+    //             ArtistLink:  [bodydata.artists.items[0].external_urls.spotify,
+    //                            bodydata.artists.items[1].external_urls.spotify,
+    //                            bodydata.artists.items[2].external_urls.spotify,
+    //                            bodydata.artists.items[3].external_urls.spotify,
+    //                            bodydata.artists.items[4].external_urls.spotify]
+    //           }
+    //       });
 
   }
 
@@ -304,36 +428,54 @@ export class Discover extends Component {
   */
   changeAlbum(bodydata)
   {
-    this.setState({
-            searchingAlbumL: { 
-                ArtistName: [bodydata.albums.items[0].artists[0].name,
-                              bodydata.albums.items[1].artists[0].name,
-                              bodydata.albums.items[2].artists[0].name,
-                              bodydata.albums.items[3].artists[0].name,
-                              bodydata.albums.items[4].artists[0].name,],
-                ArtistLink: [bodydata.albums.items[0].artists[0].external_urls.spotify,
-                              bodydata.albums.items[1].artists[0].external_urls.spotify,
-                              bodydata.albums.items[2].artists[0].external_urls.spotify,
-                              bodydata.albums.items[3].artists[0].external_urls.spotify,
-                              bodydata.albums.items[4].artists[0].external_urls.spotify,],
-                AlbumName : [bodydata.albums.items[0].name,
-                              bodydata.albums.items[1].name,
-                              bodydata.albums.items[2].name,
-                              bodydata.albums.items[3].name,
-                              bodydata.albums.items[4].name,],
-                AlbumLink: [bodydata.albums.items[0].external_urls.spotify,
-                               bodydata.albums.items[1].external_urls.spotify,
-                               bodydata.albums.items[2].external_urls.spotify,
-                               bodydata.albums.items[3].external_urls.spotify,
-                               bodydata.albums.items[4].external_urls.spotify],
-                AlbumImage: [bodydata.albums.items[0].images[0].url,
-                               bodydata.albums.items[1].images[0].url,
-                               bodydata.albums.items[2].images[0].url,
-                               bodydata.albums.items[3].images[0].url,
-                               bodydata.albums.items[4].images[0].url]
-              }
-          });
+    if(bodydata.albums.total < 5){
+      var templist = this.state.searchingAlbumL;
+      
+      var Num = bodydata.albums.total;
+      this.setState({SearchResultNumber:{SearchAlbNum : Num}});
+      //window.alert("the search artist number is " + this.state.SearchResultNumber.SearchArtNum);
+      for(var i = 0 ; i<Num ; i++)
+      {
+        templist.ArtistName[i] = bodydata.albums.items[i].artists[0].name;
+        if (bodydata.albums.items[i].images[0]) {
+          templist.AlbumImage[i] = bodydata.albums.items[i].images[0].url;
+          templist.AlbumLink[i] = bodydata.albums.items[i].external_urls.spotify;
+        }
+        
+        templist.ArtistLink[i] = bodydata.albums.items[i].artists[0].external_urls.spotify;
+        templist.AlbumName[i] = bodydata.albums.items[i].name;
+      }
+      for(var i = Num; i < 5-Num + 1; i++)
+      {
+        templist.ArtistName[i] = ""
 
+        templist.AlbumImage[i] = ""
+        templist.AlbumLink[i] = ""
+        templist.ArtistLink[i] = ""
+        templist.AlbumName[i] = ""
+      }
+      if (Num == 0) {
+        this.state.checkclicked.ClickSearchAlbum = false;
+      }
+      this.setState({ searchingAlbumL: templist });
+    }
+    else
+    {
+      var templist = this.state.searchingAlbumL;
+      for(var i = 0; i < 5; i++)
+      {
+         templist.ArtistName[i] = bodydata.albums.items[i].artists[0].name;
+        if (bodydata.albums.items[i].images[0]) {
+          templist.AlbumImage[i] = bodydata.albums.items[i].images[0].url;
+          templist.AlbumLink[i] = bodydata.albums.items[i].external_urls.spotify;
+        }
+        
+        templist.ArtistLink[i] = bodydata.albums.items[i].artists[0].external_urls.spotify;
+        templist.AlbumName[i] = bodydata.albums.items[i].name;
+      }
+      this.setState({SearchResultNumber:{SearchAlbNum : 5}});
+      this.setState({ searchingAlbumL: templist });
+    }
   }
 
   /**
@@ -343,29 +485,84 @@ export class Discover extends Component {
    * @returns {null}
   */
   changeTrack(bodydata)
-  {
-    this.setState({
-            searchingTrackL: { 
-                ArtistName: [bodydata.tracks.items[0].artists[0].name,
-                              bodydata.tracks.items[1].artists[0].name,
-                              bodydata.tracks.items[2].artists[0].name],
-                SongName  : [bodydata.tracks.items[0].name,
-                              bodydata.tracks.items[1].name,
-                              bodydata.tracks.items[2].name],
-                AlbumImage: [bodydata.tracks.items[0].album.images[0].url,
-                               bodydata.tracks.items[1].album.images[0].url,
-                               bodydata.tracks.items[2].album.images[0].url],
-                ArtistLink: [bodydata.tracks.items[0].artists[0].external_urls.spotify,
-                              bodydata.tracks.items[1].artists[0].external_urls.spotify,
-                              bodydata.tracks.items[2].artists[0].external_urls.spotify],
-                SongLink  : [bodydata.tracks.items[0].external_urls.spotify,
-                              bodydata.tracks.items[1].external_urls.spotify,
-                              bodydata.tracks.items[2].external_urls.spotify],
-                AlbumLink: [bodydata.tracks.items[0].album.external_urls.spotify,
-                               bodydata.tracks.items[1].album.external_urls.spotify,
-                               bodydata.tracks.items[2].album.external_urls.spotify]
-              }
-          });
+  { 
+    window.alert("the track total is "+ bodydata.tracks.total);
+    if(bodydata.tracks.total < 5){
+      var templist = this.state.searchingTrackL;
+      
+      var Num = bodydata.tracks.total;
+      this.setState({SearchResultNumber:{SearchTraNum : Num}});
+      //window.alert("the search artist number is " + this.state.SearchResultNumber.SearchArtNum);
+      for(var i = 0 ; i<Num ; i++)
+      {
+        templist.ArtistName[i] = bodydata.tracks.items[i].artists[0].name;
+        if (bodydata.tracks.items[i].album.images[0]) {
+          templist.AlbumImage[i] = bodydata.tracks.items[i].album.images[0].url;
+          templist.AlbumLink[i] = bodydata.tracks.items[i].album.external_urls.spotify;
+        }
+        
+        templist.ArtistLink[i] = bodydata.tracks.items[i].artists[0].external_urls.spotify;
+        templist.SongName[i] = bodydata.tracks.items[i].name;
+        templist.SongLink[i] = bodydata.tracks.items[i].external_urls.spotify;
+      }
+      for(var i = Num; i < 5-Num + 1; i++)
+      {
+        templist.ArtistName[i] = ""; 
+        templist.AlbumImage[i] = "";
+        templist.AlbumLink[i] = "";
+        templist.ArtistLink[i] = "";
+        templist.SongName[i] = "";
+        templist.SongLink[i] = "";
+      }
+      if (Num == 0) {
+        this.state.checkclicked.ClickSearchTrack = false;
+      }
+      this.setState({ searchingTrackL: templist });
+    }
+    else
+    {
+      var templist = this.state.searchingTrackL;
+      for(var i = 0; i < 5; i++)
+      {
+
+        templist.ArtistName[i] = bodydata.tracks.items[i].artists[0].name;
+        if (bodydata.tracks.items[i].album.images[0]) {
+          templist.AlbumImage[i] = bodydata.tracks.items[i].album.images[0].url;
+          templist.AlbumLink[i] = bodydata.tracks.items[i].album.external_urls.spotify;
+        }
+        
+        templist.ArtistLink[i] = bodydata.tracks.items[i].artists[0].external_urls.spotify;
+        templist.SongName[i] = bodydata.tracks.items[i].name;
+        templist.SongLink[i] = bodydata.tracks.items[i].external_urls.spotify;
+        window.alert("success in the for loop number is " + i );
+      }
+      this.setState({SearchResultNumber:{SearchTraNum : 5}});
+      this.setState({ searchingTrackL: templist });
+    }
+
+
+    // this.setState({
+    //         searchingTrackL: { 
+    //             ArtistName: [bodydata.tracks.items[0].artists[0].name,
+    //                           bodydata.tracks.items[1].artists[0].name,
+    //                           bodydata.tracks.items[2].artists[0].name],
+    //             SongName  : [bodydata.tracks.items[0].name,
+    //                           bodydata.tracks.items[1].name,
+    //                           bodydata.tracks.items[2].name],
+    //             AlbumImage: [bodydata.tracks.items[0].album.images[0].url,
+    //                            bodydata.tracks.items[1].album.images[0].url,
+    //                            bodydata.tracks.items[2].album.images[0].url],
+    //             ArtistLink: [bodydata.tracks.items[0].artists[0].external_urls.spotify,
+    //                           bodydata.tracks.items[1].artists[0].external_urls.spotify,
+    //                           bodydata.tracks.items[2].artists[0].external_urls.spotify],
+    //             SongLink  : [bodydata.tracks.items[0].external_urls.spotify,
+    //                           bodydata.tracks.items[1].external_urls.spotify,
+    //                           bodydata.tracks.items[2].external_urls.spotify],
+    //             AlbumLink: [bodydata.tracks.items[0].album.external_urls.spotify,
+    //                            bodydata.tracks.items[1].album.external_urls.spotify,
+    //                            bodydata.tracks.items[2].album.external_urls.spotify]
+    //           }
+    //       });
 
   }
 
@@ -479,9 +676,15 @@ export class Discover extends Component {
   getSearchArtist()
   {
     this.getaccesstoken();
-    if (this.state.searchvalue.searchinput == '') {
+    if (this.state.searchvalue.searchinput == '' || this.state.SearchSelectOption != "Artist") {
+      //window.alert("empty search input");
+      this.setState({searchingArtistL : { ArtistName: ['','','','',''],
+                          ArtistImage: ['','','','',''],
+                          ArtistLink: ['','','','','']}});
+      this.state.checkclicked.ClickSearchArtist = false;
       return;
     }
+
     this.state.checkclicked.ClickSearchArtist = true;
     var searchartisturl = 'https://api.spotify.com/v1/search?q=' + this.state.searchvalue.searchinput + '&type=artist&limit=5';
     var options3 = {
@@ -504,7 +707,14 @@ export class Discover extends Component {
   getSearchAlbum()
   {
     this.getaccesstoken();
-    if (this.state.searchvalue.searchinput == '') {
+    if (this.state.searchvalue.searchinput == '' || this.state.SearchSelectOption !="Album") {
+    
+      this.setState({searchingAlbumL:  { ArtistName: ['','','','',''],
+                          AlbumName: ['','','','',''],
+                          AlbumImage:['','','','',''],
+                          ArtistLink:['','','','',''],
+              AlbumLink:['','','','','']}});
+      this.state.checkclicked.ClickSearchAlbum = false;
       return;
     }
     this.state.checkclicked.ClickSearchAlbum = true;
@@ -529,11 +739,19 @@ export class Discover extends Component {
   getSearchTrack()
   {
     this.getaccesstoken(); 
-    if (this.state.searchvalue.searchinput == '') {
+    if (this.state.searchvalue.searchinput == '' || this.state.SearchSelectOption !="Track") {
+          this.setState({searchingTrackL:  { SongName: ['','','','',''],
+                                ArtistName: ['','','','',''],
+                                AlbumImage:['','','','',''],
+                                SongLink: ['','','','',''],
+                                ArtistLink:['','','','',''],
+          AlbumLink:['','','','','']}});
+      this.state.checkclicked.ClickSearchTrack = false;
+    
       return;
     }
     this.state.checkclicked.ClickSearchTrack = true;  
-    var searchtrackurl = 'https://api.spotify.com/v1/search?q=' + this.state.searchvalue.searchinput + '&type=track&limit=3';
+    var searchtrackurl = 'https://api.spotify.com/v1/search?q=' + this.state.searchvalue.searchinput + '&type=track&limit=5';
     var options3 = {
           url: searchtrackurl,
           headers: { 'Authorization': 'Bearer ' + tempaccess},
@@ -579,7 +797,7 @@ export class Discover extends Component {
   */
   getMostReommended()
   {
-  	this.state.loading = true;
+    this.state.loading = true;
     this.getaccesstoken();
     this.state.checkclicked.ClickRecommended = true; 
     var options = {
@@ -589,7 +807,10 @@ export class Discover extends Component {
      };
     var feed = this;
     request.get(options, function(error, response, body) {
-              
+        if (body.total == 0) {
+          feed.state.checkclicked.ClickRecommended = false; 
+          return;
+        }
         var topartists = body.items[0].id;
         var recommendedurl ='https://api.spotify.com/v1/recommendations?limit=5&market=US&seed_artists=' + topartists + '&min_energy=0.4&min_popularity=50';
         var options3 = {
@@ -606,10 +827,10 @@ export class Discover extends Component {
   }
   getStartSearch() 
   { 
-  	if (this.state.loggedIn == false) {
-  	  window.alert("Cannot search, please login with Spotify");
-  	  return;
-  	}
+    if (this.state.loggedIn == false) {
+      window.alert("Cannot search, please login with Spotify");
+      return;
+    }
     if (this.state.checkclicked.ClickStartSearch == true) 
     {
       this.setState({checkclicked: {ClickStartSearch : false}});
@@ -636,30 +857,30 @@ export class Discover extends Component {
 
     }
     // else if (!this.state.loggedIn && this.state.showonce){
-    // 	window.alert("Not logged with spotify, please go to profile page and login!");
-    	// window.alert("Recent list");
-    	// if(this.recentList){
-    	// 	window.alert(this.recentList.name);
-    	// }
-    	// else{
-    	// 	window.alert("not set");
-    	// }
+    //  window.alert("Not logged with spotify, please go to profile page and login!");
+      // window.alert("Recent list");
+      // if(this.recentList){
+      //  window.alert(this.recentList.name);
+      // }
+      // else{
+      //  window.alert("not set");
+      // }
     // }
     // this.state.showonce = true;
   }
   
   appendToUrl()
   {
-  	var url = window.location.href; 
-  	// window.alert("the url is " + url);   
-  	if (url.indexOf('#') > -1){
-  	   
-  	}else{
-  	   url += '#' +'access_token=' +spotifyApi.getAccessToken();
-  	   //url += '&' +'refresh_token=' + spotifyApi.getRefreshToken();
-  	   // window.alert("the new url is " + url);
-  	}
-	  // window.location.href = url;
+    var url = window.location.href; 
+    // window.alert("the url is " + url);   
+    if (url.indexOf('#') > -1){
+       
+    }else{
+       url += '#' +'access_token=' +spotifyApi.getAccessToken();
+       //url += '&' +'refresh_token=' + spotifyApi.getRefreshToken();
+       // window.alert("the new url is " + url);
+    }
+    // window.location.href = url;
   }
 
   getPost()
@@ -701,10 +922,55 @@ export class Discover extends Component {
     }    
   }
 
+  AppendSearchArtistItem()
+  {
+    for(var i = 0 ; i<this.state.SearchResultNumber.SearchArtNum; i ++)
+    {
+      this.state.ArtistReturnItem.push(this.state.searchingArtistL.ArtistLink[i]);
+    }
+
+
+  }
+
   render() {
-  	const {searchvalue} = this.state;
+    const {searchvalue} = this.state;
+    //window.alert(" the name in render is " + this.state.searchingartistL.ArtistName[0])
+
+    // const elements = this.state.ArtistReturnElement;
+    // //window.alert(this.state.ArtistReturnElement[0]);
+
+    // const items = []
+
+    // for (const [index, value] of elements.entries()) {
+
+    //   // items.push(<br/>);
+    //   // items.push("Artist Name:");
+    //   //items.push(<a href= this.state.searchingArtistL.ArtistLink[0]>);
+    //   //items.push(this.state.ArtistReturnElement[0])
+    //   //items.push(<li key={index}>{value}</li>)
+    //     //window.alert(index);
+    // }
+
+    // <br/>Artist Name: <a href= {this.state.searchingArtistL.ArtistLink[0]}>
+    //                       {this.state.searchingArtistL.ArtistName[0]}</a>
+    //     <br/>Artist image:  
+    //     <br/><a href= {this.state.searchingArtistL.ArtistLink[0]}>
+    //          <img src={this.state.searchingArtistL.ArtistImage[0]} style={{ height: 150 }}/>
+    //          </a>
+
+
+    // for (const [index, value] of this.state.ArtistReturnElement.entries()) {
+    //   this.state.ArtistReturnItem.push(<li key={index}>{value}</li>)
+    // }
+
+
+
+
     return (
+
+
       <div className="container">
+        
         <br/>
         <button className="waves-effect waves-yellow btn yellow darken-4" id="discover_search" onClick={() => this.getStartSearch()}>
           Search
@@ -725,8 +991,53 @@ export class Discover extends Component {
         }
         </div>
 
-        {this.state.checkclicked.ClickStartSearch && 
-        <div className="searchbuttons">
+        {this.state.checkclicked.ClickStartSearch && <div className="search">
+          <div className="row mt-5">
+            <div className="col-sm-12">
+              <form onSubmit={this.handleFormSubmit}>
+                <div className="form-check">
+                  <label>
+                    <input
+                      type="radio"
+                      name="react-tips"
+                      value="Artist"
+                      checked={this.state.SearchSelectOption === "Artist"}
+                      onChange={this.handleSearchOptionChangel}
+                      className="form-check-input"
+                    />
+                    <span>Artist</span>
+                  </label>
+                </div>
+                <div className="form-check">
+                  <label>
+                    <input
+                      type="radio"
+                      name="react-tips"
+                      value="Album"
+                      checked={this.state.SearchSelectOption === "Album"}
+                      onChange={this.handleSearchOptionChangel}
+                      className="form-check-input"
+                    />
+                    <span>Album</span>
+                  </label>
+                </div>
+                <div className="form-check">
+                  <label>
+                    <input
+                      type="radio"
+                      name="react-tips"
+                      value="Track"
+                      checked={this.state.SearchSelectOption === "Track"}
+                      onChange={this.handleSearchOptionChangel}
+                      className="form-check-input"
+                    />
+                    <span>Track</span>
+                  </label>
+                </div>
+              </form>
+            </div>
+          </div>
+    <div className="searchbuttons">
         { 
           <button className="waves-effect waves-yellow btn" id="artist_search" onClick={() => this.getSearchArtist()}>
             SearchByArtist
@@ -745,6 +1056,7 @@ export class Discover extends Component {
           </button>
         }
         </div>
+    </div>
         }
         <br/>
         {this.state.checkclicked.ClickStartSearch && <div className="checkbuttons">
@@ -754,7 +1066,7 @@ export class Discover extends Component {
           </button>
         }
         <span>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;</span>
-  		  { 
+        { 
           <button className="waves-effect waves-yellow btn" id="check_recommended" onClick={() => this.getMostReommended()}>
             Recommended Songs
           </button>
@@ -934,36 +1246,46 @@ export class Discover extends Component {
 
         { (this.state.checkclicked.ClickSearchArtist || this.state.checkclicked.ClickSearchAlbum || this.state.checkclicked.ClickSearchTrack) && <div className="totresults">
         { this.state.checkclicked.ClickSearchArtist && <div className="results1"> The Searched Artists: 
+        { (this.state.searchingArtistL.ArtistName[0] != "") && <div className ="searchartistresult0">
         <br/>Artist Name: <a href= {this.state.searchingArtistL.ArtistLink[0]}>
                           {this.state.searchingArtistL.ArtistName[0]}</a>
         <br/>Artist image:  
         <br/><a href= {this.state.searchingArtistL.ArtistLink[0]}>
              <img src={this.state.searchingArtistL.ArtistImage[0]} style={{ height: 150 }}/>
              </a>
+        </div>}
+        { (this.state.searchingArtistL.ArtistName[1] != "") && <div className ="searchartistresult1">
         <br/>Artist Name: <a href= {this.state.searchingArtistL.ArtistLink[1]}>
                           {this.state.searchingArtistL.ArtistName[1]}</a>
         <br/>Artist image:  
         <br/><a href= {this.state.searchingArtistL.ArtistLink[1]}>
              <img src={this.state.searchingArtistL.ArtistImage[1]} style={{ height: 150 }}/>
              </a>
+        </div>}
+        { (this.state.searchingArtistL.ArtistName[2] != "") && <div className ="searchartistresult2">
         <br/>Artist Name: <a href= {this.state.searchingArtistL.ArtistLink[2]}>
                           {this.state.searchingArtistL.ArtistName[2]}</a>
         <br/>Artist image:  
         <br/><a href= {this.state.searchingArtistL.ArtistLink[2]}>
              <img src={this.state.searchingArtistL.ArtistImage[2]} style={{ height: 150 }}/>
              </a>
+        </div>}
+        { (this.state.searchingArtistL.ArtistName[3] != "") && <div className ="searchartistresult3">
         <br/>Artist Name: <a href= {this.state.searchingArtistL.ArtistLink[3]}>
                           {this.state.searchingArtistL.ArtistName[3]}</a>
         <br/>Artist image:  
         <br/><a href= {this.state.searchingArtistL.ArtistLink[3]}>
              <img src={this.state.searchingArtistL.ArtistImage[3]} style={{ height: 150 }}/>
              </a>
+        </div>}
+        { (this.state.searchingArtistL.ArtistName[4] != "") && <div className ="searchartistresult4">
         <br/>Artist Name: <a href= {this.state.searchingArtistL.ArtistLink[4]}>
                           {this.state.searchingArtistL.ArtistName[4]}</a>
         <br/>Artist image:  
         <br/><a href= {this.state.searchingArtistL.ArtistLink[4]}>
              <img src={this.state.searchingArtistL.ArtistImage[4]} style={{ height: 150 }}/>
              </a>
+        </div>}
         </div>
         }
 
@@ -1179,4 +1501,3 @@ const mapStateToProps = (state) => {
 
 
 export default connect(mapStateToProps)(Discover)
-
