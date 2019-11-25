@@ -27,7 +27,7 @@ class Feed extends Component {
     }
 
     //grab all posts by users this dude is following
-    let followingPosts = posts.filter(post => usersFollowing.includes(post.authorId));
+    let followingPosts = posts.filter(post => post.authorId == auth.uid || usersFollowing.includes(post.authorId));
 
     return (
       <div className="feed container">
