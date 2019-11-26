@@ -1,12 +1,6 @@
 .smallbutton {
   margin: 10px;
 }
-/*.container {
-	margin: 36px auto;
-	width: 100%;
-	max-width: 800px;
-}*/
-
 
 .heading {
 	font-size: 30px;
@@ -19,16 +13,6 @@
 	position: relative;
 }
 
-/*.container input {
-	width: 100%;
-	padding: 16px;
-	font-size: 36px;
-	font-style: italic;
-	color: #444;
-	box-sizing: border-box;
-	outline: none;
-}
-*/
 .search-icon {
 	position: absolute;
 	top: -10px;
@@ -37,7 +21,6 @@
 	right: 18px;
 }
 
-/*Result Container*/
 .results-container {
 	display: flex;
 	flex-flow: wrap;
@@ -130,23 +113,55 @@
     text-align: center;
 }
 
+.searchtotresults {
+	
+    font-weight: bold;
+    width: 1300px;
+    height: 400px;
+}
+
+.searchartistresult {
+	margin-right: 5px;
+	vertical-align: text-top;
+	display: inline-block;
+	width: 240px;
+}
+
+.searchalbumresult {
+	margin-right: 5px;
+	vertical-align: text-top;
+	display: inline-block;
+	width: 240px;
+}
+
+.searchtrackresult {
+	margin-right: 5px;
+	vertical-align: text-top;
+	display: inline-block;
+	width: 240px;
+}
+
+
 .totresults {
     font-weight: bold;
     width: 1300px;
-    height: 1250px;
+    height: 100px;
 }
 
 .results1 {
+	margin-bottom: 20px;
     float: left;
     width: 400px;
 }
 
 .results2 {
+	
     float: left;
     width: 400px;
 }
 
 .results3 {
+	
     float: left;
     width: 400px;
 }

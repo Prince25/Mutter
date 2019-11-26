@@ -12,6 +12,7 @@ export class CreatePost extends Component {
 
     const SongName = params.SongName;
     const SongUrl = params.SongUrl;
+    const access_token = params.access_token;
 
     ///////solution 1
 
