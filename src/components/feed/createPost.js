@@ -5,11 +5,43 @@ import { createPost } from '../../store/actions/postActions'
 
 export class CreatePost extends Component {
 
-  state = {
-    song: '',
-    comment: '',
-    rating: null
-  }
+
+  constructor(){
+    super();
+    const params = this.getHashParams();
+
+    const SongName = params.SongName;
+    const SongUrl = params.SongUrl;
+    const access_token = params.access_token;
+
+    ///////solution 1
+
+    // if(!SongName)
+    // { SongName ="enter song name";
+    //   SongUrl ="enter song url";
+    //   this.state = {
+    //     song: null,
+    //     comment: '',
+    //     rating: null,
+    //     url: null
+    //     }
+    // }
+    // else
+    // {
+      this.state = {
+        song: SongName,
+        comment: '',
+        rating: null,
+        url: SongUrl
+        }
+
+    //}
+    
+
+    
+    this.handleChange = this.handleChange.bind(this);
+    this.handleSubmit = this.handleSubmit.bind(this);
+}
 
   handleChange = (e) => {
     this.setState({
@@ -23,8 +55,26 @@ export class CreatePost extends Component {
     this.props.history.push('/feed')
   }
 
-  render() {
+  getHashParams() {
+    var hashParams = {};
+    var e, r = /([^&;=]+)=?([^&;]*)/g,
+        q = window.location.hash.substring(1);
+    e = r.exec(q)
+    while (e) {
+       hashParams[e[1]] = decodeURIComponent(e[2]);
+       e = r.exec(q);
+    }
 
+    ///////solution 2
+
+    //this.setState({ song : hashParams.SongName , url : hashParams.SongUrl});
+    //window.alert("the hashParams SongName is :" + hashParams.SongName);
+    //window.alert("the hashParams URL is :" + hashParams.SongName);
+    return hashParams;
+  }
+
+  render() {
+    
     return (
       <div className="container">
         <form onSubmit={this.handleSubmit} className="white">
@@ -32,7 +82,7 @@ export class CreatePost extends Component {
 
             <div className="input-field">
               <label htmlFor="song">Song</label>
-              <input type="text" id="song" onChange={this.handleChange} />
+              <input type="text" value = {this.state.song} id="song" onChange={this.handleChange} />
             </div>
 
             <div className="input-field">
@@ -43,6 +93,11 @@ export class CreatePost extends Component {
             <div className="input-field">
               <label htmlFor="comment">Comment</label>
               <input type="text" id="comment" className="materialize-textarea" onChange={this.handleChange} />
+            </div>
+
+            <div className="input-field">
+              <label htmlFor="URL">URL</label>
+              <input type="text" value = {this.state.url} id="URL" className="materialize-textarea" onChange={this.handleChange} />
             </div>
 
             <div className="input-field">
@@ -65,3 +120,4 @@ const mapDispatchToProps = (dispatch) => {
 
 
 export default connect(null, mapDispatchToProps)(CreatePost);
+
