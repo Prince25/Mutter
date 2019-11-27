@@ -78,6 +78,14 @@ const authReducer = (state = initState, action) => {
       console.log('Remove follower error', action.err)
       return state
 
+    case 'SPOTIFY_TOKEN': 
+      console.log('Updated user spotify token', action.uId, action.token)
+      return state
+
+    case 'SPOTIFY_TOKEN_ERROR': 
+      console.log('Update user spotify token error', action.err)
+      return state
+
     default:
       return state
   }

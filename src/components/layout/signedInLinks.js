@@ -1,29 +1,43 @@
 // Links to show when user is signed in
 
-import React from 'react';
+import React, { Component } from 'react';
 import { NavLink } from 'react-router-dom'
 import { connect } from 'react-redux'
+import { firestoreConnect } from 'react-redux-firebase';
+import { compose } from 'redux';
 import { signOut } from '../../store/actions/authActions'
 
 
-const SignedInLinks = (props) => {
-  
-  const { profile, auth } = props
-  const uid = auth.isLoaded ? auth.uid : null
-  const imageUrl = profile.isLoaded && profile.imageUrl ? profile.imageUrl : null
-  
-  return (
-  
-    <ul className="right">
-      <li><NavLink to='/'>Discover</NavLink></li>
-      <li><NavLink to='/groups'>Groups</NavLink></li>
-      <li><NavLink to='/feed'>Feed</NavLink></li>
-      <li><NavLink to={'/profile/' + uid} className='btn btn-floating pink lighten-1'>
-        <img src={imageUrl} alt="" className="circle responsive-img" />
-      </NavLink></li>
-      <li><a href='/splash' onClick={props.signOut}>Log Out</a></li>
-    </ul>
-  )
+class SignedInLinks extends Component {
+   
+  render() {
+    const { auth, profile, users } = this.props
+    
+    const uid = auth && auth.isLoaded ? auth.uid : null
+    const curUser = users ? users.filter(user => user.id === uid)[0] : null
+    var token = curUser ? curUser.spotify_token : null
+    if (!token) token = ''
+    const imageUrl = profile && profile.isLoaded && profile.imageUrl ? profile.imageUrl : null
+
+    return (
+      <ul className="right">
+        <li><NavLink to={'/' + token}>Discover</NavLink></li>
+        <li><NavLink to='/groups'>Groups</NavLink></li>
+        <li><NavLink to='/feed'>Feed</NavLink></li>
+        <li><NavLink to={'/profile/' + uid} className='btn btn-floating pink lighten-1'>
+          <img src={imageUrl} alt="" className="circle responsive-img" />
+        </NavLink></li>
+        <li><a href='/splash' onClick={this.props.signOut}>Log Out</a></li>
+      </ul>
+    )
+  }
+}
+
+
+const mapStateToProps = (state) => {
+  return {
+    users: state.firestore.ordered.users
+  }
 }
 
 
@@ -34,4 +48,7 @@ const mapDispatchToProps = (dispatch) => {
 }
 
 
-export default connect(null, mapDispatchToProps)(SignedInLinks)
+export default compose(
+  connect(mapStateToProps, mapDispatchToProps),
+  firestoreConnect([ { collection: 'users' } ])
+)(SignedInLinks)

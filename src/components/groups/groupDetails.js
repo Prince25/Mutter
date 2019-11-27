@@ -46,7 +46,7 @@ const GroupDetails = (props) => {
                 return (
                   <span key={memberId}>
                     { index > 0 && ', '}
-                    { users[memberId] ? users[memberId].name : null }
+                    { users[memberId] ? <a href={"/profile/" + memberId}>{users[memberId].name}</a> : null }
                   </span>
                 )
               })}

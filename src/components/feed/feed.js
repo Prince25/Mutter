@@ -14,7 +14,7 @@ class Feed extends Component {
     if (!auth.uid) return <Redirect to='/splash' />
 
 
-    if (users == undefined || posts == undefined) return (<div></div>);
+    if (users === undefined || posts === undefined) return (<div></div>);
     const userId = this.props.auth.uid;
 
     //get list of users this dude is following
@@ -27,7 +27,7 @@ class Feed extends Component {
     }
 
     //grab all posts by users this dude is following
-    let followingPosts = posts.filter(post => post.authorId == auth.uid || usersFollowing.includes(post.authorId));
+    let followingPosts = posts.filter(post => post.authorId === auth.uid || usersFollowing.includes(post.authorId));
 
     return (
       <div className="feed container">

@@ -15,7 +15,8 @@ export class Groups extends Component {
 
   render() {
     const { showCreate } = this.state
-    const { recent, popular } = this.props
+    const { groups, recent, popular, authId } = this.props
+    const ownGroups = groups ? groups.filter(group => group.members.includes(authId)) : null
 
     return (
       <div className="container">
@@ -28,7 +29,13 @@ export class Groups extends Component {
 
         <br/><br/>
         <div className="divider" />
+
+        <h5>My Groups</h5>
+        <GroupList groups={ownGroups} />
+ 
+        <div className="divider" />
         
+
         <h5>Recent Groups</h5>
         <GroupList groups={recent} />
  
@@ -45,8 +52,10 @@ export class Groups extends Component {
 
 const mapStateToProps = (state) => {
   return {
+    groups: state.firestore.ordered.groups,
     recent: state.firestore.ordered.recent,
-    popular: state.firestore.ordered.popular
+    popular: state.firestore.ordered.popular,
+    authId: state.firebase.auth.uid
   }
 }
 
@@ -54,7 +63,8 @@ const mapStateToProps = (state) => {
 export default compose(
   connect(mapStateToProps),
   firestoreConnect([
-    { collection: 'groups', orderBy: ['createdAt', 'desc'], limit: 8, storeAs: 'recent' },
-    { collection: 'groups', orderBy: ['numberOfMembers', 'desc'], limit: 8, storeAs: 'popular' }
+    { collection: 'groups', storeAs: 'groups' },
+    { collection: 'groups', orderBy: ['createdAt', 'desc'], limit: 4, storeAs: 'recent' },
+    { collection: 'groups', orderBy: ['numberOfMembers', 'desc'], limit: 4, storeAs: 'popular' }
   ])
 )(Groups)

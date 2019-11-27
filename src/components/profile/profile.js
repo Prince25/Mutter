@@ -52,7 +52,7 @@ export class Profile extends Component {
     const currUserId = match.params.id;
     const ownUserId = auth.uid;
 
-    if (users == undefined) {
+    if (users === undefined) {
       console.log('users currently undefined');
       return;
     }
@@ -60,7 +60,7 @@ export class Profile extends Component {
     for (const user of users) {
       if (user.id === ownUserId) {
         let isFollowing = user.following.includes(currUserId);
-        if (following != isFollowing) {
+        if (following !== isFollowing) {
           this.setState({ following: !following });
         }
         break;
@@ -85,13 +85,13 @@ export class Profile extends Component {
 				 
   			return (
   				<div>
-						<PostList posts={myPosts} />
+						<PostList posts={myPosts} users={users} />
 					</div>
   			);
   			
   		case 'Followers':
 
-        if (users == undefined) return (<div></div>);
+        if (users === undefined) return (<div></div>);
 
         //get list of users this dude is following
         let followers = [];
@@ -112,7 +112,7 @@ export class Profile extends Component {
   			
   		case 'Following':
 
-        if (users == undefined) return (<div></div>);
+        if (users === undefined) return (<div></div>);
 
         //get list of users this dude is following
         let following = [];

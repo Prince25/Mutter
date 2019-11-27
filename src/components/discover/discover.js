@@ -1,5 +1,6 @@
 import React, { Component } from 'react'
 import { connect } from 'react-redux'
+import { updateToken } from '../../store/actions/authActions'
 import './Search.css';
 import SpotifyWebApi from 'spotify-web-api-js';
 const spotifyApi = new SpotifyWebApi();
@@ -880,6 +881,9 @@ export class Discover extends Component {
 
   render() {
     const {searchvalue} = this.state;
+    if (this.props.auth && this.props.location)
+      this.props.updateToken(this.props.auth.uid, this.props.location.hash)
+
     return (
       <div className="container">        
         <br/>
@@ -1365,4 +1369,11 @@ const mapStateToProps = (state) => {
 }
 
 
-export default connect(mapStateToProps)(Discover)
+const mapDispatchToProps = (dispatch) => {
+  return {
+    updateToken: (uId, token) => dispatch(updateToken(uId, token))
+  }
+}
+
+
+export default connect(mapStateToProps, mapDispatchToProps)(Discover)
