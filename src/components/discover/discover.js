@@ -881,9 +881,9 @@ export class Discover extends Component {
 
   render() {
     const {searchvalue} = this.state;
-    if (this.props.auth && this.props.location)
+    if (this.props.auth && !this.props.auth.isEmpty && this.props.location)
       this.props.updateToken(this.props.auth.uid, this.props.location.hash)
-
+    
     return (
       <div className="container">        
         <br/>
