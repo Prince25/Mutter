@@ -91,6 +91,7 @@ export const updateImage = (uId, imageUrl) => {
   }
 }
 
+
 export const followUser = (uId, followingId) => {
   return (dispatch, getState, { getFirebase, getFirestore }) => {
 
@@ -121,6 +122,7 @@ export const followUser = (uId, followingId) => {
   }
 }
 
+
 export const unfollowUser = (uId, followingId) => {
   return (dispatch, getState, { getFirebase, getFirestore }) => {
 
@@ -148,5 +150,22 @@ export const unfollowUser = (uId, followingId) => {
       dispatch({ type: 'REMOVE_FOLLOWER_ERROR', err })
     });
 
+  }
+}
+
+
+export const updateToken = (uId, token) => {
+  return (dispatch, getState, { getFirebase, getFirestore }) => {
+
+    // Make async call to database
+    const firestore = getFirestore()
+
+    firestore.collection('users').doc(uId).update({
+      spotify_token: token
+    }).then(() => {
+      dispatch({ type: 'SPOTIFY_TOKEN', uId })
+    }).catch((err) => {
+      dispatch({ type: 'SPOTIFY_TOKEN_ERROR', err })
+    })
   }
 }
