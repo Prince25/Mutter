@@ -196,7 +196,7 @@ export class Profile extends Component {
 				{ auth.uid && this.user && auth.uid === this.user.id ?
 					<Form>
 						<div className="row">
-							<div className="col s6 center">
+							<div id = 'spotify' className="col s6 center">
 								<a href='http://localhost:8888' className="waves-effect waves-light btn center yellow darken-4">Login to Spotify</a>
 							</div>
 							<div className="col s6">
