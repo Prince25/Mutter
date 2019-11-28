@@ -197,7 +197,7 @@ export class Profile extends Component {
 					<Form>
 						<div className="row">
 							<div id = 'spotify' className="col s6 center">
-								<a href='http://localhost:8888' className="waves-effect waves-light btn center yellow darken-4">Login to Spotify</a>
+								<a href='http://localhost:8888' className="waves-effect waves-light btn center yellow darken-4">Connect Spotify</a>
 							</div>
 							<div className="col s6">
 							<UploadPicture uId={auth.uid} /> 

@@ -19,6 +19,7 @@ import Feed from './components/feed/feed'
 import Profile from './components/profile/profile'
 import Splash from './components/layout/splash/splash'
 import Loading from './loading'
+import Home from './components/home'
 
 
 class App extends Component {
@@ -41,7 +42,8 @@ class App extends Component {
         <div className="App">
           { showNavbar }
           <Switch>
-            <Route exact path='/'       component={Discover} />
+            <Route exact path='/'       component={Home} />
+            <Route path='/discover/'    component={Discover} />
             <Route path='/splash'       component={Splash} />
             <Route path='/groups'       component={Groups} />           
             <Route path='/group/:id'    component={GroupDetails} />           

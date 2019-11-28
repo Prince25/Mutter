@@ -48,7 +48,7 @@ class Profile extends Component {
   render() {
     return (
       <div className="Profile">
-        <a href='http://localhost:8888' > Login to Spotify </a>
+        <a href='http://localhost:8888' > Connect Spotify </a>
         
       </div>
     );
