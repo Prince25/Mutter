@@ -38,6 +38,7 @@ exports.userJoined = functions.auth.user()
       const notification = {
         content: 'has joined',
         user: `${newUser.name}`,
+        id: `${user.uid}`,
         time: admin.firestore.FieldValue.serverTimestamp(),
       };
 
