@@ -302,10 +302,14 @@ export class Discover extends Component {
     this.state.checkclicked.ClickRecent = true;
     spotifyApi.getMyRecentlyPlayedTracks()
     .then((response)=>{
+
+
+
       if (response.next == null) {
         this.state.checkclicked.ClickRecent = false;
         return;
       }
+
       var tempSongList = this.state.recentlyListnew;
       for(var i =0; i <5; i++)
       {
@@ -610,8 +614,16 @@ export class Discover extends Component {
         };
     var feed = this;
         request.get(options3, function(error, response, body) {
-        feed.changeArtist(body);
-
+        
+        if (typeof body.error != "undefined") //check if error exist which may return from spotify
+        {
+          window.alert("the access_token is expired, please log in the spotify again");
+          return;
+        }
+        else
+        {
+          feed.changeArtist(body);
+        }
         });
   };
 
@@ -639,7 +651,16 @@ export class Discover extends Component {
         };
     var feed = this;
         request.get(options3, function(error, response, body) {
+        
+        if (typeof body.error != "undefined") //check if error exist which may return from spotify
+        {
+          window.alert("the access_token is expired, please log in the spotify again");
+          return;
+        }
+        else
+        {
         feed.changeAlbum(body);
+        }
 
         });
   };
@@ -669,7 +690,16 @@ export class Discover extends Component {
         };
     var feed = this;
         request.get(options3, function(error, response, body) {
-        feed.changeTrack(body);
+        
+        if (typeof body.error != "undefined") //check if error exist which may return from spotify
+        {
+          window.alert("the access_token is expired, please log in the spotify again");
+          return;
+        }
+        else{ 
+          feed.changeTrack(body);
+        }
+        
 
         });
   };
@@ -692,17 +722,25 @@ export class Discover extends Component {
     var feed = this;
         request.get(options3, function(error, response, body) {
         //feed.changeHottest(body);
-        feed.changeHottestNew(body);
+        if (typeof body.error != "undefined") //check if error exist which may return from spotify
+        {
+          window.alert("the access_token is expired, please log in the spotify again");
+          return;
+        }
+        else
+        {
+          feed.changeHottestNew(body);
+        }
 
         });
   };
 
   /**
-   * @method getMostReommended
+   * @method getMostRecommended
    * @description updating mostRecommendedL by calling changeRecommandation() and the endpointurl with the topartists ID from two HTTP requests to get the Tracks object from spotify catalog callback
    * @returns {null}
   */
-  getMostReommended()
+  getMostRecommended()
   {
     this.state.loading = true;
     this.getaccesstoken();
@@ -718,6 +756,12 @@ export class Discover extends Component {
           feed.state.checkclicked.ClickRecommended = false; 
           return;
         }
+        if (typeof body.error != "undefined") //check if error exist which may return from spotify
+        {
+          window.alert("the access_token is expired, please log in the spotify again");
+          return;
+        }
+        else{
         var topartists = body.items[0].id;
         var recommendedurl ='https://api.spotify.com/v1/recommendations?limit=5&market=US&seed_artists=' + topartists + '&min_energy=0.4&min_popularity=50';
         var options3 = {
@@ -730,6 +774,9 @@ export class Discover extends Component {
             //feed.changeRecommandation(body);
             feed.changeRecommandationNew(body);
         });
+
+        }
+        
     });
     this.state.loading = false;
   }
@@ -758,7 +805,7 @@ export class Discover extends Component {
     if (this.state.loggedIn === true && this.state.showonce && !this.state.loading) 
     {
       // this.getaccesstoken();
-      this.getMostReommended();
+      this.getMostRecommended();
 
       this.getHottestSong();
       //this.getRecentList();
@@ -822,7 +869,7 @@ export class Discover extends Component {
 
   render() {
     const {searchvalue} = this.state;
-    if (this.props.auth && !this.props.auth.isEmpty && this.props.location)
+    if (this.props.auth && !this.props.auth.isEmpty && this.props.location && this.props.location.hash !== '')
       this.props.updateToken(this.props.auth.uid, this.props.location.hash)
 
     return (
@@ -1188,7 +1235,7 @@ export class Discover extends Component {
               </button>
           </div>
           <br/>
-          <button className="waves-effect waves-yellow btn yellow darken-4" id="check_recommended" onClick={() => this.getMostReommended()}>
+          <button className="waves-effect waves-yellow btn yellow darken-4" id="check_recommended" onClick={() => this.getMostRecommended()}>
             Find More
           </button>
         </div>

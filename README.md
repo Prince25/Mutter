@@ -44,8 +44,8 @@ $ npm run s-test
 ```
 
 ### Running Python Selenium Tests
+This test requires Chromedriver on your machine, link to installation guide: https://chromedriver.chromium.org/downloads
 ```sh
-$ brew cask install chromedriver
 $ pip install selenium
 $ cd test
 $ python MutterTest.py
