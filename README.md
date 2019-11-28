@@ -43,6 +43,13 @@ $ npm start
 $ npm run s-test
 ```
 
+### Running Python Selenium Tests
+```sh
+$ brew cask install chromedriver
+$ pip install selenium
+$ cd test
+$ python MutterTest.py
+```
 
 ### Todos
 * Make App
@@ -90,7 +97,8 @@ $ npm run s-test
     │   ├── loading.js  # Component That Displays While Page is Loading
     │   └── ...
     ├── test
-    │   └── test.js # Unit Test Cases Using Selenium 
+    │   ├── test.js # Unit Test Cases Using Selenium 
+        └── MutterTest.py # Python Test program Using Selenium 
     ├── README.md   # This file
     └── ...
 

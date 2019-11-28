@@ -10,6 +10,7 @@ from selenium import webdriver
 
 # mutter test account
 test_email = 'masonTest@gmail.com'
+wrong_email = '123456'
 test_password = 'masonTest'
 
 # Spotify test account
@@ -24,9 +25,8 @@ time.sleep(2)
 # locate the email
 elem = browser.find_element_by_id('email')
 
-# send key to email
-elem.send_keys(test_email)
-
+# send wrong key to email
+elem.send_keys(wrong_email)
 time.sleep(1)
 
 # locate password
@@ -39,9 +39,35 @@ mutter_password.send_keys(test_password)
 signIn_button = browser.find_element_by_id('signin_btn')
 signIn_button.click()
 
+time.sleep(2)
+
+# locate the email
+elem = browser.find_element_by_id('email')
+
+# send correct key to email
+length = len(elem.get_attribute('value'))
+elem.send_keys(length * Keys.BACKSPACE)
+time.sleep(1)
+elem.send_keys(test_email)
+time.sleep(1)
+
+# locate the sign in button and click sign in
+signIn_button = browser.find_element_by_id('signin_btn')
+signIn_button.click()
+
 #####################################################
 # Now logged in, at Discover page (without logged in to Spotify)
 time.sleep(3)
+
+# # click search when not connect with Spotify
+# search_button = browser.find_element_by_id('search_btn')
+# # search_button = browser.find_element_by_link_text('SEARCH')
+# search_button.click()
+
+# # Expect to show a window says cannot search
+# time.sleep(2)
+# elem.send_keys(Keys.RETURN);
+# time.sleep(1)
 
 # locate and click profile button
 profile_button = browser.find_element_by_id('profile_btn')

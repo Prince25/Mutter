@@ -467,8 +467,8 @@ export class Discover extends Component {
         }
         else
         {
-          templist.AlbumImage[i] = this.state.NoImageUrl;
-          templist.AlbumLink[i] = '';
+          templist[i].getAlbum().setAlbumImage(this.state.NoImageUrl);
+          templist[i].getAlbum().setAlbumLink('');
         }      
         templist[i].getAlbum().getArtist().setArtistLink(bodydata.tracks.items[i].artists[0].external_urls.spotify);
         templist[i].setSongName(bodydata.tracks.items[i].name);
@@ -501,8 +501,8 @@ export class Discover extends Component {
         }
         else
         {
-          templist.AlbumImage[i] = this.state.NoImageUrl;
-          templist.AlbumLink[i] = '';
+          templist[i].getAlbum().setAlbumImage(this.state.NoImageUrl);
+          templist[i].getAlbum().setAlbumLink('');
         }      
         templist[i].getAlbum().getArtist().setArtistLink(bodydata.tracks.items[i].artists[0].external_urls.spotify);
         templist[i].setSongName(bodydata.tracks.items[i].name);
@@ -736,7 +736,7 @@ export class Discover extends Component {
   getStartSearch() 
   { 
     if (this.state.loggedIn === false) {
-      window.alert("Cannot search, please login with Spotify");
+      window.alert("Cannot search, please connect with Spotify!");
       return;
     }
     if (this.state.checkclicked.ClickStartSearch === true) 
@@ -822,7 +822,7 @@ export class Discover extends Component {
 
   render() {
     const {searchvalue} = this.state;
-    if (this.props.auth && !this.props.auth.isEmpty && this.props.location && this.props.location.hash !== '')
+    if (this.props.auth && !this.props.auth.isEmpty && this.props.location)
       this.props.updateToken(this.props.auth.uid, this.props.location.hash)
 
     return (
@@ -884,7 +884,7 @@ export class Discover extends Component {
         }
         </div>
 
-        { this.state.checkclicked.ClickSearchArtist && <div className="searchtotresults"> The Searched Artists: <br/>
+        { (this.state.checkclicked.ClickSearchArtist&&this.state.checkclicked.ClickStartSearch) && <div className="searchtotresults"> The Searched Artists: <br/>
         { (this.state.searchingArtistListNew[0].getArtistName() !== "") && <div className ="searchartistresult">
         Artist Name: <a href= {this.state.searchingArtistListNew[0].getArtistLink()}>
                           {this.state.searchingArtistListNew[0].getArtistName()}</a>
@@ -928,7 +928,7 @@ export class Discover extends Component {
         </div>
         }
 
-        { this.state.checkclicked.ClickSearchAlbum && <div className="searchtotresults"> The Searched Albums: <br/>
+        { (this.state.checkclicked.ClickSearchAlbum&&this.state.checkclicked.ClickStartSearch) && <div className="searchtotresults"> The Searched Albums: <br/>
         { (this.state.searchingAlbumListNew[0].getArtist().getArtistName() !== "") && <div className ="searchalbumresult">
         Album Name: <a href= {this.state.searchingAlbumListNew[0].getAlbumLink()}>
                          {this.state.searchingAlbumListNew[0].getAlbumName()}</a>
@@ -977,7 +977,7 @@ export class Discover extends Component {
         </div>
         } 
 
-        { this.state.checkclicked.ClickSearchTrack && <div className="searchtotresults"> The Searched Tracks: <br/>
+        { (this.state.checkclicked.ClickSearchTrack&&this.state.checkclicked.ClickStartSearch) && <div className="searchtotresults"> The Searched Tracks: <br/>
         { (this.state.searchingTrackListNew[0].getAlbum().getArtist().getArtistName() !== "") && <div className ="searchtrackresult">
         <div className="post-button-group">
           <button className="btn btn-primary mt-2" id="PostSong_1" onClick={() => this.getPost("STRA", 0)}>
