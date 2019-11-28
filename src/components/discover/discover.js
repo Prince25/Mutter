@@ -8,8 +8,6 @@ import Artist from './Artist';
 import SpotifyWebApi from 'spotify-web-api-js';
 const spotifyApi = new SpotifyWebApi();
 var request = require('request');
-// const AppConfig = require('../config/app');
-// const AuthConfig = require('../config/auth');
 
 var tempaccess=''
 
@@ -65,8 +63,6 @@ export class Discover extends Component {
       url: null,
       loggedIn: (token || spotifyApi.getAccessToken()) ? true : false,
       loading : false,
-      // PostSongName : ' you',
-      //PostUrl: 'https://www.google.com/',
       SongSelectOption : "0",
       TypeSelectOption : "R",
       SearchSelectOption: "Artist",
@@ -132,17 +128,6 @@ export class Discover extends Component {
       if (changeFlag) {
         if(this.state.SearchSelectOption === "Artist")
         {this.getSearchArtist();
-        //  this.setState({ searchingAlbumL:  { ArtistName: ['','','','',''],
-        //                           AlbumName: ['','','','',''],
-        //                           AlbumImage:['','','','',''],
-        //                           ArtistLink:['','','','',''],
-        //                           AlbumLink:['','','','','']}});
-        // this.setState({searchingTrackL:  { SongName: ['','','','',''],
-        //                           ArtistName: ['','','','',''],
-        //                           AlbumImage:['','','','',''],
-        //                           SongLink: ['','','','',''],
-        //                           ArtistLink:['','','','',''],
-        //                           AlbumLink:['','','','','']}});
         this.setState({searchingAlbumListNew : [new Album(), new Album(), new Album(), new Album(), new Album()]});
         this.setState({searchingTrackListNew : [new Song(),new Song(), new Song(), new Song(), new Song()]});
         }
@@ -150,33 +135,14 @@ export class Discover extends Component {
         {
           //window.alert("inside the album");
           this.getSearchAlbum();
-          // this.setState({searchingArtistL : { ArtistName: ['','','','',''],
-          //                          ArtistImage: ['','','','',''],
-          //                          ArtistLink: ['','','','','']}});
-          // this.setState({searchingTrackL:  { SongName: ['','','','',''],
-          //                           ArtistName: ['','','','',''],
-          //                           AlbumImage:['','','','',''],
-          //                           SongLink: ['','','','',''],
-          //                           ArtistLink:['','','','',''],
-          // AlbumLink:['','','','','']}});
           this.setState({searchingTrackListNew : [new Song(),new Song(), new Song(), new Song(), new Song()]});
           this.setState({searchingArtistListNew : [new Artist(),new Artist(), new Artist(), new Artist(), new Artist()]});
         }
         else if(this.state.SearchSelectOption === "Track")
         {
-          //window.alert("inside the track");
           this.getSearchTrack();
-          // this.setState({searchingArtistL : { ArtistName: ['','','','',''],
-          //                         ArtistImage: ['','','','',''],
-          //                         ArtistLink: ['','','','','']}});
-                                  
-          //  this.setState({ searchingAlbumL:  { ArtistName: ['','','','',''],
-          //                           AlbumName: ['','','','',''],
-          //                           AlbumImage:['','','','',''],
-          //                           ArtistLink:['','','','',''],
-          //                           AlbumLink:['','','','','']}});
-           this.setState({searchingArtistListNew : [new Artist(),new Artist(), new Artist(), new Artist(), new Artist()]});
-           this.setState({searchingAlbumListNew : [new Album(), new Album(), new Album(), new Album(), new Album()]});
+          this.setState({searchingArtistListNew : [new Artist(),new Artist(), new Artist(), new Artist(), new Artist()]});
+          this.setState({searchingAlbumListNew : [new Album(), new Album(), new Album(), new Album(), new Album()]});
         }
         searched = true;
       }
@@ -203,49 +169,18 @@ export class Discover extends Component {
     if(this.state.SearchSelectOption === "Artist")
     {
       this.getSearchArtist();
-      // this.setState({ searchingAlbumL:  { ArtistName: ['','','','',''],
-      //                           AlbumName: ['','','','',''],
-      //                           AlbumImage:['','','','',''],
-      //                           ArtistLink:['','','','',''],
-      //                           AlbumLink:['','','','','']}});
-      // this.setState({searchingTrackL:  { SongName: ['','','','',''],
-      //                           ArtistName: ['','','','',''],
-      //                           AlbumImage:['','','','',''],
-      //                           SongLink: ['','','','',''],
-      //                           ArtistLink:['','','','',''],
-      // AlbumLink:['','','','','']}});
       this.setState({searchingAlbumListNew : [new Album(), new Album(), new Album(), new Album(), new Album()]});
       this.setState({searchingTrackListNew : [new Song(),new Song(), new Song(), new Song(), new Song()]});
     }
     else if(this.state.SearchSelectOption === "Album")
     {
-      //window.alert("inside the album");
       this.getSearchAlbum();
-      // this.setState({searchingArtistL : { ArtistName: ['','','','',''],
-      //                          ArtistImage: ['','','','',''],
-      //                          ArtistLink: ['','','','','']}});
-      // this.setState({searchingTrackL:  { SongName: ['','','','',''],
-      //                           ArtistName: ['','','','',''],
-      //                           AlbumImage:['','','','',''],
-      //                           SongLink: ['','','','',''],
-      //                           ArtistLink:['','','','',''],
-      // AlbumLink:['','','','','']}});
       this.setState({searchingTrackListNew : [new Song(),new Song(), new Song(), new Song(), new Song()]});
       this.setState({searchingArtistListNew : [new Artist(),new Artist(), new Artist(), new Artist(), new Artist()]});
     }
     else if(this.state.SearchSelectOption === "Track")
     {
-      //window.alert("inside the track");
       this.getSearchTrack();
-      // this.setState({searchingArtistL : { ArtistName: ['','','','',''],
-      //                         ArtistImage: ['','','','',''],
-      //                         ArtistLink: ['','','','','']}});
-                              
-      //  this.setState({ searchingAlbumL:  { ArtistName: ['','','','',''],
-      //                           AlbumName: ['','','','',''],
-      //                           AlbumImage:['','','','',''],
-      //                           ArtistLink:['','','','',''],
-      //                           AlbumLink:['','','','','']}});
       this.setState({searchingArtistListNew : [new Artist(),new Artist(), new Artist(), new Artist(), new Artist()]});
       this.setState({searchingAlbumListNew : [new Album(), new Album(), new Album(), new Album(), new Album()]});
     }
@@ -261,7 +196,6 @@ export class Discover extends Component {
   handleFormSubmit(formSubmitEvent)
   {
     formSubmitEvent.preventDefault();
-    //window.alert("hello");
   }
 
   /**
@@ -302,14 +236,10 @@ export class Discover extends Component {
     this.state.checkclicked.ClickRecent = true;
     spotifyApi.getMyRecentlyPlayedTracks()
     .then((response)=>{
-
-
-
       if (response.next == null) {
         this.state.checkclicked.ClickRecent = false;
         return;
       }
-
       var tempSongList = this.state.recentlyListnew;
       for(var i =0; i <5; i++)
       {
@@ -413,11 +343,6 @@ export class Discover extends Component {
       }
       for(var i = Num; i < 5-Num + 1; i++)
       {
-        // templist.ArtistName[i] = ""
-        // templist.AlbumImage[i] = ""
-        // templist.AlbumLink[i] = ""
-        // templist.ArtistLink[i] = ""
-        // templist.AlbumName[i] = ""
         templist[i] = new Album();
       }
       if (Num === 0) {
@@ -480,12 +405,6 @@ export class Discover extends Component {
       }
       for(var i = Num; i < 5-Num + 1; i++)
       {
-        // templist.ArtistName[i] = ""; 
-        // templist.AlbumImage[i] = "";
-        // templist.AlbumLink[i] = "";
-        // templist.ArtistLink[i] = "";
-        // templist.SongName[i] = "";
-        // templist.SongLink[i] = "";
         templist[i] = new Song();
       }
       if (Num === 0) {
@@ -617,6 +536,9 @@ export class Discover extends Component {
         
         if (typeof body.error != "undefined") //check if error exist which may return from spotify
         {
+          feed.state.checkclicked.ClickHottest = false;
+          feed.state.checkclicked.ClickRecommended = false;
+          feed.state.checkclicked.ClickRecent = false;
           window.alert("the access_token is expired, please log in the spotify again");
           return;
         }
@@ -650,18 +572,19 @@ export class Discover extends Component {
           json: true
         };
     var feed = this;
-        request.get(options3, function(error, response, body) {
-        
-        if (typeof body.error != "undefined") //check if error exist which may return from spotify
-        {
-          window.alert("the access_token is expired, please log in the spotify again");
-          return;
-        }
-        else
-        {
-        feed.changeAlbum(body);
-        }
-
+        request.get(options3, function(error, response, body) {        
+          if (typeof body.error != "undefined") //check if error exist which may return from spotify
+          {
+            feed.state.checkclicked.ClickHottest = false;
+            feed.state.checkclicked.ClickRecommended = false;
+            feed.state.checkclicked.ClickRecent = false;
+            window.alert("the access_token is expired, please log in the spotify again");
+            return;
+          }
+          else
+          {
+            feed.changeAlbum(body);
+          }
         });
   };
 
@@ -689,18 +612,18 @@ export class Discover extends Component {
           json: true
         };
     var feed = this;
-        request.get(options3, function(error, response, body) {
-        
-        if (typeof body.error != "undefined") //check if error exist which may return from spotify
-        {
-          window.alert("the access_token is expired, please log in the spotify again");
-          return;
-        }
-        else{ 
-          feed.changeTrack(body);
-        }
-        
-
+        request.get(options3, function(error, response, body) {        
+          if (typeof body.error != "undefined") //check if error exist which may return from spotify
+          {
+            feed.state.checkclicked.ClickHottest = false;
+            feed.state.checkclicked.ClickRecommended = false;
+            feed.state.checkclicked.ClickRecent = false;
+            window.alert("the access_token is expired, please log in the spotify again");
+            return;
+          }
+          else { 
+            feed.changeTrack(body);
+          }
         });
   };
 
@@ -721,17 +644,18 @@ export class Discover extends Component {
         };
     var feed = this;
         request.get(options3, function(error, response, body) {
-        //feed.changeHottest(body);
-        if (typeof body.error != "undefined") //check if error exist which may return from spotify
-        {
-          window.alert("the access_token is expired, please log in the spotify again");
-          return;
-        }
-        else
-        {
-          feed.changeHottestNew(body);
-        }
-
+          if (typeof body.error != "undefined") //check if error exist which may return from spotify
+          {
+            feed.state.checkclicked.ClickHottest = false;
+            feed.state.checkclicked.ClickRecommended = false;
+            feed.state.checkclicked.ClickRecent = false;
+            window.alert("the access_token is expired, please log in the spotify again");
+            return;
+          }
+          else
+          {
+            feed.changeHottestNew(body);
+          }
         });
   };
 
@@ -758,25 +682,25 @@ export class Discover extends Component {
         }
         if (typeof body.error != "undefined") //check if error exist which may return from spotify
         {
+          feed.state.checkclicked.ClickHottest = false;
+          feed.state.checkclicked.ClickRecommended = false;
+          feed.state.checkclicked.ClickRecent = false;
           window.alert("the access_token is expired, please log in the spotify again");
           return;
         }
         else{
-        var topartists = body.items[0].id;
-        var recommendedurl ='https://api.spotify.com/v1/recommendations?limit=5&market=US&seed_artists=' + topartists + '&min_energy=0.4&min_popularity=50';
-        var options3 = {
-            url: recommendedurl,
-            headers: { 'Authorization': 'Bearer ' + tempaccess },
-            json: true
+          var topartists = body.items[0].id;
+          var recommendedurl ='https://api.spotify.com/v1/recommendations?limit=5&market=US&seed_artists=' + topartists + '&min_energy=0.4&min_popularity=50';
+          var options3 = {
+              url: recommendedurl,
+              headers: { 'Authorization': 'Bearer ' + tempaccess },
+              json: true
         };
-        
         request.get(options3, function(error, response, body) {
             //feed.changeRecommandation(body);
             feed.changeRecommandationNew(body);
         });
-
-        }
-        
+        }     
     });
     this.state.loading = false;
   }
@@ -806,9 +730,7 @@ export class Discover extends Component {
     {
       // this.getaccesstoken();
       this.getMostRecommended();
-
       this.getHottestSong();
-      //this.getRecentList();
       this.getRecentListnew();
       this.state.showonce = false;
       // if accesstoken not in url, append it 
