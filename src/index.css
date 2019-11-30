@@ -105,3 +105,14 @@ textarea.materialize-textarea:focus:not([readonly]){
   bottom:0;
   padding: 25px;
 }
+
+.feed-selection-box {
+  background-color: #000000;
+  color: #ffffff;
+}
+
+.feed-options {
+  color: #ffffff;
+  padding: 10px;
+  font-family: calibri;
+}

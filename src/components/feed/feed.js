@@ -8,6 +8,13 @@ import { Redirect } from 'react-router-dom';
 
 class Feed extends Component {
 
+  state = {
+    filter: 'all'
+  }
+
+  filter() {
+  }
+
   render() {
 
     const { posts, users, auth, match } = this.props;
@@ -31,9 +38,28 @@ class Feed extends Component {
 
     return (
       <div className="feed container">
-        <div className="row">
+        <div className="col"> {/* https://youtu.be/hZswcXSd5GA?t=130 */}
+          <div className="row">
 
-          <div className="col"> {/* https://youtu.be/hZswcXSd5GA?t=130 */}
+          <form className="feed-selection-box"><b>FILTER FEED:</b>   
+            <div onChange={this.filter()}>
+            <label className="feed-options">
+              <input type="radio" id="all" name="filter"/>
+              <span>all</span>
+            </label>
+            
+            <label className="feed-options">
+              <input type="radio" id="following" name="filter"/>
+              <span>following</span>
+            </label>
+            
+            <label className="feed-options">
+              <input type="radio" id="groups" name="filter"/>
+              <span>groups</span>
+            </label>
+          </div>
+          </form>
+
             <PostList posts={followingPosts} users={users} />
           </div>
  
