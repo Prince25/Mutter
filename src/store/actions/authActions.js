@@ -48,6 +48,7 @@ export const signUp = (newUser) => {
         name: newUser.name,
         following: [],
         followers: [],
+        groups: [],
         imageUrl: 'https://firebasestorage.googleapis.com/v0/b/mutter-ucla.appspot.com/o/users%2Fdefault_stick.png?alt=media&token=817a47dd-6485-45e4-91d1-18718b06947f'
       })
     }).then(() => {
@@ -153,7 +154,6 @@ export const unfollowUser = (uId, followingId) => {
   }
 }
 
-
 export const updateToken = (uId, token) => {
   return (dispatch, getState, { getFirebase, getFirestore }) => {
 
@@ -167,5 +167,46 @@ export const updateToken = (uId, token) => {
     }).catch((err) => {
       dispatch({ type: 'SPOTIFY_TOKEN_ERROR', err })
     })
+  }
+}
+
+export const userJoinGroup = (uId, groupId) => {
+  return (dispatch, getState, { getFirebase, getFirestore }) => {
+
+    // Make async call to database
+    const firestore = getFirestore()
+
+    //get groups collection
+    let userCollectionRef = firestore.collection('users');
+
+    //add to list of groups user is in
+    userCollectionRef.doc(uId).update({
+      groups: firestore.FieldValue.arrayUnion(groupId)
+    }).then(() => {
+      dispatch({ type: 'JOIN_GROUP', uId, groupId })
+    }).catch((err) => {
+      dispatch({ type: 'JOIN_GROUP_ERROR', err })
+    });
+  }
+}
+
+
+export const userLeaveGroup = (uId, groupId) => {
+  return (dispatch, getState, { getFirebase, getFirestore }) => {
+
+    // Make async call to database
+    const firestore = getFirestore()
+
+    //get groups collection
+    let userCollectionRef = firestore.collection('users');
+
+    //remove group from list of groups user is in
+    userCollectionRef.doc(uId).update({
+      following: firestore.FieldValue.arrayRemove(groupId)
+    }).then(() => {
+      dispatch({ type: 'LEAVE_GROUP', uId, groupId })
+    }).catch((err) => {
+      dispatch({ type: 'LEAVE_GROUP_ERROR', err })
+    });
   }
 }

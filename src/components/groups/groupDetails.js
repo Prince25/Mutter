@@ -5,6 +5,7 @@ import { firestoreConnect } from 'react-redux-firebase'
 import { compose } from 'redux'
 import moment from 'moment'
 import { removeGroup, joinGroup, leaveGroup } from '../../store/actions/groupActions'
+import { userJoinGroup, userLeaveGroup } from '../../store/actions/authActions'
 import UploadPicture from './uploadPicture'
 
 
@@ -58,6 +59,7 @@ const GroupDetails = (props) => {
                 { group.members && authId && group.members.indexOf(authId) === -1 ? 
                   <button className="btn blue lighten-1 z-depth-0" onClick={() => {
                     props.joinGroup(groupId)
+                    props.userJoinGroup(authId, groupId)
                     props.history.push("/groups")
                   }}>Join</button> : null }
                             
@@ -66,6 +68,7 @@ const GroupDetails = (props) => {
                 { group.members && authId && group.members.indexOf(authId) !== -1 ?
                   <button className="btn orange lighten-1 z-depth-0" onClick={() => {
                       props.leaveGroup(groupId)
+                      props.userLeaveGroup(groupId)
                       props.history.push("/groups")
                   }}>Leave</button> : null }
 
@@ -127,7 +130,9 @@ const mapDispatchToProps = (dispatch) => {
   return {
     removeGroup: (groupId) => dispatch(removeGroup(groupId)),
     joinGroup: (groupId) => dispatch(joinGroup(groupId)),
-    leaveGroup: (groupId) => dispatch(leaveGroup(groupId))
+    leaveGroup: (groupId) => dispatch(leaveGroup(groupId)),
+    userJoinGroup: (uId, groupId) => dispatch(userJoinGroup(uId, groupId)),
+    userLeaveGroup: (uId, groupId) => dispatch(userLeaveGroup(uId, groupId))
   }
 }
 
