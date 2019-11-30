@@ -12,29 +12,57 @@ class Feed extends Component {
     filter: 'all'
   }
 
-  filter() {
+  filter = (e) => {
+    this.setState({ filter: e.target.id });
+  }
+
+  componentDidUpdate() {
+    if (document.getElementById('all') == null) return;
+    document.getElementById(this.state.filter).checked = true;
   }
 
   render() {
 
-    const { posts, users, auth, match } = this.props;
+    const { posts, users, groups, auth, match } = this.props;
     if (!auth.uid) return <Redirect to='/splash' />
 
 
-    if (users === undefined || posts === undefined) return (<div></div>);
+    if (users === undefined || posts === undefined || groups === undefined) return (<div></div>);
     const userId = this.props.auth.uid;
 
-    //get list of users this dude is following
+    //get list of users this dude is following and list of groups theyre in
     let usersFollowing = [];
+    let usersGroups = [];
     for (const user of users) {
       if (user.id === userId) {
         usersFollowing = user.following;
+        usersGroups = user.groups;
         break;
       }
     }
 
-    //grab all posts by users this dude is following
-    let followingPosts = posts.filter(post => post.authorId === auth.uid || usersFollowing.includes(post.authorId));
+    //get list of users who are in same groups this dude is in
+    let usersInGroups = [];
+    for (const group of groups) {
+      if (usersGroups.includes(group.id)) {
+        usersInGroups.push(...group.members);
+      }
+    }
+    usersInGroups = usersInGroups.filter((value, index, self) => { return self.indexOf(value)===index; } );   // remove duplicates
+
+    let postsToDisplay = [];
+    switch(this.state.filter) {
+      case 'following':
+        postsToDisplay = posts.filter(post => usersFollowing.includes(post.authorId));
+        break;
+      case 'groups':
+        postsToDisplay = posts.filter(post => post.authorId != auth.uid && usersInGroups.includes(post.authorId));
+        break;
+      case 'all':
+      default:
+        postsToDisplay = posts.filter(post => post.authorId != auth.uid && (usersFollowing.includes(post.authorId) || usersInGroups.includes(post.authorId)));
+        break;
+    }
 
     return (
       <div className="feed container">
@@ -42,25 +70,26 @@ class Feed extends Component {
           <div className="row">
 
           <form className="feed-selection-box"><b>FILTER FEED:</b>   
-            <div onChange={this.filter()}>
+            <div onChange={this.filter}>
             <label className="feed-options">
-              <input type="radio" id="all" name="filter"/>
+              <input type="radio" id="all" value="all" name="filter-options"/>
               <span>all</span>
             </label>
             
             <label className="feed-options">
-              <input type="radio" id="following" name="filter"/>
+              <input type="radio" id="following" value="following" name="filter-options"/>
               <span>following</span>
             </label>
             
             <label className="feed-options">
-              <input type="radio" id="groups" name="filter"/>
+              <input type="radio" id="groups" value="groups" name="filter-options"/>
               <span>groups</span>
             </label>
+
           </div>
           </form>
 
-            <PostList posts={followingPosts} users={users} />
+            <PostList posts={postsToDisplay} users={users} />
           </div>
  
         </div>
@@ -73,6 +102,7 @@ const mapStateToProps = (state) => {
   return {
     posts: state.firestore.ordered.posts,
     users: state.firestore.ordered.users,
+    groups: state.firestore.ordered.groups,
     auth: state.firebase.auth
   }
 }
@@ -82,6 +112,7 @@ export default compose(
   connect(mapStateToProps),
   firestoreConnect([
     { collection: 'posts', orderBy: ['createdAt', 'desc'] },
-    { collection: 'users' }
+    { collection: 'users' },
+    { collection: 'groups' }
   ])
 )(Feed);
