@@ -74,17 +74,17 @@ class Feed extends Component {
             
             <label className="feed-options">
               <input type="radio" id="following" value="following" name="filter-options"/>
-              <span>following</span>
+              <span>Following</span>
             </label>
             
             <label className="feed-options">
               <input type="radio" id="groups" value="groups" name="filter-options"/>
-              <span>groups</span>
+              <span>Groups</span>
             </label>
 
             <label className="feed-options">
               <input type="radio" id="all" value="all" name="filter-options"/>
-              <span>all</span>
+              <span>All</span>
             </label>
 
           </div>
