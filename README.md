@@ -8,12 +8,22 @@ say about top music.
 * [React](https://reactjs.org/) - Frontend: JavaScript library for creating web apps!
 * [node.js](http://nodejs.org) - evented I/O for the backend
 * [Firebase](https://firebase.google.com/) - Backend: Database and Authorization
-* [Jsdoc](https://devdocs.io/jsdoc/) - To help with documentation, we have used JSDoc
+* [Jsdoc](https://devdocs.io/jsdoc/) - Documentation
+* [Selenium](https://selenium-python.readthedocs.io/) - Unit Testing
 
 
 ### Installation
 Mutter requires [node.js](https://nodejs.org/) to run.
 Clone repository, install the dependencies and start the server.
+
+Clone and Run the Script
+```sh
+$ git clone git@gitlab.com:etanboga/cs130-mutter.git
+$ cd cs130-mutter
+$ ./run.sh
+```
+
+**OR**
 
 Clone and install dependencies
 ```sh
@@ -37,22 +47,13 @@ $ npm start
 ```
 
 
-### Running Unit Tests
-```sh
-$ npm start
-$ npm run s-test
-```
-
-### Running Python Selenium Tests
-This test requires Chromedriver on your machine, link to installation guide: https://chromedriver.chromium.org/downloads
+### Running Unit Tests Using Python Selenium
+This test requires [Chromedriver](https://chromedriver.chromium.org/downloads) and [Chrome](https://www.google.com/chrome/) to be installed on your machine 
 ```sh
 $ pip install selenium
 $ cd test
 $ python MutterTest.py
 ```
-
-### Todos
-* Make App
 
 
 ### Team
@@ -65,18 +66,20 @@ $ python MutterTest.py
 
 
 ### Directory Structure
-    .
+    CS130-Mutter
     ├── ...
     ├── server      # Spotify Auhentication Server
     │   └── ...
     ├── src
     │   ├── components      # All frontend components used to display web pages 
     |   |   ├── ...
-    |   |   ├── discover    # Discover Page
-    |   |   ├── feed        # Feed Page
-    |   |   ├── groups      # Groups Page
-    |   |   ├── layout      # Splash and Navbar
-    |   |   ├── profile     # Profile Page
+    |   |   ├── discover            # Discover Page
+    |   |   ├── feed                # Feed Page
+    |   |   ├── groups              # Groups Page
+    |   |   ├── layout              # Splash and Navbar
+    |   |   ├── profile             # Profile Page
+    |   |   ├── home.js             # Home Page
+    |   |   ├── notifications.js    # Handles notifications on the home page
     |   |   └── ...
     │   ├── config
     |   |   └── fbConfig.js # Firebase configuration
@@ -84,21 +87,18 @@ $ python MutterTest.py
     |   |   ├── actions     # Backend methods used to communicate with Firebase
     |   |   |   ├── authActions.js  # User Authentication
     |   |   |   ├── groupActions.js # Groups Database
-    |   |   |   ├── postActions.js  # Posts Database
-    |   |   |   └── ...
+    |   |   |   └── postActions.js  # Posts Database
     │   |   ├── reducers    # Backend reducers keeping track of state changes
     |   |   |   ├── authReducer.js  
     |   |   |   ├── groupReducer.js 
     |   |   |   ├── postReducer.js 
-    |   |   |   ├── rootReducer.js  # Combines Other Reducers
-    |   |   |   └── ...
+    |   |   |   └── rootReducer.js  # Combines Other Reducers
     │   ├── App.js      # Main Component responsible for routing
     │   ├── index.css   # Main CSS File
     │   ├── loading.js  # Component That Displays While Page is Loading
     │   └── ...
     ├── test
-    │   ├── test.js # Unit Test Cases Using Selenium 
-        └── MutterTest.py # Python Test program Using Selenium 
-    ├── README.md   # This file
+    │   └── MutterTest.py # Python Unit Tests Using Selenium 
+    ├── README.md   # The file you are currently reading 
+    ├── run.sh      # Script used to easily launch Mutter
     └── ...
-
