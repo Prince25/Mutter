@@ -9,7 +9,7 @@ import { Redirect } from 'react-router-dom';
 class Feed extends Component {
 
   state = {
-    filter: 'all'
+    filter: 'following'
   }
 
   filter = (e) => {
@@ -17,7 +17,7 @@ class Feed extends Component {
   }
 
   componentDidUpdate() {
-    if (document.getElementById('all') == null) return;
+    if (document.getElementById('following') == null) return;
     document.getElementById(this.state.filter).checked = true;
   }
 
@@ -52,15 +52,15 @@ class Feed extends Component {
 
     let postsToDisplay = [];
     switch(this.state.filter) {
-      case 'following':
-        postsToDisplay = posts.filter(post => usersFollowing.includes(post.authorId));
-        break;
       case 'groups':
         postsToDisplay = posts.filter(post => post.authorId != auth.uid && usersInGroups.includes(post.authorId));
         break;
       case 'all':
+      	postsToDisplay = posts.filter(post => post.authorId != auth.uid);
+      	break;
+      case 'following':
       default:
-        postsToDisplay = posts.filter(post => post.authorId != auth.uid && (usersFollowing.includes(post.authorId) || usersInGroups.includes(post.authorId)));
+        postsToDisplay = posts.filter(post => usersFollowing.includes(post.authorId));
         break;
     }
 
@@ -71,10 +71,6 @@ class Feed extends Component {
 
           <form className="feed-selection-box"><b>FILTER FEED:</b>   
             <div onChange={this.filter}>
-            <label className="feed-options">
-              <input type="radio" id="all" value="all" name="filter-options"/>
-              <span>all</span>
-            </label>
             
             <label className="feed-options">
               <input type="radio" id="following" value="following" name="filter-options"/>
@@ -84,6 +80,11 @@ class Feed extends Component {
             <label className="feed-options">
               <input type="radio" id="groups" value="groups" name="filter-options"/>
               <span>groups</span>
+            </label>
+
+            <label className="feed-options">
+              <input type="radio" id="all" value="all" name="filter-options"/>
+              <span>all</span>
             </label>
 
           </div>
