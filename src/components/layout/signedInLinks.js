@@ -23,7 +23,7 @@ class SignedInLinks extends Component {
         <li><NavLink to='/groups'>Groups</NavLink></li>
         <li><NavLink to='/feed'>Feed</NavLink></li>
         <li><NavLink to={'/profile/' + auth.uid} id = 'profile_btn' className='btn btn-floating pink lighten-1'>
-          <img src={imageUrl} alt="" className="circle responsive-img" />
+          <img src={imageUrl} alt="" className="img-fit circle responsive-img" />
         </NavLink></li>
         <li><a href='/splash' onClick={this.props.signOut}>Log Out</a></li>
       </ul>

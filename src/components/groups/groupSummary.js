@@ -11,7 +11,7 @@ const GroupSummary = ({group}) => {
       <div className="card-content grey-text text-darken-3">
 
         <div className="card-image card small">
-          { group.imageUrl && <img src={group.imageUrl} alt="" />}
+          { group.imageUrl && <img src={group.imageUrl} alt="" className="img-fit"/>}
         </div>
 
         <span className="card-title">{group.name}</span>
