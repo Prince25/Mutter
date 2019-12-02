@@ -104,6 +104,218 @@
     
 
     
+    <h4 class="name" id="appendToUrl"><span class="type-signature"></span>appendToUrl<span class="signature">()</span><span class="type-signature"> &rarr; {null}</span></h4>
+    
+
+    
+
+
+
+<div class="description">
+    check the current url and see if the access token has on there, if not append a new one
+</div>
+
+
+
+
+
+
+
+
+
+
+
+
+
+<dl class="details">
+
+    
+
+    
+
+    
+
+    
+
+    
+
+    
+
+    
+
+    
+
+    
+
+    
+
+    
+
+    
+
+    
+    <dt class="tag-source">Source:</dt>
+    <dd class="tag-source"><ul class="dummy"><li>
+        <a href="discover.js.html">discover.js</a>, <a href="discover.js.html#line734">line 734</a>
+    </li></ul></dd>
+    
+
+    
+
+    
+
+    
+</dl>
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+<h5>Returns:</h5>
+
+        
+
+
+<dl>
+    <dt>
+        Type
+    </dt>
+    <dd>
+        
+<span class="param-type">null</span>
+
+
+    </dd>
+</dl>
+
+    
+
+
+
+
+
+        
+            
+
+    
+
+    
+    <h4 class="name" id="authshow"><span class="type-signature"></span>authshow<span class="signature">()</span><span class="type-signature"> &rarr; {null}</span></h4>
+    
+
+    
+
+
+
+<div class="description">
+    call the get and appends functions, show the result and append the new token if the user has loggedIn and the result haven't shown yet
+</div>
+
+
+
+
+
+
+
+
+
+
+
+
+
+<dl class="details">
+
+    
+
+    
+
+    
+
+    
+
+    
+
+    
+
+    
+
+    
+
+    
+
+    
+
+    
+
+    
+
+    
+    <dt class="tag-source">Source:</dt>
+    <dd class="tag-source"><ul class="dummy"><li>
+        <a href="discover.js.html">discover.js</a>, <a href="discover.js.html#line715">line 715</a>
+    </li></ul></dd>
+    
+
+    
+
+    
+
+    
+</dl>
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+<h5>Returns:</h5>
+
+        
+
+
+<dl>
+    <dt>
+        Type
+    </dt>
+    <dd>
+        
+<span class="param-type">null</span>
+
+
+    </dd>
+</dl>
+
+    
+
+
+
+
+
+        
+            
+
+    
+
+    
     <h4 class="name" id="changeAlbum"><span class="type-signature"></span>changeAlbum<span class="signature">(bodydata)</span><span class="type-signature"> &rarr; {null}</span></h4>
     
 
@@ -112,7 +324,7 @@
 
 
 <div class="description">
-    updating the searchingAlbumL's ArtistName, AlbumName, and AlbumImage in discover class with the albums object from the Spotify catalog
+    updating the searchingAlbumList's 's Album objects in discover class with the album object list from spotify catalog
 </div>
 
 
@@ -164,7 +376,7 @@
 
             
 
-            <td class="description last">the object of albums list</td>
+            <td class="description last">the object of Album list returned by spotify</td>
         </tr>
 
     
@@ -205,7 +417,162 @@
     
     <dt class="tag-source">Source:</dt>
     <dd class="tag-source"><ul class="dummy"><li>
-        <a href="discover.js.html">discover.js</a>, <a href="discover.js.html#line233">line 233</a>
+        <a href="discover.js.html">discover.js</a>, <a href="discover.js.html#line300">line 300</a>
+    </li></ul></dd>
+    
+
+    
+
+    
+
+    
+</dl>
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+<h5>Returns:</h5>
+
+        
+
+
+<dl>
+    <dt>
+        Type
+    </dt>
+    <dd>
+        
+<span class="param-type">null</span>
+
+
+    </dd>
+</dl>
+
+    
+
+
+
+
+
+        
+            
+
+    
+
+    
+    <h4 class="name" id="changeAlbum"><span class="type-signature"></span>changeAlbum<span class="signature">(bodydata)</span><span class="type-signature"> &rarr; {null}</span></h4>
+    
+
+    
+
+
+
+<div class="description">
+    updating the searchingTrackList's 's song objects in discover class with the Track object list from spotify catalog
+</div>
+
+
+
+
+
+
+
+
+
+    <h5>Parameters:</h5>
+    
+
+<table class="params">
+    <thead>
+    <tr>
+        
+        <th>Name</th>
+        
+
+        <th>Type</th>
+
+        
+
+        
+
+        <th class="last">Description</th>
+    </tr>
+    </thead>
+
+    <tbody>
+    
+
+        <tr>
+            
+                <td class="name"><code>bodydata</code></td>
+            
+
+            <td class="type">
+            
+                
+<span class="param-type">object</span>
+
+
+            
+            </td>
+
+            
+
+            
+
+            <td class="description last">the object of Track list returned by spotify</td>
+        </tr>
+
+    
+    </tbody>
+</table>
+
+
+
+
+
+
+<dl class="details">
+
+    
+
+    
+
+    
+
+    
+
+    
+
+    
+
+    
+
+    
+
+    
+
+    
+
+    
+
+    
+
+    
+    <dt class="tag-source">Source:</dt>
+    <dd class="tag-source"><ul class="dummy"><li>
+        <a href="discover.js.html">discover.js</a>, <a href="discover.js.html#line359">line 359</a>
     </li></ul></dd>
     
 
@@ -267,7 +634,7 @@
 
 
 <div class="description">
-    updating the searchingArtistL's ArtistName, and ArtistImage in discover class with the artists object from spotify catalog
+    updating the searchingArtistList's 's Artist objects in discover class with the artists object list from spotify catalog
 </div>
 
 
@@ -319,7 +686,7 @@
 
             
 
-            <td class="description last">the object of Artists list</td>
+            <td class="description last">the object of Artists list returned by spotify</td>
         </tr>
 
     
@@ -360,7 +727,7 @@
     
     <dt class="tag-source">Source:</dt>
     <dd class="tag-source"><ul class="dummy"><li>
-        <a href="discover.js.html">discover.js</a>, <a href="discover.js.html#line196">line 196</a>
+        <a href="discover.js.html">discover.js</a>, <a href="discover.js.html#line247">line 247</a>
     </li></ul></dd>
     
 
@@ -422,7 +789,7 @@
 
 
 <div class="description">
-    updating the hottestL's ArtistName, SongName, and AlbumImage in discover class with the tracks object from the Spotify catalog
+    updating the HottestList's Song object  in discover class with the tracks object from the Spotify catalog
 </div>
 
 
@@ -515,162 +882,7 @@
     
     <dt class="tag-source">Source:</dt>
     <dd class="tag-source"><ul class="dummy"><li>
-        <a href="discover.js.html">discover.js</a>, <a href="discover.js.html#line355">line 355</a>
-    </li></ul></dd>
-    
-
-    
-
-    
-
-    
-</dl>
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-<h5>Returns:</h5>
-
-        
-
-
-<dl>
-    <dt>
-        Type
-    </dt>
-    <dd>
-        
-<span class="param-type">null</span>
-
-
-    </dd>
-</dl>
-
-    
-
-
-
-
-
-        
-            
-
-    
-
-    
-    <h4 class="name" id="changeRecent"><span class="type-signature"></span>changeRecent<span class="signature">(bodydata)</span><span class="type-signature"> &rarr; {null}</span></h4>
-    
-
-    
-
-
-
-<div class="description">
-    updating the recentList's ArtistName, SongName, and AlbumImage in discover class with the recently played tracks object
-</div>
-
-
-
-
-
-
-
-
-
-    <h5>Parameters:</h5>
-    
-
-<table class="params">
-    <thead>
-    <tr>
-        
-        <th>Name</th>
-        
-
-        <th>Type</th>
-
-        
-
-        
-
-        <th class="last">Description</th>
-    </tr>
-    </thead>
-
-    <tbody>
-    
-
-        <tr>
-            
-                <td class="name"><code>bodydata</code></td>
-            
-
-            <td class="type">
-            
-                
-<span class="param-type">object</span>
-
-
-            
-            </td>
-
-            
-
-            
-
-            <td class="description last">the object tracks from the current user's recently played tracks</td>
-        </tr>
-
-    
-    </tbody>
-</table>
-
-
-
-
-
-
-<dl class="details">
-
-    
-
-    
-
-    
-
-    
-
-    
-
-    
-
-    
-
-    
-
-    
-
-    
-
-    
-
-    
-
-    
-    <dt class="tag-source">Source:</dt>
-    <dd class="tag-source"><ul class="dummy"><li>
-        <a href="discover.js.html">discover.js</a>, <a href="discover.js.html#line145">line 145</a>
+        <a href="discover.js.html">discover.js</a>, <a href="discover.js.html#line451">line 451</a>
     </li></ul></dd>
     
 
@@ -732,7 +944,7 @@
 
 
 <div class="description">
-    updating the mostRecommendedL's ArtistName, SongName, and AlbumImage in discover class with the tracks object from the Spotify catalog
+    updating the mostRecommendedList's Song object in discover class with the tracks object from the Spotify catalog
 </div>
 
 
@@ -825,162 +1037,7 @@
     
     <dt class="tag-source">Source:</dt>
     <dd class="tag-source"><ul class="dummy"><li>
-        <a href="discover.js.html">discover.js</a>, <a href="discover.js.html#line311">line 311</a>
-    </li></ul></dd>
-    
-
-    
-
-    
-
-    
-</dl>
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-<h5>Returns:</h5>
-
-        
-
-
-<dl>
-    <dt>
-        Type
-    </dt>
-    <dd>
-        
-<span class="param-type">null</span>
-
-
-    </dd>
-</dl>
-
-    
-
-
-
-
-
-        
-            
-
-    
-
-    
-    <h4 class="name" id="changeTrack"><span class="type-signature"></span>changeTrack<span class="signature">(bodydata)</span><span class="type-signature"> &rarr; {null}</span></h4>
-    
-
-    
-
-
-
-<div class="description">
-    updating the searchingTrackL's ArtistName, SongName, and AlbumImage in discover class with the  Tracks object from the Spotify catalog
-</div>
-
-
-
-
-
-
-
-
-
-    <h5>Parameters:</h5>
-    
-
-<table class="params">
-    <thead>
-    <tr>
-        
-        <th>Name</th>
-        
-
-        <th>Type</th>
-
-        
-
-        
-
-        <th class="last">Description</th>
-    </tr>
-    </thead>
-
-    <tbody>
-    
-
-        <tr>
-            
-                <td class="name"><code>bodydata</code></td>
-            
-
-            <td class="type">
-            
-                
-<span class="param-type">object</span>
-
-
-            
-            </td>
-
-            
-
-            
-
-            <td class="description last">the object of tracks list</td>
-        </tr>
-
-    
-    </tbody>
-</table>
-
-
-
-
-
-
-<dl class="details">
-
-    
-
-    
-
-    
-
-    
-
-    
-
-    
-
-    
-
-    
-
-    
-
-    
-
-    
-
-    
-
-    
-    <dt class="tag-source">Source:</dt>
-    <dd class="tag-source"><ul class="dummy"><li>
-        <a href="discover.js.html">discover.js</a>, <a href="discover.js.html#line275">line 275</a>
+        <a href="discover.js.html">discover.js</a>, <a href="discover.js.html#line420">line 420</a>
     </li></ul></dd>
     
 
@@ -1086,7 +1143,7 @@
     
     <dt class="tag-source">Source:</dt>
     <dd class="tag-source"><ul class="dummy"><li>
-        <a href="discover.js.html">discover.js</a>, <a href="discover.js.html#line19">line 19</a>
+        <a href="discover.js.html">discover.js</a>, <a href="discover.js.html#line32">line 32</a>
     </li></ul></dd>
     
 
@@ -1192,7 +1249,7 @@
     
     <dt class="tag-source">Source:</dt>
     <dd class="tag-source"><ul class="dummy"><li>
-        <a href="discover.js.html">discover.js</a>, <a href="discover.js.html#line104">line 104</a>
+        <a href="discover.js.html">discover.js</a>, <a href="discover.js.html#line206">line 206</a>
     </li></ul></dd>
     
 
@@ -1298,7 +1355,7 @@
     
     <dt class="tag-source">Source:</dt>
     <dd class="tag-source"><ul class="dummy"><li>
-        <a href="discover.js.html">discover.js</a>, <a href="discover.js.html#line87">line 87</a>
+        <a href="discover.js.html">discover.js</a>, <a href="discover.js.html#line189">line 189</a>
     </li></ul></dd>
     
 
@@ -1327,7 +1384,7 @@
 
         
 <div class="param-desc">
-    hashParams - the  query string that spotify sends back when log in
+    hashParams - the query string that spotify sends back when log in
 </div>
 
 
@@ -1408,7 +1465,7 @@
     
     <dt class="tag-source">Source:</dt>
     <dd class="tag-source"><ul class="dummy"><li>
-        <a href="discover.js.html">discover.js</a>, <a href="discover.js.html#line498">line 498</a>
+        <a href="discover.js.html">discover.js</a>, <a href="discover.js.html#line611">line 611</a>
     </li></ul></dd>
     
 
@@ -1462,7 +1519,7 @@
     
 
     
-    <h4 class="name" id="getMostReommended"><span class="type-signature"></span>getMostReommended<span class="signature">()</span><span class="type-signature"> &rarr; {null}</span></h4>
+    <h4 class="name" id="getMostRecommended"><span class="type-signature"></span>getMostRecommended<span class="signature">()</span><span class="type-signature"> &rarr; {null}</span></h4>
     
 
     
@@ -1514,7 +1571,7 @@
     
     <dt class="tag-source">Source:</dt>
     <dd class="tag-source"><ul class="dummy"><li>
-        <a href="discover.js.html">discover.js</a>, <a href="discover.js.html#line518">line 518</a>
+        <a href="discover.js.html">discover.js</a>, <a href="discover.js.html#line643">line 643</a>
     </li></ul></dd>
     
 
@@ -1568,7 +1625,7 @@
     
 
     
-    <h4 class="name" id="getMyCurrentPlaybackState"><span class="type-signature"></span>getMyCurrentPlaybackState<span class="signature">()</span><span class="type-signature"> &rarr; {response}</span></h4>
+    <h4 class="name" id="getPost"><span class="type-signature"></span>getPost<span class="signature">(TypeForPost, SongNumForPost)</span><span class="type-signature"> &rarr; {null}</span></h4>
     
 
     
@@ -1576,7 +1633,7 @@
 
 
 <div class="description">
-    get information about the user's current playback state, including track, track progress and active device
+    get the typoe of song and the song number in order to get the SongName and song link from the corresponding song in discover class's state lists, then switch to page to newpost and pass the song data
 </div>
 
 
@@ -1585,6 +1642,78 @@
 
 
 
+
+
+    <h5>Parameters:</h5>
+    
+
+<table class="params">
+    <thead>
+    <tr>
+        
+        <th>Name</th>
+        
+
+        <th>Type</th>
+
+        
+
+        
+
+        <th class="last">Description</th>
+    </tr>
+    </thead>
+
+    <tbody>
+    
+
+        <tr>
+            
+                <td class="name"><code>TypeForPost</code></td>
+            
+
+            <td class="type">
+            
+                
+<span class="param-type">string</span>
+
+
+            
+            </td>
+
+            
+
+            
+
+            <td class="description last">the type of song the user want to push</td>
+        </tr>
+
+    
+
+        <tr>
+            
+                <td class="name"><code>SongNumForPost</code></td>
+            
+
+            <td class="type">
+            
+                
+<span class="param-type">int</span>
+
+
+            
+            </td>
+
+            
+
+            
+
+            <td class="description last">the corresponding song number</td>
+        </tr>
+
+    
+    </tbody>
+</table>
 
 
 
@@ -1620,7 +1749,7 @@
     
     <dt class="tag-source">Source:</dt>
     <dd class="tag-source"><ul class="dummy"><li>
-        <a href="discover.js.html">discover.js</a>, <a href="discover.js.html#line121">line 121</a>
+        <a href="discover.js.html">discover.js</a>, <a href="discover.js.html#line752">line 752</a>
     </li></ul></dd>
     
 
@@ -1648,10 +1777,6 @@
 <h5>Returns:</h5>
 
         
-<div class="param-desc">
-    - a object of user's current playback state or object of error message
-</div>
-
 
 
 <dl>
@@ -1660,7 +1785,7 @@
     </dt>
     <dd>
         
-<span class="param-type">response</span>
+<span class="param-type">null</span>
 
 
     </dd>
@@ -1678,7 +1803,7 @@
     
 
     
-    <h4 class="name" id="getNowPlaying"><span class="type-signature"></span>getNowPlaying<span class="signature">()</span><span class="type-signature"> &rarr; {null}</span></h4>
+    <h4 class="name" id="getRecentList"><span class="type-signature"></span>getRecentList<span class="signature">(bodydata)</span><span class="type-signature"> &rarr; {null}</span></h4>
     
 
     
@@ -1686,8 +1811,7 @@
 
 
 <div class="description">
-    by using the response from getMyCurrentPlaybackState() function from spotifyAPI, getting a object from spotify server.
-    Then, update the nowPlaying list's SongName and AlbumImage with the object's element
+    updating the recentList's Song objects in discover class with the recently played tracks object
 </div>
 
 
@@ -1696,6 +1820,55 @@
 
 
 
+
+
+    <h5>Parameters:</h5>
+    
+
+<table class="params">
+    <thead>
+    <tr>
+        
+        <th>Name</th>
+        
+
+        <th>Type</th>
+
+        
+
+        
+
+        <th class="last">Description</th>
+    </tr>
+    </thead>
+
+    <tbody>
+    
+
+        <tr>
+            
+                <td class="name"><code>bodydata</code></td>
+            
+
+            <td class="type">
+            
+                
+<span class="param-type">object</span>
+
+
+            
+            </td>
+
+            
+
+            
+
+            <td class="description last">the list of  tracks from the current user's recently played tracks returned by spotify by getMyRecentlyPlayedTracks()</td>
+        </tr>
+
+    
+    </tbody>
+</table>
 
 
 
@@ -1731,7 +1904,7 @@
     
     <dt class="tag-source">Source:</dt>
     <dd class="tag-source"><ul class="dummy"><li>
-        <a href="discover.js.html">discover.js</a>, <a href="discover.js.html#line115">line 115</a>
+        <a href="discover.js.html">discover.js</a>, <a href="discover.js.html#line216">line 216</a>
     </li></ul></dd>
     
 
@@ -1837,7 +2010,7 @@
     
     <dt class="tag-source">Source:</dt>
     <dd class="tag-source"><ul class="dummy"><li>
-        <a href="discover.js.html">discover.js</a>, <a href="discover.js.html#line452">line 452</a>
+        <a href="discover.js.html">discover.js</a>, <a href="discover.js.html#line533">line 533</a>
     </li></ul></dd>
     
 
@@ -1943,7 +2116,7 @@
     
     <dt class="tag-source">Source:</dt>
     <dd class="tag-source"><ul class="dummy"><li>
-        <a href="discover.js.html">discover.js</a>, <a href="discover.js.html#line426">line 426</a>
+        <a href="discover.js.html">discover.js</a>, <a href="discover.js.html#line493">line 493</a>
     </li></ul></dd>
     
 
@@ -2049,7 +2222,113 @@
     
     <dt class="tag-source">Source:</dt>
     <dd class="tag-source"><ul class="dummy"><li>
-        <a href="discover.js.html">discover.js</a>, <a href="discover.js.html#line475">line 475</a>
+        <a href="discover.js.html">discover.js</a>, <a href="discover.js.html#line572">line 572</a>
+    </li></ul></dd>
+    
+
+    
+
+    
+
+    
+</dl>
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+<h5>Returns:</h5>
+
+        
+
+
+<dl>
+    <dt>
+        Type
+    </dt>
+    <dd>
+        
+<span class="param-type">null</span>
+
+
+    </dd>
+</dl>
+
+    
+
+
+
+
+
+        
+            
+
+    
+
+    
+    <h4 class="name" id="getStartSearch"><span class="type-signature"></span>getStartSearch<span class="signature">()</span><span class="type-signature"> &rarr; {null}</span></h4>
+    
+
+    
+
+
+
+<div class="description">
+    update the checkclicked list, which is the list of boolean value to control the action of  showing or hinding the search result or recommendations result
+</div>
+
+
+
+
+
+
+
+
+
+
+
+
+
+<dl class="details">
+
+    
+
+    
+
+    
+
+    
+
+    
+
+    
+
+    
+
+    
+
+    
+
+    
+
+    
+
+    
+
+    
+    <dt class="tag-source">Source:</dt>
+    <dd class="tag-source"><ul class="dummy"><li>
+        <a href="discover.js.html">discover.js</a>, <a href="discover.js.html#line689">line 689</a>
     </li></ul></dd>
     
 
@@ -2111,7 +2390,7 @@
 
 
 <div class="description">
-    detecting the type or deley event, then update the input value to searchingvalue in discover class
+    detecting the type or delete event, then update the input value to searchingvalue in discover class and call search function to be a live search
 </div>
 
 
@@ -2200,7 +2479,309 @@
     
     <dt class="tag-source">Source:</dt>
     <dd class="tag-source"><ul class="dummy"><li>
-        <a href="discover.js.html">discover.js</a>, <a href="discover.js.html#line72">line 72</a>
+        <a href="discover.js.html">discover.js</a>, <a href="discover.js.html#line104">line 104</a>
+    </li></ul></dd>
+    
+
+    
+
+    
+
+    
+</dl>
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+<h5>Returns:</h5>
+
+        
+
+
+<dl>
+    <dt>
+        Type
+    </dt>
+    <dd>
+        
+<span class="param-type">null</span>
+
+
+    </dd>
+</dl>
+
+    
+
+
+
+
+
+        
+            
+
+    
+
+    
+    <h4 class="name" id="handleFormSubmit"><span class="type-signature"></span>handleFormSubmit<span class="signature">()</span><span class="type-signature"> &rarr; {null}</span></h4>
+    
+
+    
+
+
+
+<div class="description">
+    detecting the radio button selection change event, update the UI change event
+</div>
+
+
+
+
+
+
+
+
+
+    <h5>Parameters:</h5>
+    
+
+<table class="params">
+    <thead>
+    <tr>
+        
+
+        <th>Type</th>
+
+        
+
+        
+
+        <th class="last">Description</th>
+    </tr>
+    </thead>
+
+    <tbody>
+    
+
+        <tr>
+            
+
+            <td class="type">
+            
+                
+<span class="param-type">formSubmitEvent</span>
+
+
+            
+            </td>
+
+            
+
+            
+
+            <td class="description last">the change while the change there selection of radio button</td>
+        </tr>
+
+    
+    </tbody>
+</table>
+
+
+
+
+
+
+<dl class="details">
+
+    
+
+    
+
+    
+
+    
+
+    
+
+    
+
+    
+
+    
+
+    
+
+    
+
+    
+
+    
+
+    
+    <dt class="tag-source">Source:</dt>
+    <dd class="tag-source"><ul class="dummy"><li>
+        <a href="discover.js.html">discover.js</a>, <a href="discover.js.html#line177">line 177</a>
+    </li></ul></dd>
+    
+
+    
+
+    
+
+    
+</dl>
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+<h5>Returns:</h5>
+
+        
+
+
+<dl>
+    <dt>
+        Type
+    </dt>
+    <dd>
+        
+<span class="param-type">null</span>
+
+
+    </dd>
+</dl>
+
+    
+
+
+
+
+
+        
+            
+
+    
+
+    
+    <h4 class="name" id="handleSearchOptionChangel"><span class="type-signature"></span>handleSearchOptionChangel<span class="signature">()</span><span class="type-signature"> &rarr; {null}</span></h4>
+    
+
+    
+
+
+
+<div class="description">
+    detecting the radio button selection change event, then update the searching type value in discover class and call search function to be a live search
+</div>
+
+
+
+
+
+
+
+
+
+    <h5>Parameters:</h5>
+    
+
+<table class="params">
+    <thead>
+    <tr>
+        
+
+        <th>Type</th>
+
+        
+
+        
+
+        <th class="last">Description</th>
+    </tr>
+    </thead>
+
+    <tbody>
+    
+
+        <tr>
+            
+
+            <td class="type">
+            
+                
+<span class="param-type">event</span>
+
+
+            
+            </td>
+
+            
+
+            
+
+            <td class="description last">the change while the change there selection of radio button</td>
+        </tr>
+
+    
+    </tbody>
+</table>
+
+
+
+
+
+
+<dl class="details">
+
+    
+
+    
+
+    
+
+    
+
+    
+
+    
+
+    
+
+    
+
+    
+
+    
+
+    
+
+    
+
+    
+    <dt class="tag-source">Source:</dt>
+    <dd class="tag-source"><ul class="dummy"><li>
+        <a href="discover.js.html">discover.js</a>, <a href="discover.js.html#line149">line 149</a>
     </li></ul></dd>
     
 
@@ -2473,7 +3054,7 @@
     
     <dt class="tag-source">Source:</dt>
     <dd class="tag-source"><ul class="dummy"><li>
-        <a href="discover.js.html">discover.js</a>, <a href="discover.js.html#line416">line 416</a>
+        <a href="discover.js.html">discover.js</a>, <a href="discover.js.html#line483">line 483</a>
     </li></ul></dd>
     
 
@@ -2591,7 +3172,7 @@
 
             
 
-            <td class="description last">The access_token get from spotify server after login in spotify or</td>
+            <td class="description last">The access_token get from spotify server after login in spotify</td>
         </tr>
 
     
@@ -2632,7 +3213,7 @@
     
     <dt class="tag-source">Source:</dt>
     <dd class="tag-source"><ul class="dummy"><li>
-        <a href="discover.js.html">discover.js</a>, <a href="discover.js.html#line31">line 31</a>
+        <a href="discover.js.html">discover.js</a>, <a href="discover.js.html#line43">line 43</a>
     </li></ul></dd>
     
 
@@ -2684,6 +3265,520 @@
     
 
     
+        <h3 class="subsection-title">Type Definitions</h3>
+
+        
+                
+<h4 class="name" id="Album">Album</h4>
+
+
+
+
+<div class="description">
+    Album
+</div>
+
+
+
+    <h5>Type:</h5>
+    <ul>
+        <li>
+            
+<span class="param-type">object</span>
+
+
+        </li>
+    </ul>
+
+
+
+
+
+    <h5 class="subsection-title">Properties:</h5>
+
+    
+
+<table class="props">
+    <thead>
+    <tr>
+        
+        <th>Name</th>
+        
+
+        <th>Type</th>
+
+        
+
+        
+
+        <th class="last">Description</th>
+    </tr>
+    </thead>
+
+    <tbody>
+    
+
+        <tr>
+            
+                <td class="name"><code>AlbumLink</code></td>
+            
+
+            <td class="type">
+            
+                
+<span class="param-type">string</span>
+
+
+            
+            </td>
+
+            
+
+            
+
+            <td class="description last">The album link of URL in spotify</td>
+        </tr>
+
+    
+
+        <tr>
+            
+                <td class="name"><code>AlbumName</code></td>
+            
+
+            <td class="type">
+            
+                
+<span class="param-type">string</span>
+
+
+            
+            </td>
+
+            
+
+            
+
+            <td class="description last">The album name</td>
+        </tr>
+
+    
+
+        <tr>
+            
+                <td class="name"><code>Artist</code></td>
+            
+
+            <td class="type">
+            
+                
+<span class="param-type">object</span>
+
+
+            
+            </td>
+
+            
+
+            
+
+            <td class="description last">The Artist object</td>
+        </tr>
+
+    
+    </tbody>
+</table>
+
+
+
+
+<dl class="details">
+
+    
+
+    
+
+    
+
+    
+
+    
+
+    
+
+    
+
+    
+
+    
+
+    
+
+    
+
+    
+
+    
+    <dt class="tag-source">Source:</dt>
+    <dd class="tag-source"><ul class="dummy"><li>
+        <a href="discover.js.html">discover.js</a>, <a href="discover.js.html#line90">line 90</a>
+    </li></ul></dd>
+    
+
+    
+
+    
+
+    
+</dl>
+
+
+
+
+
+
+            
+                
+<h4 class="name" id="Artist">Artist</h4>
+
+
+
+
+<div class="description">
+    Artist
+</div>
+
+
+
+    <h5>Type:</h5>
+    <ul>
+        <li>
+            
+<span class="param-type">object</span>
+
+
+        </li>
+    </ul>
+
+
+
+
+
+    <h5 class="subsection-title">Properties:</h5>
+
+    
+
+<table class="props">
+    <thead>
+    <tr>
+        
+        <th>Name</th>
+        
+
+        <th>Type</th>
+
+        
+
+        
+
+        <th class="last">Description</th>
+    </tr>
+    </thead>
+
+    <tbody>
+    
+
+        <tr>
+            
+                <td class="name"><code>ArtistName</code></td>
+            
+
+            <td class="type">
+            
+                
+<span class="param-type">string</span>
+
+
+            
+            </td>
+
+            
+
+            
+
+            <td class="description last">The artist name</td>
+        </tr>
+
+    
+
+        <tr>
+            
+                <td class="name"><code>ArtistLink</code></td>
+            
+
+            <td class="type">
+            
+                
+<span class="param-type">string</span>
+
+
+            
+            </td>
+
+            
+
+            
+
+            <td class="description last">The artist link of URL in spotify</td>
+        </tr>
+
+    
+
+        <tr>
+            
+                <td class="name"><code>ArtistImage</code></td>
+            
+
+            <td class="type">
+            
+                
+<span class="param-type">string</span>
+
+
+            
+            </td>
+
+            
+
+            
+
+            <td class="description last">The artist image</td>
+        </tr>
+
+    
+    </tbody>
+</table>
+
+
+
+
+<dl class="details">
+
+    
+
+    
+
+    
+
+    
+
+    
+
+    
+
+    
+
+    
+
+    
+
+    
+
+    
+
+    
+
+    
+    <dt class="tag-source">Source:</dt>
+    <dd class="tag-source"><ul class="dummy"><li>
+        <a href="discover.js.html">discover.js</a>, <a href="discover.js.html#line97">line 97</a>
+    </li></ul></dd>
+    
+
+    
+
+    
+
+    
+</dl>
+
+
+
+
+
+
+            
+                
+<h4 class="name" id="Song">Song</h4>
+
+
+
+
+<div class="description">
+    Song
+</div>
+
+
+
+    <h5>Type:</h5>
+    <ul>
+        <li>
+            
+<span class="param-type">object</span>
+
+
+        </li>
+    </ul>
+
+
+
+
+
+    <h5 class="subsection-title">Properties:</h5>
+
+    
+
+<table class="props">
+    <thead>
+    <tr>
+        
+        <th>Name</th>
+        
+
+        <th>Type</th>
+
+        
+
+        
+
+        <th class="last">Description</th>
+    </tr>
+    </thead>
+
+    <tbody>
+    
+
+        <tr>
+            
+                <td class="name"><code>SongLink</code></td>
+            
+
+            <td class="type">
+            
+                
+<span class="param-type">string</span>
+
+
+            
+            </td>
+
+            
+
+            
+
+            <td class="description last">The song link of URL in spotify</td>
+        </tr>
+
+    
+
+        <tr>
+            
+                <td class="name"><code>SongName</code></td>
+            
+
+            <td class="type">
+            
+                
+<span class="param-type">string</span>
+
+
+            
+            </td>
+
+            
+
+            
+
+            <td class="description last">The song name</td>
+        </tr>
+
+    
+
+        <tr>
+            
+                <td class="name"><code>Album</code></td>
+            
+
+            <td class="type">
+            
+                
+<span class="param-type">object</span>
+
+
+            
+            </td>
+
+            
+
+            
+
+            <td class="description last">The album object</td>
+        </tr>
+
+    
+    </tbody>
+</table>
+
+
+
+
+<dl class="details">
+
+    
+
+    
+
+    
+
+    
+
+    
+
+    
+
+    
+
+    
+
+    
+
+    
+
+    
+
+    
+
+    
+    <dt class="tag-source">Source:</dt>
+    <dd class="tag-source"><ul class="dummy"><li>
+        <a href="discover.js.html">discover.js</a>, <a href="discover.js.html#line83">line 83</a>
+    </li></ul></dd>
+    
+
+    
+
+    
+
+    
+</dl>
+
+
+
+
+
+
+            
+    
 
     
 </article>
@@ -2696,13 +3791,13 @@
 </div>
 
 <nav>
-    <h2><a href="index.html">Home</a></h2><h3>Global</h3><ul><li><a href="global.html#changeAlbum">changeAlbum</a></li><li><a href="global.html#changeArtist">changeArtist</a></li><li><a href="global.html#changeHottest">changeHottest</a></li><li><a href="global.html#changeRecent">changeRecent</a></li><li><a href="global.html#changeRecommandation">changeRecommandation</a></li><li><a href="global.html#changeTrack">changeTrack</a></li><li><a href="global.html#constructor">constructor</a></li><li><a href="global.html#getaccesstoken">getaccesstoken</a></li><li><a href="global.html#getHashParams">getHashParams</a></li><li><a href="global.html#getHottestSong">getHottestSong</a></li><li><a href="global.html#getMostReommended">getMostReommended</a></li><li><a href="global.html#getMyCurrentPlaybackState">getMyCurrentPlaybackState</a></li><li><a href="global.html#getNowPlaying">getNowPlaying</a></li><li><a href="global.html#getSearchAlbum">getSearchAlbum</a></li><li><a href="global.html#getSearchArtist">getSearchArtist</a></li><li><a href="global.html#getSearchTrack">getSearchTrack</a></li><li><a href="global.html#handleChange">handleChange</a></li><li><a href="global.html#requestget">requestget</a></li><li><a href="global.html#setAccessToken">setAccessToken</a></li></ul>
+    <h2><a href="index.html">Home</a></h2><h3>Global</h3><ul><li><a href="global.html#appendToUrl">appendToUrl</a></li><li><a href="global.html#authshow">authshow</a></li><li><a href="global.html#changeAlbum">changeAlbum</a></li><li><a href="global.html#changeArtist">changeArtist</a></li><li><a href="global.html#changeHottest">changeHottest</a></li><li><a href="global.html#changeRecommandation">changeRecommandation</a></li><li><a href="global.html#constructor">constructor</a></li><li><a href="global.html#getaccesstoken">getaccesstoken</a></li><li><a href="global.html#getHashParams">getHashParams</a></li><li><a href="global.html#getHottestSong">getHottestSong</a></li><li><a href="global.html#getMostRecommended">getMostRecommended</a></li><li><a href="global.html#getPost">getPost</a></li><li><a href="global.html#getRecentList">getRecentList</a></li><li><a href="global.html#getSearchAlbum">getSearchAlbum</a></li><li><a href="global.html#getSearchArtist">getSearchArtist</a></li><li><a href="global.html#getSearchTrack">getSearchTrack</a></li><li><a href="global.html#getStartSearch">getStartSearch</a></li><li><a href="global.html#handleChange">handleChange</a></li><li><a href="global.html#handleFormSubmit">handleFormSubmit</a></li><li><a href="global.html#handleSearchOptionChangel">handleSearchOptionChangel</a></li><li><a href="global.html#requestget">requestget</a></li><li><a href="global.html#setAccessToken">setAccessToken</a></li></ul>
 </nav>
 
 <br class="clear">
 
 <footer>
-    Documentation generated by <a href="https://github.com/jsdoc/jsdoc">JSDoc 3.6.3</a> on Thu Nov 14 2019 19:12:10 GMT-0800 (Pacific Standard Time)
+    Documentation generated by <a href="https://github.com/jsdoc/jsdoc">JSDoc 3.6.3</a> on Sun Dec 01 2019 19:42:18 GMT-0800 (Pacific Standard Time)
 </footer>
 
 <script> prettyPrint(); </script>

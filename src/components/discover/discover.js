@@ -11,23 +11,6 @@ var request = require('request');
 
 var tempaccess=''
 
-/* 
-COMMENTS FROM EGE FOR RESTRUCTURING:
-- The main problem here is that we are not using props in React. Through props, we can have subcomponents,
-then pass in information for that subcomponent through the main component.
-1. Generally react files have the .jsx extension, instead of .js
-2. Information about props: https://reactjs.org/docs/components-and-props.html
-3. Here is an example implementation of a search bar: https://www.youtube.com/watch?v=OlVkYnVXPl0
-4. Component structure could be something similar to this
-Main Component: Discover.jsx
-Subcomponents: NowPlaying.jsx, RecentlyPlayed.jsx, MostRecommended.jsx, Hottest.jsx
-
-Now, the main Discover.jsx component can load the list, but it doesn't have to display the lists, hence, you can pass
-the lists as props to the other components, and they can display the lists. Try breaking down now playing first,
-as that seems to be the simplest component
-
-*/
-
 export class Discover extends Component {
   /**
    * @method constructor
@@ -43,7 +26,7 @@ export class Discover extends Component {
       /**
        * @method setAccessToken
        * @description passing the access token for setting the client credential in order to use spotify authorization service
-       * @param {string} token - The access_token get from spotify server after login in spotify or 
+       * @param {string} token - The access_token get from spotify server after login in spotify
        * @returns {null}  
       */
       spotifyApi.setAccessToken(token);
@@ -55,15 +38,11 @@ export class Discover extends Component {
     this.state = {
       access_token :'',
       refresh_token :'',
-      //manual_token: spotifyApi.getAccessToken(),
       showonce : true,
       searchvalue : {searchinput :''},
-      //searchloading : false,
-      //message:'',
       url: null,
       loggedIn: (token || spotifyApi.getAccessToken()) ? true : false,
       loading : false,
-      SongSelectOption : "0",
       TypeSelectOption : "R",
       SearchSelectOption: "Artist",
       NoImageUrl: "https://firebasestorage.googleapis.com/v0/b/mutter-ucla.appspot.com/o/discover%2FUnknown.png?alt=media&token=c8c29a7f-03db-432d-b87e-35f5333e5f99",
@@ -71,41 +50,43 @@ export class Discover extends Component {
                       ClickRecommended: false, ClickHottest: false, ClickRecent: false},
       SearchResultNumber: {RecentNum : 0 ,RecommendedNum : 0 ,HottestNum : 0,
                            SearchArtNum : 0,SearchTraNum : 0,SearchAlbNum : 0},
-      //ArtistReturnElement:[],
-      //ArtistReturnItem : [],
-      recentlyListnew :        [new Song(),new Song(), new Song(), new Song(), new Song()],
-      mostRecommendedListnew : [new Song(),new Song(), new Song(), new Song(), new Song()],
-      HottestListnew :         [new Song(),new Song(), new Song(), new Song(), new Song()],
-      
-      searchingArtistListNew: [new Artist(),new Artist(),new Artist(),new Artist(),new Artist()],
-      searchingAlbumListNew: [new Album(), new Album(), new Album(), new Album(), new Album()],
-      searchingTrackListNew: [new Song(),new Song(), new Song(), new Song(), new Song()],
-      searchingArtistL: { ArtistName: ['','','','',''],
-                          ArtistImage: ['','','','',''],
-                          ArtistLink: ['','','','','']},
-      searchingAlbumL:  { ArtistName: ['','','','',''],
-                          AlbumName: ['','','','',''],
-                          AlbumImage:['','','','',''],
-                          ArtistLink:['','','','',''],
-                          AlbumLink:['','','','','']},
-      searchingTrackL:  { SongName: ['','','','',''],
-                          ArtistName: ['','','','',''],
-                          AlbumImage:['','','','',''],
-                          SongLink: ['','','','',''],
-                          ArtistLink:['','','','',''],
-                          AlbumLink:['','','','','']}
+      recentlyList :        [new Song(),new Song(), new Song(), new Song(), new Song()],
+      mostRecommendedList : [new Song(),new Song(), new Song(), new Song(), new Song()],
+      HottestList :         [new Song(),new Song(), new Song(), new Song(), new Song()],
+    searchingAlbumList: [new Album(), new Album(), new Album(), new Album(), new Album()],
+      searchingArtistList: [new Artist(),new Artist(),new Artist(),new Artist(),new Artist()],
+      searchingTrackList: [new Song(),new Song(), new Song(), new Song(), new Song()],
     }
     this.handleChange = this.handleChange.bind(this);
-    this.handleSubmit = this.handleSubmit.bind(this);
-    this.handleTypeOptionChange = this.handleTypeOptionChange.bind(this);
-    this.handleSongOptionChange = this.handleSongOptionChange.bind(this);
     this.handleSearchOptionChangel = this.handleSearchOptionChangel.bind(this);
     this.handleFormSubmit = this.handleFormSubmit.bind(this);
   }
 
+
+   /**
+    * Song
+    * @typedef {object} Song
+    * @property {string} SongLink   - The song link of URL in spotify
+    * @property {string} SongName  - The song name
+    * @property {object} Album       - The album object
+   */
+   /**
+    * Album
+    * @typedef {object} Album
+    * @property {string} AlbumLink    - The album link of URL in spotify
+    * @property {string} AlbumName  - The album name
+    * @property {object} Artist      - The Artist object
+   */
+   /**
+    * Artist
+    * @typedef {object} Artist
+    * @property {string} ArtistName - The artist name
+    * @property {string} ArtistLink   - The artist link of URL in spotify
+    * @property {string} ArtistImage  - The artist image
+   */
   /**
    * @method handleChange
-   * @description detecting the type or deley event, then update the input value to searchingvalue in discover class
+   * @description detecting the type or delete event, then update the input value to searchingvalue in discover class and call search function to be a live search
    * @param {event} - the change while the user type or delete characters in the searching input bar
    * @returns {null}
   */
@@ -128,80 +109,70 @@ export class Discover extends Component {
       if (changeFlag) {
         if(this.state.SearchSelectOption === "Artist")
         {this.getSearchArtist();
-        this.setState({searchingAlbumListNew : [new Album(), new Album(), new Album(), new Album(), new Album()]});
-        this.setState({searchingTrackListNew : [new Song(),new Song(), new Song(), new Song(), new Song()]});
+        this.setState({searchingAlbumList : [new Album(), new Album(), new Album(), new Album(), new Album()]});
+        this.setState({searchingTrackList : [new Song(),new Song(), new Song(), new Song(), new Song()]});
         }
         else if(this.state.SearchSelectOption === "Album")
         {
-          //window.alert("inside the album");
           this.getSearchAlbum();
-          this.setState({searchingTrackListNew : [new Song(),new Song(), new Song(), new Song(), new Song()]});
-          this.setState({searchingArtistListNew : [new Artist(),new Artist(), new Artist(), new Artist(), new Artist()]});
+          this.setState({searchingTrackList : [new Song(),new Song(), new Song(), new Song(), new Song()]});
+          this.setState({searchingArtistList : [new Artist(),new Artist(), new Artist(), new Artist(), new Artist()]});
         }
         else if(this.state.SearchSelectOption === "Track")
         {
           this.getSearchTrack();
-          this.setState({searchingArtistListNew : [new Artist(),new Artist(), new Artist(), new Artist(), new Artist()]});
-          this.setState({searchingAlbumListNew : [new Album(), new Album(), new Album(), new Album(), new Album()]});
+          this.setState({searchingArtistList : [new Artist(),new Artist(), new Artist(), new Artist(), new Artist()]});
+          this.setState({searchingAlbumList : [new Album(), new Album(), new Album(), new Album(), new Album()]});
         }
         searched = true;
       }
     }
-    //window.alert(this.state.searchingArtistL.ArtistName[0]);
   }
 
-  handleSubmit(event) {
-    //this.setState({searchvalue: event.target.value});
-    window.alert('A name was submitted: ' + this.state.searchvalue);
-    event.preventDefault();
-  }
-
-  handleTypeOptionChange(event) {
-    //const option = event.target.value;
-    this.setState({
-      TypeSelectOption: event.target.value
-    });
-  }
-
+  /**
+   * @method handleSearchOptionChangel
+   * @description detecting the radio button selection change event, then update the searching type value in discover class and call search function to be a live search
+   * @param {event} - the change while the change there selection of radio button
+   * @returns {null}
+  */
   handleSearchOptionChangel(event){
-    //const option = event.target.value;
     this.state.SearchSelectOption = event.target.value;
     if(this.state.SearchSelectOption === "Artist")
     {
       this.getSearchArtist();
-      this.setState({searchingAlbumListNew : [new Album(), new Album(), new Album(), new Album(), new Album()]});
-      this.setState({searchingTrackListNew : [new Song(),new Song(), new Song(), new Song(), new Song()]});
+      this.setState({searchingAlbumList : [new Album(), new Album(), new Album(), new Album(), new Album()]});
+      this.setState({searchingTrackList : [new Song(),new Song(), new Song(), new Song(), new Song()]});
     }
     else if(this.state.SearchSelectOption === "Album")
     {
       this.getSearchAlbum();
-      this.setState({searchingTrackListNew : [new Song(),new Song(), new Song(), new Song(), new Song()]});
-      this.setState({searchingArtistListNew : [new Artist(),new Artist(), new Artist(), new Artist(), new Artist()]});
+      this.setState({searchingTrackList : [new Song(),new Song(), new Song(), new Song(), new Song()]});
+      this.setState({searchingArtistList : [new Artist(),new Artist(), new Artist(), new Artist(), new Artist()]});
     }
     else if(this.state.SearchSelectOption === "Track")
     {
       this.getSearchTrack();
-      this.setState({searchingArtistListNew : [new Artist(),new Artist(), new Artist(), new Artist(), new Artist()]});
-      this.setState({searchingAlbumListNew : [new Album(), new Album(), new Album(), new Album(), new Album()]});
+      this.setState({searchingArtistList : [new Artist(),new Artist(), new Artist(), new Artist(), new Artist()]});
+      this.setState({searchingAlbumList : [new Album(), new Album(), new Album(), new Album(), new Album()]});
     }
   }
-
-  handleSongOptionChange(event) {
-    //const option = event.target.value;
-    this.setState({
-      SongSelectOption: event.target.value
-    });
-  }
-
-  handleFormSubmit(formSubmitEvent)
+  
+   /**
+   * @method handleFormSubmit
+   * @description detecting the radio button selection change event, update the UI change event
+   * @param {formSubmitEvent} - the change while the change there selection of radio button
+   * @returns {null}
+  */
+   handleFormSubmit(formSubmitEvent)
   {
     formSubmitEvent.preventDefault();
   }
 
+
   /**
    * @method getHashParams
    * @description obtain the parameters from the hash of URL from spotify 
-   * @returns {string} hashParams - the  query string that spotify sends back when log in
+   * @returns {string} hashParams - the query string that spotify sends back when log in
   */
   getHashParams() {
     var hashParams = {};
@@ -226,12 +197,12 @@ export class Discover extends Component {
   }
 
   /**
-   * @method changeRecent
-   * @description updating the recentList's ArtistName, SongName, and AlbumImage in discover class with the recently played tracks object 
-   * @param {object} bodydata - the object tracks from the current user's recently played tracks
+   * @method getRecentList
+   * @description updating the recentList's Song objects in discover class with the recently played tracks object 
+   * @param {object} bodydata - the list of  tracks from the current user's recently played tracks returned by spotify by getMyRecentlyPlayedTracks()
    * @returns {null}
   */
-  getRecentListnew()
+  getRecentList()
   {
     this.state.checkclicked.ClickRecent = true;
     spotifyApi.getMyRecentlyPlayedTracks()
@@ -240,7 +211,7 @@ export class Discover extends Component {
         this.state.checkclicked.ClickRecent = false;
         return;
       }
-      var tempSongList = this.state.recentlyListnew;
+      var tempSongList = this.state.recentlyList;
       for(var i =0; i <5; i++)
       {
         var tempSong = new Song();
@@ -252,23 +223,22 @@ export class Discover extends Component {
         tempSong.getAlbum().setAlbumLink(response.items[i].track.album.external_urls.spotify);
         tempSongList[i] = tempSong;
       }
-      this.setState({recentlyListnew : tempSongList});
+      this.setState({recentlyList : tempSongList});
     })
   }
 
   /**
    * @method changeArtist
-   * @description updating the searchingArtistL's ArtistName, and ArtistImage in discover class with the artists object from spotify catalog
-   * @param {object} bodydata - the object of Artists list 
+   * @description updating the searchingArtistList's 's Artist objects in discover class with the artists object list from spotify catalog
+   * @param {object} bodydata - the object of Artists list returned by spotify
    * @returns {null}
   */
   changeArtist(bodydata)
   {
     if(bodydata.artists.total < 5){
-      var templist = this.state.searchingArtistListNew;      
+      var templist = this.state.searchingArtistList;      
       var Num = bodydata.artists.total;
       this.setState({SearchResultNumber:{SearchArtNum : Num}});
-      //window.alert("the search artist number is " + this.state.SearchResultNumber.SearchArtNum);
       for(var i = 0 ; i<Num ; i++)
       {
         templist[i].setArtistName(bodydata.artists.items[i].name);
@@ -284,18 +254,15 @@ export class Discover extends Component {
       for(var i = Num; i < 5-Num + 1; i++)
       {
         templist[i] = new Artist();
-        // templist.ArtistName[i] = "";
-        // templist.ArtistImage[i] = "";
-        // templist.ArtistLink[i] = "";
       }
       if (Num === 0) {
         this.state.checkclicked.ClickSearchArtist = false;
       }
-      this.setState({ searchingArtistListNew: templist });
+      this.setState({ searchingArtistList: templist });
     }
     else
     {
-      var templist = this.state.searchingArtistListNew;
+      var templist = this.state.searchingArtistList;
       for(var i = 0; i < 5; i++)
       {
         templist[i].setArtistName(bodydata.artists.items[i].name);
@@ -309,23 +276,22 @@ export class Discover extends Component {
         templist[i].setArtistLink(bodydata.artists.items[i].external_urls.spotify);
       }
       this.setState({SearchResultNumber:{SearchArtNum : 5}});
-      this.setState({ searchingArtistListNew: templist });
+      this.setState({ searchingArtistList: templist });
     }
   }
 
   /**
    * @method changeAlbum
-   * @description updating the searchingAlbumL's ArtistName, AlbumName, and AlbumImage in discover class with the albums object from the Spotify catalog
-   * @param {object} bodydata - the object of albums list
+   * @description updating the searchingAlbumList's 's Album objects in discover class with the album object list from spotify catalog
+   * @param {object} bodydata - the object of Album list returned by spotify
    * @returns {null}
   */
   changeAlbum(bodydata)
   {
     if(bodydata.albums.total < 5){
-      var templist = this.state.searchingAlbumListNew;      
+      var templist = this.state.searchingAlbumList;      
       var Num = bodydata.albums.total;
       this.setState({SearchResultNumber:{SearchAlbNum : Num}});
-      //window.alert("the search artist number is " + this.state.SearchResultNumber.SearchArtNum);
       for(var i = 0 ; i<Num ; i++)
       {
         templist[i].getArtist().setArtistName(bodydata.albums.items[i].artists[0].name);
@@ -348,11 +314,11 @@ export class Discover extends Component {
       if (Num === 0) {
         this.state.checkclicked.ClickSearchAlbum = false;
       }
-      this.setState({ searchingAlbumListNew: templist });
+      this.setState({ searchingAlbumList: templist });
     }
     else
     {
-      var templist = this.state.searchingAlbumListNew;
+      var templist = this.state.searchingAlbumList;
       for(var i = 0; i < 5; i++)
       {
          templist[i].getArtist().setArtistName(bodydata.albums.items[i].artists[0].name);
@@ -369,24 +335,22 @@ export class Discover extends Component {
         templist[i].setAlbumName(bodydata.albums.items[i].name);
       }
       this.setState({SearchResultNumber:{SearchAlbNum : 5}});
-      this.setState({ searchingAlbumListNew: templist });
+      this.setState({ searchingAlbumList: templist });
     }
   }
 
   /**
-   * @method changeTrack
-   * @description updating the searchingTrackL's ArtistName, SongName, and AlbumImage in discover class with the  Tracks object from the Spotify catalog
-   * @param {object} bodydata - the object of tracks list
+   * @method changeAlbum
+   * @description updating the searchingTrackList's 's song objects in discover class with the Track object list from spotify catalog
+   * @param {object} bodydata - the object of Track list returned by spotify
    * @returns {null}
   */
   changeTrack(bodydata)
   { 
-    //window.alert("the track total is "+ bodydata.tracks.total);
     if(bodydata.tracks.total < 5){
-      var templist = this.state.searchingTrackListNew;   
+      var templist = this.state.searchingTrackList;   
       var Num = bodydata.tracks.total;
       this.setState({SearchResultNumber:{SearchTraNum : Num}});
-      //window.alert("the search artist number is " + this.state.SearchResultNumber.SearchArtNum);
       for(var i = 0 ; i<Num ; i++)
       {
         templist[i].getAlbum().getArtist().setArtistName(bodydata.tracks.items[i].artists[0].name);
@@ -410,11 +374,11 @@ export class Discover extends Component {
       if (Num === 0) {
         this.state.checkclicked.ClickSearchTrack = false;
       }
-      this.setState({ searchingTrackListNew: templist });
+      this.setState({ searchingTrackList: templist });
     }
     else
     {
-      var templist = this.state.searchingTrackListNew;
+      var templist = this.state.searchingTrackList;
       for(var i = 0; i < 5; i++)
       {
         templist[i].getAlbum().getArtist().setArtistName(bodydata.tracks.items[i].artists[0].name);
@@ -432,20 +396,20 @@ export class Discover extends Component {
         templist[i].setSongLink(bodydata.tracks.items[i].external_urls.spotify);
       }
       this.setState({SearchResultNumber:{SearchTraNum : 5}});
-      this.setState({ searchingTrackListNew: templist });
+      this.setState({ searchingTrackList: templist });
     }
   }
 
   /**
    * @method changeRecommandation
-   * @description updating the mostRecommendedL's ArtistName, SongName, and AlbumImage in discover class with the tracks object from the Spotify catalog
+   * @description updating the mostRecommendedList's Song object in discover class with the tracks object from the Spotify catalog
    * @param {object} bodydata - the object of most recommended tracks list base on user's database
    * @returns {null}
   */
-  changeRecommandationNew(bodydata)
+  changeRecommandation(bodydata)
   {
     
-      var tempSongList = this.state.mostRecommendedListnew;
+      var tempSongList = this.state.mostRecommendedList;
       for(var i =0; i <5; i++)
       {
         var tempSong = new Song();
@@ -464,19 +428,19 @@ export class Discover extends Component {
         }
         tempSongList[i] = tempSong;
       }
-      this.setState({mostRecommendedListnew : tempSongList});
+      this.setState({mostRecommendedList : tempSongList});
   }
 
   /**
    * @method changeHottest
-   * @description updating the hottestL's ArtistName, SongName, and AlbumImage in discover class with the tracks object from the Spotify catalog
+   * @description updating the HottestList's Song object  in discover class with the tracks object from the Spotify catalog
    * @param {object} bodydata - the object of most hottest tracks list base on the top 50 global playlist from spotify database
    * @returns {null}
   */
-  changeHottestNew(bodydata)
+  changeHottest(bodydata)
   {
     
-      var tempSongList = this.state.HottestListnew;
+      var tempSongList = this.state.HottestList;
       for(var i =0; i <5; i++)
       {
         var tempSong = new Song();
@@ -495,8 +459,9 @@ export class Discover extends Component {
         }
         tempSongList[i] = tempSong;
       }
-      this.setState({HottestListnew : tempSongList});
+      this.setState({HottestList : tempSongList});
   }
+
 
   /**
    *@method requestget 
@@ -517,8 +482,7 @@ export class Discover extends Component {
   {
     this.getaccesstoken();
     if (this.state.searchvalue.searchinput === '' || this.state.SearchSelectOption !== "Artist") {
-      //window.alert("empty search input");
-      this.setState({searchingArtistListNew : [new Artist(),new Artist(), new Artist(), new Artist(), new Artist()]});
+      this.setState({searchingArtistList : [new Artist(),new Artist(), new Artist(), new Artist(), new Artist()]});
       this.state.checkclicked.ClickSearchArtist = false;
       return;
     }
@@ -558,7 +522,7 @@ export class Discover extends Component {
   {
     this.getaccesstoken();
     if (this.state.searchvalue.searchinput === '' || this.state.SearchSelectOption !== "Album") {
-      this.setState({searchingAlbumListNew : [new Album(), new Album(), new Album(), new Album(), new Album()]}); 
+      this.setState({searchingAlbumList : [new Album(), new Album(), new Album(), new Album(), new Album()]}); 
       this.state.checkclicked.ClickSearchAlbum = false;
       return;
     }
@@ -597,7 +561,7 @@ export class Discover extends Component {
   {
     this.getaccesstoken(); 
     if (this.state.searchvalue.searchinput === '' || this.state.SearchSelectOption !== "Track") {
-      this.setState({searchingTrackListNew : [new Song(),new Song(), new Song(), new Song(), new Song()]});
+      this.setState({searchingTrackList : [new Song(),new Song(), new Song(), new Song(), new Song()]});
       this.state.checkclicked.ClickSearchTrack = false;
     
       return;
@@ -654,7 +618,7 @@ export class Discover extends Component {
           }
           else
           {
-            feed.changeHottestNew(body);
+            feed.changeHottest(body);
           }
         });
   };
@@ -698,12 +662,18 @@ export class Discover extends Component {
         };
         request.get(options3, function(error, response, body) {
             //feed.changeRecommandation(body);
-            feed.changeRecommandationNew(body);
+            feed.changeRecommandation(body);
         });
         }     
     });
     this.state.loading = false;
   }
+  
+  /**
+   * @method getStartSearch
+   * @description update the checkclicked list, which is the list of boolean value to control the action of  showing or hinding the search result or recommendations result
+   * @returns {null}
+  */
   getStartSearch() 
   { 
     if (this.state.loggedIn === false) {
@@ -721,27 +691,37 @@ export class Discover extends Component {
     //this.authshow();
     this.state.checkclicked.ClickRecommended = true;
     this.getHottestSong();
-    this.getRecentListnew();
+    this.getRecentList();
 
   }
+  
+    /**
+   * @method authshow
+   * @description call the get and appends functions, show the result and append the new token if the user has loggedIn and the result haven't shown yet
+   * @returns {null}
+  */
   authshow()
   {
     if (this.state.loggedIn === true && this.state.showonce && !this.state.loading) 
     {
-      // this.getaccesstoken();
+      
       this.getMostRecommended();
       this.getHottestSong();
-      this.getRecentListnew();
+      this.getRecentList();
       this.state.showonce = false;
       // if accesstoken not in url, append it 
       this.appendToUrl();
     }
   }
   
+      /**
+   * @method appendToUrl
+   * @description check the current url and see if the access token has on there, if not append a new one
+   * @returns {null}
+  */
   appendToUrl()
   {
-    var url = window.location.href; 
-    // window.alert("the url is " + url);   
+    var url = window.location.href;  
     if (url.indexOf('#') > -1) {}
     else {
       url += '#';
@@ -751,36 +731,40 @@ export class Discover extends Component {
     }
   }
 
+
+  /**
+   *@method getPost
+   *@description get the typoe of song and the song number in order to get the SongName and song link from the corresponding song in discover class's state lists, then switch to page to newpost and pass the song data
+   *@param {string} TypeForPost - the type of song the user want to push 
+   *@param {int} SongNumForPost - the corresponding song number 
+   *@returns {null}
+  */
   getPost(TypeForPost, SongNumForPost )
   {
     var SongNum = SongNumForPost;
     var PostType = TypeForPost;
-    // window.alert("The PostType is "+ PostType);
-    // window.alert("The SongNum is "+ SongNum);
     var SongName = '';
     var SongUrl = '';
     if(PostType === "R")
     {
-      //SongName = this.state.recentList.SongName[SongNum];
-      //SongUrl = this.state.recentList.SongLink[SongNum];
-      SongName = this.state.recentlyListnew[SongNum].getSongName();
-      SongUrl = this.state.recentlyListnew[SongNum].getSongLink();
+      SongName = this.state.recentlyList[SongNum].getSongName();
+      SongUrl = this.state.recentlyList[SongNum].getSongLink();
 
     }
     else if(PostType === "RM")
     {
-      SongName = this.state.mostRecommendedListnew[SongNum].getSongName();
-      SongUrl = this.state.mostRecommendedListnew[SongNum].getSongLink();
+      SongName = this.state.mostRecommendedList[SongNum].getSongName();
+      SongUrl = this.state.mostRecommendedList[SongNum].getSongLink();
     }
     else if(PostType === "STRA")
     {
-      SongName = this.state.searchingTrackListNew[SongNum].getSongName();
-      SongUrl = this.state.searchingTrackListNew[SongNum].getSongLink();
+      SongName = this.state.searchingTrackList[SongNum].getSongName();
+      SongUrl = this.state.searchingTrackList[SongNum].getSongLink();
     }
     else if(PostType === "H")
     {
-      SongName = this.state.HottestListnew[SongNum].getSongName();
-      SongUrl = this.state.HottestListnew[SongNum].getSongLink();
+      SongName = this.state.HottestList[SongNum].getSongName();
+      SongUrl = this.state.HottestList[SongNum].getSongLink();
     }
     this.state.url = "http://localhost:3000/newpost/#SongName=" + SongName + "&SongUrl=" + SongUrl + "&access_token=" + spotifyApi.getAccessToken();
     if(this.state.url)
@@ -854,168 +838,168 @@ export class Discover extends Component {
         </div>
 
         { (this.state.checkclicked.ClickSearchArtist&&this.state.checkclicked.ClickStartSearch) && <div className="searchtotresults"> The Searched Artists: <br/>
-        { (this.state.searchingArtistListNew[0].getArtistName() !== "") && <div className ="searchartistresult">
-        Artist Name: <a href= {this.state.searchingArtistListNew[0].getArtistLink()}>
-                          {this.state.searchingArtistListNew[0].getArtistName()}</a>
+        { (this.state.searchingArtistList[0].getArtistName() !== "") && <div className ="searchartistresult">
+        Artist Name: <a href= {this.state.searchingArtistList[0].getArtistLink()}>
+                          {this.state.searchingArtistList[0].getArtistName()}</a>
         <br/>Artist image:  
-        <br/><a href= {this.state.searchingArtistListNew[0].getArtistLink()}>
-             <img src={this.state.searchingArtistListNew[0].getArtistImage()} style={{ height: 150 }} alt="results"/>
+        <br/><a href= {this.state.searchingArtistList[0].getArtistLink()}>
+             <img src={this.state.searchingArtistList[0].getArtistImage()} style={{ height: 150 }} alt="results"/>
              </a>
         </div>}
-        { (this.state.searchingArtistListNew[1].getArtistName() !== "") && <div className ="searchartistresult">
-        Artist Name: <a href= {this.state.searchingArtistListNew[1].getArtistLink()}>
-                          {this.state.searchingArtistListNew[1].getArtistName()}</a>
+        { (this.state.searchingArtistList[1].getArtistName() !== "") && <div className ="searchartistresult">
+        Artist Name: <a href= {this.state.searchingArtistList[1].getArtistLink()}>
+                          {this.state.searchingArtistList[1].getArtistName()}</a>
         <br/>Artist image:  
-        <br/><a href= {this.state.searchingArtistListNew[1].getArtistLink()}>
-             <img src={this.state.searchingArtistListNew[1].getArtistImage()} style={{ height: 150 }} alt="results"/>
+        <br/><a href= {this.state.searchingArtistList[1].getArtistLink()}>
+             <img src={this.state.searchingArtistList[1].getArtistImage()} style={{ height: 150 }} alt="results"/>
              </a>
         </div>}
-        { (this.state.searchingArtistListNew[2].getArtistName() !== "") && <div className ="searchartistresult">
-        Artist Name: <a href= {this.state.searchingArtistListNew[2].getArtistLink()}>
-                          {this.state.searchingArtistListNew[2].getArtistName()}</a>
+        { (this.state.searchingArtistList[2].getArtistName() !== "") && <div className ="searchartistresult">
+        Artist Name: <a href= {this.state.searchingArtistList[2].getArtistLink()}>
+                          {this.state.searchingArtistList[2].getArtistName()}</a>
         <br/>Artist image:  
-        <br/><a href= {this.state.searchingArtistListNew[2].getArtistLink()}>
-             <img src={this.state.searchingArtistListNew[2].getArtistImage()} style={{ height: 150 }} alt="results"/>
+        <br/><a href= {this.state.searchingArtistList[2].getArtistLink()}>
+             <img src={this.state.searchingArtistList[2].getArtistImage()} style={{ height: 150 }} alt="results"/>
              </a>
         </div>}
-        { (this.state.searchingArtistListNew[3].getArtistName() !== "") && <div className ="searchartistresult">
-        Artist Name: <a href= {this.state.searchingArtistListNew[3].getArtistLink()}>
-                          {this.state.searchingArtistListNew[3].getArtistName()}</a>
+        { (this.state.searchingArtistList[3].getArtistName() !== "") && <div className ="searchartistresult">
+        Artist Name: <a href= {this.state.searchingArtistList[3].getArtistLink()}>
+                          {this.state.searchingArtistList[3].getArtistName()}</a>
         <br/>Artist image:  
-        <br/><a href= {this.state.searchingArtistListNew[3].getArtistLink()}>
-             <img src={this.state.searchingArtistListNew[3].getArtistImage()} style={{ height: 150 }} alt="results"/>
+        <br/><a href= {this.state.searchingArtistList[3].getArtistLink()}>
+             <img src={this.state.searchingArtistList[3].getArtistImage()} style={{ height: 150 }} alt="results"/>
              </a>
         </div>}
-        { (this.state.searchingArtistListNew[4].getArtistName() !== "") && <div className ="searchartistresult">
-        Artist Name: <a href= {this.state.searchingArtistListNew[4].getArtistLink()}>
-                          {this.state.searchingArtistListNew[4].getArtistName()}</a>
+        { (this.state.searchingArtistList[4].getArtistName() !== "") && <div className ="searchartistresult">
+        Artist Name: <a href= {this.state.searchingArtistList[4].getArtistLink()}>
+                          {this.state.searchingArtistList[4].getArtistName()}</a>
         <br/>Artist image:  
-        <br/><a href= {this.state.searchingArtistListNew[4].getArtistLink()}>
-             <img src={this.state.searchingArtistListNew[4].getArtistImage()} style={{ height: 150 }} alt="results"/>
+        <br/><a href= {this.state.searchingArtistList[4].getArtistLink()}>
+             <img src={this.state.searchingArtistList[4].getArtistImage()} style={{ height: 150 }} alt="results"/>
              </a>
         </div>}
         </div>
         }
 
         { (this.state.checkclicked.ClickSearchAlbum&&this.state.checkclicked.ClickStartSearch) && <div className="searchtotresults"> The Searched Albums: <br/>
-        { (this.state.searchingAlbumListNew[0].getArtist().getArtistName() !== "") && <div className ="searchalbumresult">
-        Album Name: <a href= {this.state.searchingAlbumListNew[0].getAlbumLink()}>
-                         {this.state.searchingAlbumListNew[0].getAlbumName()}</a>
-        <br/>Artist Name: <a href= {this.state.searchingAlbumListNew[0].getArtist().getArtistLink()}>
-                          {this.state.searchingAlbumListNew[0].getArtist().getArtistName()}</a>
+        { (this.state.searchingAlbumList[0].getArtist().getArtistName() !== "") && <div className ="searchalbumresult">
+        Album Name: <a href= {this.state.searchingAlbumList[0].getAlbumLink()}>
+                         {this.state.searchingAlbumList[0].getAlbumName()}</a>
+        <br/>Artist Name: <a href= {this.state.searchingAlbumList[0].getArtist().getArtistLink()}>
+                          {this.state.searchingAlbumList[0].getArtist().getArtistName()}</a>
         <br/>Album image:  
-        <br/><a href= {this.state.searchingAlbumListNew[0].getAlbumLink()}>
-             <img src={this.state.searchingAlbumListNew[0].getAlbumImage()} style={{ height: 150 }} alt="results"/></a>
+        <br/><a href= {this.state.searchingAlbumList[0].getAlbumLink()}>
+             <img src={this.state.searchingAlbumList[0].getAlbumImage()} style={{ height: 150 }} alt="results"/></a>
         </div>}
-        { (this.state.searchingAlbumListNew[1].getArtist().getArtistName() !== "") && <div className ="searchalbumresult">
-        Album Name: <a href= {this.state.searchingAlbumListNew[1].getAlbumLink()}>
-                         {this.state.searchingAlbumListNew[1].getAlbumName()}</a>
-        <br/>Artist Name: <a href= {this.state.searchingAlbumListNew[1].getArtist().getArtistLink()}>
-                          {this.state.searchingAlbumListNew[1].getArtist().getArtistName()}</a>
+        { (this.state.searchingAlbumList[1].getArtist().getArtistName() !== "") && <div className ="searchalbumresult">
+        Album Name: <a href= {this.state.searchingAlbumList[1].getAlbumLink()}>
+                         {this.state.searchingAlbumList[1].getAlbumName()}</a>
+        <br/>Artist Name: <a href= {this.state.searchingAlbumList[1].getArtist().getArtistLink()}>
+                          {this.state.searchingAlbumList[1].getArtist().getArtistName()}</a>
         <br/>Album image:  
-        <br/><a href= {this.state.searchingAlbumListNew[1].getAlbumLink()}>
-             <img src={this.state.searchingAlbumListNew[1].getAlbumImage()} style={{ height: 150 }} alt="results"/></a>
+        <br/><a href= {this.state.searchingAlbumList[1].getAlbumLink()}>
+             <img src={this.state.searchingAlbumList[1].getAlbumImage()} style={{ height: 150 }} alt="results"/></a>
         </div>}
-        { (this.state.searchingAlbumListNew[2].getArtist().getArtistName() !== "") && <div className ="searchalbumresult">
-        Album Name: <a href= {this.state.searchingAlbumListNew[2].getAlbumLink()}>
-                         {this.state.searchingAlbumListNew[2].getAlbumName()}</a>
-        <br/>Artist Name: <a href= {this.state.searchingAlbumListNew[2].getArtist().getArtistLink()}>
-                          {this.state.searchingAlbumListNew[2].getArtist().getArtistName()}</a>
+        { (this.state.searchingAlbumList[2].getArtist().getArtistName() !== "") && <div className ="searchalbumresult">
+        Album Name: <a href= {this.state.searchingAlbumList[2].getAlbumLink()}>
+                         {this.state.searchingAlbumList[2].getAlbumName()}</a>
+        <br/>Artist Name: <a href= {this.state.searchingAlbumList[2].getArtist().getArtistLink()}>
+                          {this.state.searchingAlbumList[2].getArtist().getArtistName()}</a>
         <br/>Album image:  
-        <br/><a href= {this.state.searchingAlbumListNew[2].getAlbumLink()}>
-             <img src={this.state.searchingAlbumListNew[2].getAlbumImage()} style={{ height: 150 }} alt="results"/></a>
+        <br/><a href= {this.state.searchingAlbumList[2].getAlbumLink()}>
+             <img src={this.state.searchingAlbumList[2].getAlbumImage()} style={{ height: 150 }} alt="results"/></a>
         </div>}
-        { (this.state.searchingAlbumListNew[3].getArtist().getArtistName() !== "") && <div className ="searchalbumresult">
-        Album Name: <a href= {this.state.searchingAlbumListNew[3].getAlbumLink()}>
-                         {this.state.searchingAlbumListNew[3].getAlbumName()}</a>
-        <br/>Artist Name: <a href= {this.state.searchingAlbumListNew[3].getArtist().getArtistLink()}>
-                          {this.state.searchingAlbumListNew[3].getArtist().getArtistName()}</a>
+        { (this.state.searchingAlbumList[3].getArtist().getArtistName() !== "") && <div className ="searchalbumresult">
+        Album Name: <a href= {this.state.searchingAlbumList[3].getAlbumLink()}>
+                         {this.state.searchingAlbumList[3].getAlbumName()}</a>
+        <br/>Artist Name: <a href= {this.state.searchingAlbumList[3].getArtist().getArtistLink()}>
+                          {this.state.searchingAlbumList[3].getArtist().getArtistName()}</a>
         <br/>Album image:  
-        <br/><a href= {this.state.searchingAlbumListNew[3].getAlbumLink()}>
-             <img src={this.state.searchingAlbumListNew[3].getAlbumImage()} style={{ height: 150 }} alt="results"/></a>
+        <br/><a href= {this.state.searchingAlbumList[3].getAlbumLink()}>
+             <img src={this.state.searchingAlbumList[3].getAlbumImage()} style={{ height: 150 }} alt="results"/></a>
         </div>}
-        { (this.state.searchingAlbumListNew[4].getArtist().getArtistName() !== "") && <div className ="searchalbumresult">
-        Album Name: <a href= {this.state.searchingAlbumListNew[4].getAlbumLink()}>
-                         {this.state.searchingAlbumListNew[4].getAlbumName()}</a>
-        <br/>Artist Name: <a href= {this.state.searchingAlbumListNew[4].getArtist().getArtistLink()}>
-                          {this.state.searchingAlbumListNew[4].getArtist().getArtistName()}</a>
+        { (this.state.searchingAlbumList[4].getArtist().getArtistName() !== "") && <div className ="searchalbumresult">
+        Album Name: <a href= {this.state.searchingAlbumList[4].getAlbumLink()}>
+                         {this.state.searchingAlbumList[4].getAlbumName()}</a>
+        <br/>Artist Name: <a href= {this.state.searchingAlbumList[4].getArtist().getArtistLink()}>
+                          {this.state.searchingAlbumList[4].getArtist().getArtistName()}</a>
         <br/>Album image:  
-        <br/><a href= {this.state.searchingAlbumListNew[4].getAlbumLink()}>
-             <img src={this.state.searchingAlbumListNew[4].getAlbumImage()} style={{ height: 150 }} alt="results"/></a>
+        <br/><a href= {this.state.searchingAlbumList[4].getAlbumLink()}>
+             <img src={this.state.searchingAlbumList[4].getAlbumImage()} style={{ height: 150 }} alt="results"/></a>
         </div>}
         </div>
         } 
 
         { (this.state.checkclicked.ClickSearchTrack&&this.state.checkclicked.ClickStartSearch) && <div className="searchtotresults"> The Searched Tracks: <br/>
-        { (this.state.searchingTrackListNew[0].getAlbum().getArtist().getArtistName() !== "") && <div className ="searchtrackresult">
+        { (this.state.searchingTrackList[0].getAlbum().getArtist().getArtistName() !== "") && <div className ="searchtrackresult">
         <div className="post-button-group">
           <button className="btn btn-primary mt-2" id="PostSong_1" onClick={() => this.getPost("STRA", 0)}>
               write a post
           </button>
         </div>
-        Song Name: <a href= {this.state.searchingTrackListNew[0].getSongLink()}>
-                          {this.state.searchingTrackListNew[0].getSongName()}</a>
-        <br/>Artist Name: <a href= {this.state.searchingTrackListNew[0].getAlbum().getArtist().getArtistLink()}>
-                          {this.state.searchingTrackListNew[0].getAlbum().getArtist().getArtistName()}</a>
+        Song Name: <a href= {this.state.searchingTrackList[0].getSongLink()}>
+                          {this.state.searchingTrackList[0].getSongName()}</a>
+        <br/>Artist Name: <a href= {this.state.searchingTrackList[0].getAlbum().getArtist().getArtistLink()}>
+                          {this.state.searchingTrackList[0].getAlbum().getArtist().getArtistName()}</a>
         <br/>Album image:  
-        <br/><a href= {this.state.searchingTrackListNew[0].getAlbum().getAlbumLink()}>
-             <img src={this.state.searchingTrackListNew[0].getAlbum().getAlbumImage()} style={{ height: 150 }} alt="results"/></a>
+        <br/><a href= {this.state.searchingTrackList[0].getAlbum().getAlbumLink()}>
+             <img src={this.state.searchingTrackList[0].getAlbum().getAlbumImage()} style={{ height: 150 }} alt="results"/></a>
         </div>}
-        { (this.state.searchingTrackListNew[1].getAlbum().getArtist().getArtistName() !== "") && <div className ="searchtrackresult">
+        { (this.state.searchingTrackList[1].getAlbum().getArtist().getArtistName() !== "") && <div className ="searchtrackresult">
         <div className="post-button-group">
           <button className="btn btn-primary mt-2" id="PostSong_2" onClick={() => this.getPost("STRA", 1)}>
               write a post
           </button>
         </div>
-        Song Name: <a href= {this.state.searchingTrackListNew[1].getSongLink()}>
-                          {this.state.searchingTrackListNew[1].getSongName()}</a>
-        <br/>Artist Name: <a href= {this.state.searchingTrackListNew[1].getAlbum().getArtist().getArtistLink()}>
-                          {this.state.searchingTrackListNew[1].getAlbum().getArtist().getArtistName()}</a>
+        Song Name: <a href= {this.state.searchingTrackList[1].getSongLink()}>
+                          {this.state.searchingTrackList[1].getSongName()}</a>
+        <br/>Artist Name: <a href= {this.state.searchingTrackList[1].getAlbum().getArtist().getArtistLink()}>
+                          {this.state.searchingTrackList[1].getAlbum().getArtist().getArtistName()}</a>
         <br/>Album image:  
-        <br/><a href= {this.state.searchingTrackListNew[1].getAlbum().getAlbumLink()}>
-             <img src={this.state.searchingTrackListNew[1].getAlbum().getAlbumImage()} style={{ height: 150 }} alt="results"/></a>
+        <br/><a href= {this.state.searchingTrackList[1].getAlbum().getAlbumLink()}>
+             <img src={this.state.searchingTrackList[1].getAlbum().getAlbumImage()} style={{ height: 150 }} alt="results"/></a>
         </div>}
-        { (this.state.searchingTrackListNew[2].getAlbum().getArtist().getArtistName() !== "") && <div className ="searchtrackresult">
+        { (this.state.searchingTrackList[2].getAlbum().getArtist().getArtistName() !== "") && <div className ="searchtrackresult">
         <div className="post-button-group">
           <button className="btn btn-primary mt-2" id="PostSong_3" onClick={() => this.getPost("STRA", 2)}>
               write a post
           </button>
         </div>
-        Song Name: <a href= {this.state.searchingTrackListNew[2].getSongLink()}>
-                          {this.state.searchingTrackListNew[2].getSongName()}</a>
-        <br/>Artist Name: <a href= {this.state.searchingTrackListNew[2].getAlbum().getArtist().getArtistLink()}>
-                          {this.state.searchingTrackListNew[2].getAlbum().getArtist().getArtistName()}</a>
+        Song Name: <a href= {this.state.searchingTrackList[2].getSongLink()}>
+                          {this.state.searchingTrackList[2].getSongName()}</a>
+        <br/>Artist Name: <a href= {this.state.searchingTrackList[2].getAlbum().getArtist().getArtistLink()}>
+                          {this.state.searchingTrackList[2].getAlbum().getArtist().getArtistName()}</a>
         <br/>Album image:  
-        <br/><a href= {this.state.searchingTrackListNew[2].getAlbum().getAlbumLink()}>
-             <img src={this.state.searchingTrackListNew[2].getAlbum().getAlbumImage()} style={{ height: 150 }} alt="results"/></a>
+        <br/><a href= {this.state.searchingTrackList[2].getAlbum().getAlbumLink()}>
+             <img src={this.state.searchingTrackList[2].getAlbum().getAlbumImage()} style={{ height: 150 }} alt="results"/></a>
         </div>}
-        { (this.state.searchingTrackListNew[3].getAlbum().getArtist().getArtistName() !== "") && <div className ="searchtrackresult">
+        { (this.state.searchingTrackList[3].getAlbum().getArtist().getArtistName() !== "") && <div className ="searchtrackresult">
         <div className="post-button-group">
           <button className="btn btn-primary mt-2" id="PostSong_4" onClick={() => this.getPost("STRA", 3)}>
               write a post
           </button>
         </div>
-        Song Name: <a href= {this.state.searchingTrackListNew[3].getSongLink()}>
-                          {this.state.searchingTrackListNew[3].getSongName()}</a>
-        <br/>Artist Name: <a href= {this.state.searchingTrackListNew[3].getAlbum().getArtist().getArtistLink()}>
-                          {this.state.searchingTrackListNew[3].getAlbum().getArtist().getArtistName()}</a>
+        Song Name: <a href= {this.state.searchingTrackList[3].getSongLink()}>
+                          {this.state.searchingTrackList[3].getSongName()}</a>
+        <br/>Artist Name: <a href= {this.state.searchingTrackList[3].getAlbum().getArtist().getArtistLink()}>
+                          {this.state.searchingTrackList[3].getAlbum().getArtist().getArtistName()}</a>
         <br/>Album image:  
-        <br/><a href= {this.state.searchingTrackListNew[3].getAlbum().getAlbumLink()}>
-             <img src={this.state.searchingTrackListNew[3].getAlbum().getAlbumImage()} style={{ height: 150 }} alt="results"/></a>
+        <br/><a href= {this.state.searchingTrackList[3].getAlbum().getAlbumLink()}>
+             <img src={this.state.searchingTrackList[3].getAlbum().getAlbumImage()} style={{ height: 150 }} alt="results"/></a>
         </div>}
-        { (this.state.searchingTrackListNew[4].getAlbum().getArtist().getArtistName() !== "") && <div className ="searchtrackresult">
+        { (this.state.searchingTrackList[4].getAlbum().getArtist().getArtistName() !== "") && <div className ="searchtrackresult">
         <div className="post-button-group">
           <button className="btn btn-primary mt-2" id="PostSong_5" onClick={() => this.getPost("STRA", 4)}>
               write a post
           </button>
         </div>
-        Song Name: <a href= {this.state.searchingTrackListNew[4].getSongLink()}>
-                          {this.state.searchingTrackListNew[4].getSongName()}</a>
-        <br/>Artist Name: <a href= {this.state.searchingTrackListNew[4].getAlbum().getArtist().getArtistLink()}>
-                          {this.state.searchingTrackListNew[4].getAlbum().getArtist().getArtistName()}</a>
+        Song Name: <a href= {this.state.searchingTrackList[4].getSongLink()}>
+                          {this.state.searchingTrackList[4].getSongName()}</a>
+        <br/>Artist Name: <a href= {this.state.searchingTrackList[4].getAlbum().getArtist().getArtistLink()}>
+                          {this.state.searchingTrackList[4].getAlbum().getArtist().getArtistName()}</a>
         <br/>Album image:  
-        <br/><a href= {this.state.searchingTrackListNew[4].getAlbum().getAlbumLink()}>
-             <img src={this.state.searchingTrackListNew[4].getAlbum().getAlbumImage()} style={{ height: 150 }} alt="results"/></a>
+        <br/><a href= {this.state.searchingTrackList[4].getAlbum().getAlbumLink()}>
+             <img src={this.state.searchingTrackList[4].getAlbum().getAlbumImage()} style={{ height: 150 }} alt="results"/></a>
         </div>}
         </div>
         }
@@ -1031,61 +1015,61 @@ export class Discover extends Component {
         { (this.state.checkclicked.ClickRecent || this.state.checkclicked.ClickRecommended || this.state.checkclicked.ClickHottest) && <div className="totresults">
          { this.state.checkclicked.ClickRecent && <div className="results1"> 
           <div className="largefont2">Recent:</div>
-          Song Name: <a href= {this.state.recentlyListnew[0].getSongLink()}>
-                          { this.state.recentlyListnew[0].getSongName() }</a>
-          <br/>Artist Name: <a href= {this.state.recentlyListnew[0].getAlbum().getArtist().getArtistLink()}>
-                            {this.state.recentlyListnew[0].getAlbum().getArtist().getArtistName()}</a>
+          Song Name: <a href= {this.state.recentlyList[0].getSongLink()}>
+                          { this.state.recentlyList[0].getSongName() }</a>
+          <br/>Artist Name: <a href= {this.state.recentlyList[0].getAlbum().getArtist().getArtistLink()}>
+                            {this.state.recentlyList[0].getAlbum().getArtist().getArtistName()}</a>
           <br/>Album image:     
-          <br/><a href= {this.state.recentlyListnew[0].getAlbum().getAlbumLink()}>
-               <img src={this.state.recentlyListnew[0].getAlbum().getAlbumImage()} style={{ height: 150 }} alt="results"/></a>
+          <br/><a href= {this.state.recentlyList[0].getAlbum().getAlbumLink()}>
+               <img src={this.state.recentlyList[0].getAlbum().getAlbumImage()} style={{ height: 150 }} alt="results"/></a>
           <div className="post-button-group">
               <button className="btn btn-primary mt-2" id="PostSong"onClick={() => this.getPost("R", 0)}>
                   write a post
               </button>
           </div>
-          <br/>Song Name: <a href= {this.state.recentlyListnew[1].getSongLink()}>
-                          { this.state.recentlyListnew[1].getSongName() }</a>
-          <br/>Artist Name: <a href= {this.state.recentlyListnew[1].getAlbum().getArtist().getArtistLink()}>
-                            {this.state.recentlyListnew[1].getAlbum().getArtist().getArtistName()}</a>
+          <br/>Song Name: <a href= {this.state.recentlyList[1].getSongLink()}>
+                          { this.state.recentlyList[1].getSongName() }</a>
+          <br/>Artist Name: <a href= {this.state.recentlyList[1].getAlbum().getArtist().getArtistLink()}>
+                            {this.state.recentlyList[1].getAlbum().getArtist().getArtistName()}</a>
           <br/>Album image:     
-          <br/><a href= {this.state.recentlyListnew[1].getAlbum().getAlbumLink()}>
-               <img src={this.state.recentlyListnew[1].getAlbum().getAlbumImage()} style={{ height: 150 }} alt="results"/></a>
+          <br/><a href= {this.state.recentlyList[1].getAlbum().getAlbumLink()}>
+               <img src={this.state.recentlyList[1].getAlbum().getAlbumImage()} style={{ height: 150 }} alt="results"/></a>
           <div className="post-button-group">
               <button className="btn btn-primary mt-2" id="PostSong"onClick={() => this.getPost("R", 1)}>
                   write a post
               </button>
           </div>
-          <br/>Song Name: <a href= {this.state.recentlyListnew[2].getSongLink()}>
-                          { this.state.recentlyListnew[2].getSongName() }</a>
-          <br/>Artist Name: <a href= {this.state.recentlyListnew[2].getAlbum().getArtist().getArtistLink()}>
-                            {this.state.recentlyListnew[2].getAlbum().getArtist().getArtistName()}</a>
+          <br/>Song Name: <a href= {this.state.recentlyList[2].getSongLink()}>
+                          { this.state.recentlyList[2].getSongName() }</a>
+          <br/>Artist Name: <a href= {this.state.recentlyList[2].getAlbum().getArtist().getArtistLink()}>
+                            {this.state.recentlyList[2].getAlbum().getArtist().getArtistName()}</a>
           <br/>Album image:     
-          <br/><a href= {this.state.recentlyListnew[2].getAlbum().getAlbumLink()}>
-               <img src={this.state.recentlyListnew[2].getAlbum().getAlbumImage()} style={{ height: 150 }} alt="results"/></a>
+          <br/><a href= {this.state.recentlyList[2].getAlbum().getAlbumLink()}>
+               <img src={this.state.recentlyList[2].getAlbum().getAlbumImage()} style={{ height: 150 }} alt="results"/></a>
           <div className="post-button-group">
               <button className="btn btn-primary mt-2" id="PostSong"onClick={() => this.getPost("R", 2)}>
                   write a post
               </button>
           </div>
-          <br/>Song Name: <a href= {this.state.recentlyListnew[3].getSongLink()}>
-                          { this.state.recentlyListnew[3].getSongName() }</a>
-          <br/>Artist Name: <a href= {this.state.recentlyListnew[3].getAlbum().getArtist().getArtistLink()}>
-                            {this.state.recentlyListnew[3].getAlbum().getArtist().getArtistName()}</a>
+          <br/>Song Name: <a href= {this.state.recentlyList[3].getSongLink()}>
+                          { this.state.recentlyList[3].getSongName() }</a>
+          <br/>Artist Name: <a href= {this.state.recentlyList[3].getAlbum().getArtist().getArtistLink()}>
+                            {this.state.recentlyList[3].getAlbum().getArtist().getArtistName()}</a>
           <br/>Album image:     
-          <br/><a href= {this.state.recentlyListnew[3].getAlbum().getAlbumLink()}>
-               <img src={this.state.recentlyListnew[3].getAlbum().getAlbumImage()} style={{ height: 150 }} alt="results"/></a>
+          <br/><a href= {this.state.recentlyList[3].getAlbum().getAlbumLink()}>
+               <img src={this.state.recentlyList[3].getAlbum().getAlbumImage()} style={{ height: 150 }} alt="results"/></a>
           <div className="post-button-group">
               <button className="btn btn-primary mt-2" id="PostSong"onClick={() => this.getPost("R", 3)}>
                   write a post
               </button>
           </div>
-          <br/>Song Name: <a href= {this.state.recentlyListnew[4].getSongLink()}>
-                          { this.state.recentlyListnew[4].getSongName() }</a>
-          <br/>Artist Name: <a href= {this.state.recentlyListnew[4].getAlbum().getArtist().getArtistLink()}>
-                            {this.state.recentlyListnew[4].getAlbum().getArtist().getArtistName()}</a>
+          <br/>Song Name: <a href= {this.state.recentlyList[4].getSongLink()}>
+                          { this.state.recentlyList[4].getSongName() }</a>
+          <br/>Artist Name: <a href= {this.state.recentlyList[4].getAlbum().getArtist().getArtistLink()}>
+                            {this.state.recentlyList[4].getAlbum().getArtist().getArtistName()}</a>
           <br/>Album image:     
-          <br/><a href= {this.state.recentlyListnew[4].getAlbum().getAlbumLink()}>
-               <img src={this.state.recentlyListnew[4].getAlbum().getAlbumImage()} style={{ height: 150 }} alt="results"/></a>
+          <br/><a href= {this.state.recentlyList[4].getAlbum().getAlbumLink()}>
+               <img src={this.state.recentlyList[4].getAlbum().getAlbumImage()} style={{ height: 150 }} alt="results"/></a>
           <div className="post-button-group">
               <button className="btn btn-primary mt-2" id="PostSong"onClick={() => this.getPost("R", 4)}>
                   write a post
@@ -1096,61 +1080,61 @@ export class Discover extends Component {
 
         { this.state.checkclicked.ClickRecommended && <div className="results2">
           <div className="largefont2">Recommended:</div> 
-          Song Name: <a href= {this.state.mostRecommendedListnew[0].getSongLink()}>
-                          { this.state.mostRecommendedListnew[0].getSongName() }</a>
-          <br/>Artist Name: <a href= {this.state.mostRecommendedListnew[0].getAlbum().getArtist().getArtistLink()}>
-                            {this.state.mostRecommendedListnew[0].getAlbum().getArtist().getArtistName()}</a>
+          Song Name: <a href= {this.state.mostRecommendedList[0].getSongLink()}>
+                          { this.state.mostRecommendedList[0].getSongName() }</a>
+          <br/>Artist Name: <a href= {this.state.mostRecommendedList[0].getAlbum().getArtist().getArtistLink()}>
+                            {this.state.mostRecommendedList[0].getAlbum().getArtist().getArtistName()}</a>
           <br/>Album image:     
-          <br/><a href= {this.state.mostRecommendedListnew[0].getAlbum().getAlbumLink()}>
-               <img src={this.state.mostRecommendedListnew[0].getAlbum().getAlbumImage()} style={{ height: 150 }} alt="results"/></a>
+          <br/><a href= {this.state.mostRecommendedList[0].getAlbum().getAlbumLink()}>
+               <img src={this.state.mostRecommendedList[0].getAlbum().getAlbumImage()} style={{ height: 150 }} alt="results"/></a>
           <div className="post-button-group">
               <button className="btn btn-primary mt-2" id="PostSong"onClick={() => this.getPost("RM", 0)}>
                   write a post
               </button>
           </div>
-          <br/>Song Name: <a href= {this.state.mostRecommendedListnew[1].getSongLink()}>
-                          { this.state.mostRecommendedListnew[1].getSongName() }</a>
-          <br/>Artist Name: <a href= {this.state.mostRecommendedListnew[1].getAlbum().getArtist().getArtistLink()}>
-                            {this.state.mostRecommendedListnew[1].getAlbum().getArtist().getArtistName()}</a>
+          <br/>Song Name: <a href= {this.state.mostRecommendedList[1].getSongLink()}>
+                          { this.state.mostRecommendedList[1].getSongName() }</a>
+          <br/>Artist Name: <a href= {this.state.mostRecommendedList[1].getAlbum().getArtist().getArtistLink()}>
+                            {this.state.mostRecommendedList[1].getAlbum().getArtist().getArtistName()}</a>
           <br/>Album image:     
-          <br/><a href= {this.state.mostRecommendedListnew[1].getAlbum().getAlbumLink()}>
-               <img src={this.state.mostRecommendedListnew[1].getAlbum().getAlbumImage()} style={{ height: 150 }} alt="results"/></a>
+          <br/><a href= {this.state.mostRecommendedList[1].getAlbum().getAlbumLink()}>
+               <img src={this.state.mostRecommendedList[1].getAlbum().getAlbumImage()} style={{ height: 150 }} alt="results"/></a>
           <div className="post-button-group">
               <button className="btn btn-primary mt-2" id="PostSong"onClick={() => this.getPost("RM", 1)}>
                   write a post
               </button>
           </div>
-          <br/>Song Name: <a href= {this.state.mostRecommendedListnew[2].getSongLink()}>
-                          { this.state.mostRecommendedListnew[2].getSongName() }</a>
-          <br/>Artist Name: <a href= {this.state.mostRecommendedListnew[2].getAlbum().getArtist().getArtistLink()}>
-                            {this.state.mostRecommendedListnew[2].getAlbum().getArtist().getArtistName()}</a>
+          <br/>Song Name: <a href= {this.state.mostRecommendedList[2].getSongLink()}>
+                          { this.state.mostRecommendedList[2].getSongName() }</a>
+          <br/>Artist Name: <a href= {this.state.mostRecommendedList[2].getAlbum().getArtist().getArtistLink()}>
+                            {this.state.mostRecommendedList[2].getAlbum().getArtist().getArtistName()}</a>
           <br/>Album image:     
-          <br/><a href= {this.state.mostRecommendedListnew[2].getAlbum().getAlbumLink()}>
-               <img src={this.state.mostRecommendedListnew[2].getAlbum().getAlbumImage()} style={{ height: 150 }} alt="results"/></a>
+          <br/><a href= {this.state.mostRecommendedList[2].getAlbum().getAlbumLink()}>
+               <img src={this.state.mostRecommendedList[2].getAlbum().getAlbumImage()} style={{ height: 150 }} alt="results"/></a>
           <div className="post-button-group">
               <button className="btn btn-primary mt-2" id="PostSong"onClick={() => this.getPost("RM", 2)}>
                   write a post
               </button>
           </div>
-          <br/>Song Name: <a href= {this.state.mostRecommendedListnew[3].getSongLink()}>
-                          { this.state.mostRecommendedListnew[3].getSongName() }</a>
-          <br/>Artist Name: <a href= {this.state.mostRecommendedListnew[3].getAlbum().getArtist().getArtistLink()}>
-                            {this.state.mostRecommendedListnew[3].getAlbum().getArtist().getArtistName()}</a>
+          <br/>Song Name: <a href= {this.state.mostRecommendedList[3].getSongLink()}>
+                          { this.state.mostRecommendedList[3].getSongName() }</a>
+          <br/>Artist Name: <a href= {this.state.mostRecommendedList[3].getAlbum().getArtist().getArtistLink()}>
+                            {this.state.mostRecommendedList[3].getAlbum().getArtist().getArtistName()}</a>
           <br/>Album image:     
-          <br/><a href= {this.state.mostRecommendedListnew[3].getAlbum().getAlbumLink()}>
-               <img src={this.state.mostRecommendedListnew[3].getAlbum().getAlbumImage()} style={{ height: 150 }} alt="results"/></a>
+          <br/><a href= {this.state.mostRecommendedList[3].getAlbum().getAlbumLink()}>
+               <img src={this.state.mostRecommendedList[3].getAlbum().getAlbumImage()} style={{ height: 150 }} alt="results"/></a>
           <div className="post-button-group">
               <button className="btn btn-primary mt-2" id="PostSong"onClick={() => this.getPost("RM", 3)}>
                   write a post
               </button>
           </div>
-          <br/>Song Name: <a href= {this.state.mostRecommendedListnew[4].getSongLink()}>
-                          { this.state.mostRecommendedListnew[4].getSongName() }</a>
-          <br/>Artist Name: <a href= {this.state.mostRecommendedListnew[4].getAlbum().getArtist().getArtistLink()}>
-                            {this.state.mostRecommendedListnew[4].getAlbum().getArtist().getArtistName()}</a>
+          <br/>Song Name: <a href= {this.state.mostRecommendedList[4].getSongLink()}>
+                          { this.state.mostRecommendedList[4].getSongName() }</a>
+          <br/>Artist Name: <a href= {this.state.mostRecommendedList[4].getAlbum().getArtist().getArtistLink()}>
+                            {this.state.mostRecommendedList[4].getAlbum().getArtist().getArtistName()}</a>
           <br/>Album image:     
-          <br/><a href= {this.state.mostRecommendedListnew[4].getAlbum().getAlbumLink()}>
-               <img src={this.state.mostRecommendedListnew[4].getAlbum().getAlbumImage()} style={{ height: 150 }} alt="results"/></a>
+          <br/><a href= {this.state.mostRecommendedList[4].getAlbum().getAlbumLink()}>
+               <img src={this.state.mostRecommendedList[4].getAlbum().getAlbumImage()} style={{ height: 150 }} alt="results"/></a>
           <div className="post-button-group">
               <button className="btn btn-primary mt-2" id="PostSong"onClick={() => this.getPost("RM", 4)}>
                   write a post
@@ -1165,61 +1149,61 @@ export class Discover extends Component {
 
         { this.state.checkclicked.ClickHottest && <div className="results3"> 
           <div className="largefont2">Global Hottest:</div>
-          Song Name: <a href= {this.state.HottestListnew[0].getSongLink()}>
-                          { this.state.HottestListnew[0].getSongName() }</a>
-          <br/>Artist Name: <a href= {this.state.HottestListnew[0].getAlbum().getArtist().getArtistLink()}>
-                            {this.state.HottestListnew[0].getAlbum().getArtist().getArtistName()}</a>
+          Song Name: <a href= {this.state.HottestList[0].getSongLink()}>
+                          { this.state.HottestList[0].getSongName() }</a>
+          <br/>Artist Name: <a href= {this.state.HottestList[0].getAlbum().getArtist().getArtistLink()}>
+                            {this.state.HottestList[0].getAlbum().getArtist().getArtistName()}</a>
           <br/>Album image:     
-          <br/><a href= {this.state.HottestListnew[0].getAlbum().getAlbumLink()}>
-               <img src={this.state.HottestListnew[0].getAlbum().getAlbumImage()} style={{ height: 150 }} alt="results"/></a>
+          <br/><a href= {this.state.HottestList[0].getAlbum().getAlbumLink()}>
+               <img src={this.state.HottestList[0].getAlbum().getAlbumImage()} style={{ height: 150 }} alt="results"/></a>
           <div className="post-button-group">
               <button className="btn btn-primary mt-2" id="PostSong"onClick={() => this.getPost("H", 0)}>
                   write a post
               </button>
           </div>
-          <br/>Song Name: <a href= {this.state.HottestListnew[1].getSongLink()}>
-                          { this.state.HottestListnew[1].getSongName() }</a>
-          <br/>Artist Name: <a href= {this.state.HottestListnew[1].getAlbum().getArtist().getArtistLink()}>
-                            {this.state.HottestListnew[1].getAlbum().getArtist().getArtistName()}</a>
+          <br/>Song Name: <a href= {this.state.HottestList[1].getSongLink()}>
+                          { this.state.HottestList[1].getSongName() }</a>
+          <br/>Artist Name: <a href= {this.state.HottestList[1].getAlbum().getArtist().getArtistLink()}>
+                            {this.state.HottestList[1].getAlbum().getArtist().getArtistName()}</a>
           <br/>Album image:     
-          <br/><a href= {this.state.HottestListnew[1].getAlbum().getAlbumLink()}>
-               <img src={this.state.HottestListnew[1].getAlbum().getAlbumImage()} style={{ height: 150 }} alt="results"/></a>
+          <br/><a href= {this.state.HottestList[1].getAlbum().getAlbumLink()}>
+               <img src={this.state.HottestList[1].getAlbum().getAlbumImage()} style={{ height: 150 }} alt="results"/></a>
           <div className="post-button-group">
               <button className="btn btn-primary mt-2" id="PostSong"onClick={() => this.getPost("H", 1)}>
                   write a post
               </button>
           </div>
-          <br/>Song Name: <a href= {this.state.HottestListnew[2].getSongLink()}>
-                          { this.state.HottestListnew[2].getSongName() }</a>
-          <br/>Artist Name: <a href= {this.state.HottestListnew[2].getAlbum().getArtist().getArtistLink()}>
-                            {this.state.HottestListnew[2].getAlbum().getArtist().getArtistName()}</a>
+          <br/>Song Name: <a href= {this.state.HottestList[2].getSongLink()}>
+                          { this.state.HottestList[2].getSongName() }</a>
+          <br/>Artist Name: <a href= {this.state.HottestList[2].getAlbum().getArtist().getArtistLink()}>
+                            {this.state.HottestList[2].getAlbum().getArtist().getArtistName()}</a>
           <br/>Album image:     
-          <br/><a href= {this.state.HottestListnew[2].getAlbum().getAlbumLink()}>
-               <img src={this.state.HottestListnew[2].getAlbum().getAlbumImage()} style={{ height: 150 }} alt="results"/></a>
+          <br/><a href= {this.state.HottestList[2].getAlbum().getAlbumLink()}>
+               <img src={this.state.HottestList[2].getAlbum().getAlbumImage()} style={{ height: 150 }} alt="results"/></a>
           <div className="post-button-group">
               <button className="btn btn-primary mt-2" id="PostSong"onClick={() => this.getPost("H", 2)}>
                   write a post
               </button>
           </div>
-          <br/>Song Name: <a href= {this.state.HottestListnew[3].getSongLink()}>
-                          { this.state.HottestListnew[3].getSongName() }</a>
-          <br/>Artist Name: <a href= {this.state.HottestListnew[3].getAlbum().getArtist().getArtistLink()}>
-                            {this.state.HottestListnew[3].getAlbum().getArtist().getArtistName()}</a>
+          <br/>Song Name: <a href= {this.state.HottestList[3].getSongLink()}>
+                          { this.state.HottestList[3].getSongName() }</a>
+          <br/>Artist Name: <a href= {this.state.HottestList[3].getAlbum().getArtist().getArtistLink()}>
+                            {this.state.HottestList[3].getAlbum().getArtist().getArtistName()}</a>
           <br/>Album image:     
-          <br/><a href= {this.state.HottestListnew[3].getAlbum().getAlbumLink()}>
-               <img src={this.state.HottestListnew[3].getAlbum().getAlbumImage()} style={{ height: 150 }} alt="results"/></a>
+          <br/><a href= {this.state.HottestList[3].getAlbum().getAlbumLink()}>
+               <img src={this.state.HottestList[3].getAlbum().getAlbumImage()} style={{ height: 150 }} alt="results"/></a>
           <div className="post-button-group">
               <button className="btn btn-primary mt-2" id="PostSong"onClick={() => this.getPost("H", 3)}>
                   write a post
               </button>
           </div>
-          <br/>Song Name: <a href= {this.state.HottestListnew[4].getSongLink()}>
-                          { this.state.HottestListnew[4].getSongName() }</a>
-          <br/>Artist Name: <a href= {this.state.HottestListnew[4].getAlbum().getArtist().getArtistLink()}>
-                            {this.state.HottestListnew[4].getAlbum().getArtist().getArtistName()}</a>
+          <br/>Song Name: <a href= {this.state.HottestList[4].getSongLink()}>
+                          { this.state.HottestList[4].getSongName() }</a>
+          <br/>Artist Name: <a href= {this.state.HottestList[4].getAlbum().getArtist().getArtistLink()}>
+                            {this.state.HottestList[4].getAlbum().getArtist().getArtistName()}</a>
           <br/>Album image:     
-          <br/><a href= {this.state.HottestListnew[4].getAlbum().getAlbumLink()}>
-               <img src={this.state.HottestListnew[4].getAlbum().getAlbumImage()} style={{ height: 150 }} alt="results"/></a>
+          <br/><a href= {this.state.HottestList[4].getAlbum().getAlbumLink()}>
+               <img src={this.state.HottestList[4].getAlbum().getAlbumImage()} style={{ height: 150 }} alt="results"/></a>
           <div className="post-button-group">
               <button className="btn btn-primary mt-2" id="PostSong"onClick={() => this.getPost("H", 4)}>
                   write a post
