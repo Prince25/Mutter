@@ -6,6 +6,7 @@ import { firestoreConnect } from 'react-redux-firebase';
 import { compose } from 'redux';
 import styled, { keyframes } from 'styled-components'
 import Notifications from './notifications'
+import Sound from 'react-sound'
 
 
 class Home extends Component {
@@ -34,6 +35,13 @@ class Home extends Component {
     return (
 
       <div className="valing-wrapper center-align">           {/* Align vertically, horizontally */}
+        <Sound
+          url="/audio/boot.ogg"
+          playStatus={Sound.status.PLAYING}
+          autoLoad={true}
+          volume={15}
+        />
+
         <h1>Welcome to Mutter!</h1>
 
         <div className="row">
@@ -47,6 +55,7 @@ class Home extends Component {
             </div>
           </div>
         </div>
+
       </div>
     )
   }

@@ -3,9 +3,25 @@ import { connect } from 'react-redux'
 import { Redirect } from 'react-router-dom'
 import SplashForm from './splashForm'
 import styled, { keyframes } from 'styled-components'
+import Sound from 'react-sound'
 
 
 export class Splash extends Component {
+
+  constructor() {
+    super()
+    this.state = {
+      playStatus: Sound.status.PLAYING
+    }
+  }
+
+  togglePlay() {
+    if(this.state.playStatus === Sound.status.PLAYING)
+      this.setState({playStatus: Sound.status.PAUSED})
+    else
+      this.setState({playStatus: Sound.status.PLAYING})
+  }
+  
 
   render() {
     const { auth } = this.props;
@@ -46,6 +62,17 @@ export class Splash extends Component {
           <SplashForm />
         </div>
         <PaddedBottom />
+
+        <Sound
+          url="/audio/droneLoop.ogv"
+          playStatus={this.state.playStatus}
+          autoLoad={true}
+          loop={true}
+        />
+
+        <div className="postBtn">
+          <a onClick={() => this.togglePlay()} className="waves-effect waves-light btn yellow darken-4">Mute</a>
+        </div>
       </div>
     )
  
