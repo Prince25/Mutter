@@ -24,7 +24,6 @@ export const createGroup = (group) => {
       createdBy: authorId,
       createdAt: new Date(),
       members: [authorId],
-      posts: null,
       numberOfMembers: 1,
       imageUrl: "https://firebasestorage.googleapis.com/v0/b/mutter-ucla.appspot.com/o/groups%2Fdefault.png?alt=media&token=9902e63a-5fa4-4256-ac94-0647583086d3"
     }).then(() => {
@@ -80,6 +79,18 @@ export const joinGroup = (groupId) => {
     }).catch((err) => {
       dispatch({ type: 'ADD_MEMBER_ERROR', err })
     })
+
+    //get groups collection
+    let userCollectionRef = firestore.collection('users');
+
+    //add to list of groups user is in
+    userCollectionRef.doc(userId).update({
+      groups: firestore.FieldValue.arrayUnion(groupId)
+    }).then(() => {
+      dispatch({ type: 'JOIN_GROUP', userId, groupId })
+    }).catch((err) => {
+      dispatch({ type: 'JOIN_GROUP_ERROR', err })
+    });
   }
 }
 
@@ -106,6 +117,18 @@ export const leaveGroup = (groupId) => {
     }).catch((err) => {
       dispatch({ type: 'REMOVE_MEMBER_ERROR', err })
     })
+
+    //get groups collection
+    let userCollectionRef = firestore.collection('users');
+
+    //remove group from list of groups user is in
+    userCollectionRef.doc(userId).update({
+      groups: firestore.FieldValue.arrayRemove(groupId)
+    }).then(() => {
+      dispatch({ type: 'LEAVE_GROUP', userId, groupId })
+    }).catch((err) => {
+      dispatch({ type: 'LEAVE_GROUP_ERROR', err })
+    });
   }
 }
 

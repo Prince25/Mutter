@@ -7,7 +7,7 @@ import { compose } from 'redux'
 
 
 
-export class Groups extends Component {
+class Groups extends Component {
 
   state = {
     showCreate: false
@@ -15,7 +15,7 @@ export class Groups extends Component {
 
   render() {
     const { showCreate } = this.state
-    const { groups, recent, popular, authId } = this.props
+    const { authId, recent, popular, groups } = this.props
     const ownGroups = groups ? groups.filter(group => group.members.includes(authId)) : null
 
     return (
@@ -35,7 +35,6 @@ export class Groups extends Component {
  
         <div className="divider" />
         
-
         <h5>Recent Groups</h5>
         <GroupList groups={recent} />
  
@@ -52,10 +51,10 @@ export class Groups extends Component {
 
 const mapStateToProps = (state) => {
   return {
-    groups: state.firestore.ordered.groups,
+    authId: state.firebase.auth.uid,
     recent: state.firestore.ordered.recent,
     popular: state.firestore.ordered.popular,
-    authId: state.firebase.auth.uid
+    groups: state.firestore.ordered.groups 
   }
 }
 

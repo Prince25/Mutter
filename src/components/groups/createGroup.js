@@ -17,14 +17,6 @@ export class CreateGroup extends Component {
     })
   }
 
-  // handleSubmit = (e) => {
-  //   console.log(this.props)
-  //   e.preventDefault()
-  //   this.props.createGroup(this.state)
-  //   document.getElementById("groupForm").reset()
-    
-  // }
-
   render() {
     return (
       <div className="container">
@@ -33,7 +25,7 @@ export class CreateGroup extends Component {
 
             <div className="input-field">
               <label htmlFor="name">Group Name</label>
-              <input type="text" id="name" maxlength="30" onChange={this.handleChange}/>
+              <input type="text" id="name" maxLength="30" onChange={this.handleChange}/>
             </div>
 
             <div className="input-field">
@@ -43,7 +35,7 @@ export class CreateGroup extends Component {
 
             <div className="input-field">
               <label htmlFor="category">Group Category</label>
-              <textarea id="category" className="materialize-textarea" maxlength="20" onChange={this.handleChange}></textarea>
+              <textarea id="category" className="materialize-textarea" maxLength="20" onChange={this.handleChange}></textarea>
             </div>
 
             <div className="input-field">

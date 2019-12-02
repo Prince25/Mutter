@@ -59,6 +59,22 @@ const groupReducer = (state = initState, action) => {
     case 'GROUP_IMAGE_ERROR': 
       console.log('Update group image error', action.err)
       return state
+    
+    case 'JOIN_GROUP': 
+      console.log('Group', action.groupId, 'added to user', action.userId, 'list of groups')
+      return state
+
+    case 'JOIN_GROUP_ERROR': 
+      console.log('Join group error', action.err)
+      return state
+
+    case 'LEAVE_GROUP': 
+      console.log('Group', action.groupId, 'removed from user', action.userId, 'list of groups')
+      return state
+
+    case 'LEAVE_GROUP_ERROR': 
+      console.log('Leave group error', action.err)
+      return state
       
     default: return state
   }

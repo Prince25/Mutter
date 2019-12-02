@@ -55,7 +55,6 @@ class Home extends Component {
 
 const mapStateToProps = (state) => {
   return {
-    users: state.firestore.ordered.users,
     notifications: state.firestore.ordered.notifications
   }
 }

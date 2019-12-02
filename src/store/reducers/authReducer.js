@@ -86,22 +86,6 @@ const authReducer = (state = initState, action) => {
       console.log('Update user spotify token error', action.err)
       return state
 
-    case 'JOIN_GROUP': 
-      console.log('Group', action.groupId, 'added to user', action.uId, 'list of groups')
-      return state
-
-    case 'JOIN_GROUP_ERROR': 
-      console.log('Join group error', action.err)
-      return state
-
-    case 'LEAVE_GROUP': 
-      console.log('Group', action.groupId, 'removed from user', action.uId, 'list of groups')
-      return state
-
-    case 'LEAVE_GROUP_ERROR': 
-      console.log('Leave group error', action.err)
-      return state
-
     default:
       return state
   }
