@@ -54,6 +54,12 @@ $ pip install selenium
 $ cd test
 $ python MutterTest.py
 ```
+### Running JavaScript Unit Tests
+The unit tests are specific for Spotify API, you need to fetch the response from Spotify offical console, the access token needs to be replaced with the up-to-date one. There are 5 test files totally. Use the same commands, just change file names.
+```sh
+$ cd test
+$ node Stest.js
+```
 
 
 ### Team

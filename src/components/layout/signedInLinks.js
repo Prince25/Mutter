@@ -19,7 +19,7 @@ class SignedInLinks extends Component {
 
     return (
       <ul className="right">
-        <li><NavLink to={'/discover/' + token}>Discover</NavLink></li>
+        <li><NavLink to={'/discover/' + token} id = 'discover_btn'>Discover</NavLink></li>
         <li><NavLink to='/groups'>Groups</NavLink></li>
         <li><NavLink to='/feed'>Feed</NavLink></li>
         <li><NavLink to={'/profile/' + auth.uid} id = 'profile_btn' className='btn btn-floating pink lighten-1'>

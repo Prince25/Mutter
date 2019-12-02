@@ -41,8 +41,6 @@ signIn_button.click()
 
 time.sleep(2)
 
-# locate the email
-elem = browser.find_element_by_id('email')
 
 # send correct key to email
 length = len(elem.get_attribute('value'))
@@ -56,18 +54,30 @@ signIn_button = browser.find_element_by_id('signin_btn')
 signIn_button.click()
 
 #####################################################
-# Now logged in, at Discover page (without logged in to Spotify)
+# Now logged in, at Main page (without logged in to Spotify)
 time.sleep(3)
 
-# # click search when not connect with Spotify
-# search_button = browser.find_element_by_id('search_btn')
-# # search_button = browser.find_element_by_link_text('SEARCH')
-# search_button.click()
+# click Discover button to go to Discover Page
+discover_btn = browser.find_element_by_id('discover_btn')
+if(discover_btn):
+	discover_btn.click()
+else:
+	print "discover button not found!"
 
-# # Expect to show a window says cannot search
-# time.sleep(2)
+#####################################################
+# Now at Discover page,
+time.sleep(1)
+
+# click search when not connect with Spotify
+search_button = browser.find_element_by_id('search_btn')
+search_button.click()
+alert = browser.switch_to.alert
+alert.accept()
+
+# Expect to show a window says cannot search
+time.sleep(2)
 # elem.send_keys(Keys.RETURN);
-# time.sleep(1)
+time.sleep(1)
 
 # locate and click profile button
 profile_button = browser.find_element_by_id('profile_btn')
