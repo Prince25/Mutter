@@ -4,6 +4,10 @@ themselves in their own music review blog. Become a music critic and see what ot
 say about top music.
 
 
+### Video Demo
+[YouTube](https://youtu.be/1qkLy-PLUP0)
+
+
 ### Technologies
 * [React](https://reactjs.org/) - Frontend: JavaScript library for creating web apps!
 * [node.js](http://nodejs.org) - evented I/O for the backend
