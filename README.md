@@ -18,7 +18,7 @@ Clone repository, install the dependencies and start the server.
 
 Clone and Run the Script
 ```sh
-$ git clone git@gitlab.com:etanboga/cs130-mutter.git
+$ git clone https://github.com/PrinceS25/Mutter.git
 $ cd cs130-mutter
 $ ./run.sh
 ```
@@ -27,7 +27,7 @@ $ ./run.sh
 
 Clone and install dependencies
 ```sh
-$ git clone git@gitlab.com:etanboga/cs130-mutter.git
+$ git clone https://github.com/PrinceS25/Mutter.git
 $ cd cs130-mutter
 $ npm install
 ```
