@@ -16,7 +16,5 @@ export const createPost = (post) => {
     }).catch((err) => {
       dispatch({ type: 'CREATE_POST_ERROR', err: err })
     })
-
-
   }
 }

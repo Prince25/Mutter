@@ -1,14 +1,5 @@
 import firebase from '../../config/fbConfig'
 
-/** 
- * @method signIn
- * @description Represents our function for signing in through email with Firebase.
- * @param {object} credentials - crendentials for the users who is logging in.
- * @param {string} credentials.email - email of the user logging in.
- * @param {string} credentials.password - password of the user logging in.
- * @returns {null} 
- */
-
 
 export const signIn = (credentials) => {
   return (dispatch, getState) => {
@@ -25,15 +16,6 @@ export const signIn = (credentials) => {
   }
 }
 
-/** 
- * @method signUp
- * @description Represents our function for signing up through email with Firebase.
- * @param {object} newUser - crendentials for the users who is logging in.
- * @param {string} newUser.name - name of the user who just signed up.
- * @param {string} newUser.email - email of the user who just signed up.
- * @param {string} newUser.password - password of the user who just signed up.
- * @returns {null}
- */
 
 export const signUp = (newUser) => {
   return (dispatch, getState, {getFirestore}) => {
@@ -46,10 +28,11 @@ export const signUp = (newUser) => {
     ).then((resp) => {
       firestore.collection('users').doc(resp.user.uid).set({
         name: newUser.name,
-        following: [],
-        followers: [],
-        groups: [],
-        imageUrl: 'https://firebasestorage.googleapis.com/v0/b/mutter-ucla.appspot.com/o/users%2Fdefault_stick.png?alt=media&token=817a47dd-6485-45e4-91d1-18718b06947f'
+        friends: [],
+        friends_pending: [],
+        privacy: 'public',
+        spotify_token: '',
+        imageUrl: 'https://firebasestorage.googleapis.com/v0/b/runtime-terror-1d144.appspot.com/o/profile_images%2Fdefault_pic.png?alt=media&token=74c12ae4-d4ca-4ad2-af25-c38c2206ee43'
       })
     }).then(() => {
       dispatch({ type: 'SIGNUP_SUCCESS' })
@@ -59,13 +42,6 @@ export const signUp = (newUser) => {
   }
 }
 
-/** 
- * @method signOut
- * @description Represents our function for logging out users.
- * @param {function} dispatch - a function through which Redux dispatches an action.
- * @param {function} getState - a function that returns the current state of the Redux store.
- * @returns {Object}
- */
 
 export const signOut = () => {
   return (dispatch, getState) => {
@@ -85,7 +61,7 @@ export const updateImage = (uId, imageUrl) => {
     firestore.collection('users').doc(uId).update({
       imageUrl: imageUrl
     }).then(() => {
-      dispatch({ type: 'USER_IMAGE', uId })
+      dispatch({ type: 'USER_IMAGE', uId, imageUrl })
     }).catch((err) => {
       dispatch({ type: 'USER_IMAGE_ERROR', err })
     })
@@ -93,68 +69,111 @@ export const updateImage = (uId, imageUrl) => {
 }
 
 
-export const followUser = (uId, followingId) => {
+export const updateProfile = (uId, newInfo) => {
+  return (dispatch, getState, { getFirebase, getFirestore }) => {
+
+    // Make async call to database
+    const firestore = getFirestore()
+    const {name, privacy} = newInfo
+
+    firestore.collection('users').doc(uId).update({
+      name: name,
+      privacy: privacy
+    }).then(() => {
+      dispatch({ type: 'USER_UPDATE', uId, newInfo })
+    }).catch((err) => {
+      dispatch({ type: 'USER_UPDATE_ERROR', err })
+    })
+  }
+}
+
+
+export const addFriend = (profile_user_id, logged_in_user_id) => {
   return (dispatch, getState, { getFirebase, getFirestore }) => {
 
     // Make async call to database
     const firestore = getFirestore()
 
-    //get users collection
-    let userCollectionRef = firestore.collection('users');
-
-    //add to list of users user is following
-    userCollectionRef.doc(uId).update({
-      following: firestore.FieldValue.arrayUnion(followingId)
+    firestore.collection('users').doc(profile_user_id).update({
+      friends_pending: firestore.FieldValue.arrayUnion(logged_in_user_id)
     }).then(() => {
-      dispatch({ type: 'FOLLOW_USER', uId, followingId })
+      dispatch({ type: 'SEND_FRIEND_REQUEST', profile_user_id, logged_in_user_id})
     }).catch((err) => {
-      dispatch({ type: 'FOLLOW_USER_ERROR', err })
-    });
-
-    //add user to other user's followers list
-    userCollectionRef.doc(followingId).update({
-      followers: firestore.FieldValue.arrayUnion(uId)
-    }).then(() => {
-      dispatch({ type: 'ADD_FOLLOWER', uId, followingId })
-    }).catch((err) => {
-      dispatch({ type: 'ADD_FOLLOWER_ERROR', err })
-    });
-
+      dispatch({ type: 'SEND_FRIEND_REQUEST_ERROR', err })
+    })
   }
 }
 
 
-export const unfollowUser = (uId, followingId) => {
+export const removeFriend = (profile_user_id, logged_in_user_id) => {
   return (dispatch, getState, { getFirebase, getFirestore }) => {
 
     // Make async call to database
     const firestore = getFirestore()
 
-    //get users collection
-    let userCollectionRef = firestore.collection('users');
-
-    //remove from list of users user is following
-    userCollectionRef.doc(uId).update({
-      following: firestore.FieldValue.arrayRemove(followingId)
+    // Remove logged in user from profile user's friends list
+    firestore.collection('users').doc(profile_user_id).update({
+      friends: firestore.FieldValue.arrayRemove(logged_in_user_id)
+    })
+    
+    // Remove profile user from logged in user's friends list
+    firestore.collection('users').doc(logged_in_user_id).update({
+      friends: firestore.FieldValue.arrayRemove(profile_user_id)
     }).then(() => {
-      dispatch({ type: 'UNFOLLOW_USER', uId, followingId })
+      dispatch({ type: 'REMOVE_FRIEND', profile_user_id, logged_in_user_id})
     }).catch((err) => {
-      dispatch({ type: 'UNFOLLOW_USER_ERROR', err })
-    });
-
-    //remove user from other user's followers list
-    userCollectionRef.doc(followingId).update({
-      followers: firestore.FieldValue.arrayRemove(uId)
-    }).then(() => {
-      dispatch({ type: 'REMOVE_FOLLOWER', uId, followingId })
-    }).catch((err) => {
-      dispatch({ type: 'REMOVE_FOLLOWER_ERROR', err })
-    });
-
+      dispatch({ type: 'REMOVE_FRIEND_ERROR', err })
+    })
   }
 }
 
-export const updateToken = (uId, token) => {
+
+export const acceptFriend = (friend_user_id, logged_in_user_id) => {
+  return (dispatch, getState, { getFirebase, getFirestore }) => {
+
+    // Make async call to database
+    const firestore = getFirestore()
+
+    // Remove incoming friend from logged in user's friends_pending list
+    firestore.collection('users').doc(logged_in_user_id).update({
+      friends_pending: firestore.FieldValue.arrayRemove(friend_user_id)
+    })
+    
+    // Add incoming friend to logged in user's friends list
+    firestore.collection('users').doc(logged_in_user_id).update({
+      friends: firestore.FieldValue.arrayUnion(friend_user_id)
+    })
+
+    // Add logged in user to incoming friend's friends list
+    firestore.collection('users').doc(friend_user_id).update({
+      friends: firestore.FieldValue.arrayUnion(logged_in_user_id)
+    }).then(() => {
+      dispatch({ type: 'ACCEPT_FRIEND', friend_user_id, logged_in_user_id})
+    }).catch((err) => {
+      dispatch({ type: 'ACCEPT_FRIEND_ERROR', err })
+    })
+  }
+}
+
+
+export const rejectFriend = (friend_user_id, logged_in_user_id) => {
+  return (dispatch, getState, { getFirebase, getFirestore }) => {
+
+    // Make async call to database
+    const firestore = getFirestore()
+
+    // Remove incoming friend from logged in user's friends_pending list
+    firestore.collection('users').doc(logged_in_user_id).update({
+      friends_pending: firestore.FieldValue.arrayRemove(friend_user_id)
+    }).then(() => {
+      dispatch({ type: 'REJECT_FRIEND', friend_user_id, logged_in_user_id})
+    }).catch((err) => {
+      dispatch({ type: 'REJECT_FRIEND_ERROR', err })
+    })
+  }
+}
+
+export const updateToken = (uId, token, callback) => {
   return (dispatch, getState, { getFirebase, getFirestore }) => {
 
     // Make async call to database
@@ -167,5 +186,7 @@ export const updateToken = (uId, token) => {
     }).catch((err) => {
       dispatch({ type: 'SPOTIFY_TOKEN_ERROR', err })
     })
+
+    callback();
   }
 }

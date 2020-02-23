@@ -1,271 +1,262 @@
-import React, { Component } from 'react';
-import { Link } from 'react-router-dom';
-import { connect } from 'react-redux';
+import React, { Component } from 'react'
 import { compose } from 'redux';
+import { connect } from 'react-redux';
 import { firestoreConnect } from 'react-redux-firebase';
-import { Redirect } from 'react-router-dom';
-import PostList from '../feed/PostList';
-import UserList from './UserList';
-import styled from 'styled-components';
-import UploadPicture from './uploadPicture';
-import { followUser, unfollowUser } from '../../store/actions/authActions';
-
-// import './AppNew.css';
-import SpotifyWebApi from 'spotify-web-api-js';
-const spotifyApi = new SpotifyWebApi();
-
+import { Redirect } from 'react-router-dom'
+import { Grid, GridRow, Image, Button, Segment, Tab, GridColumn, Label, Modal, Form } from 'semantic-ui-react'
+import { addFriend, removeFriend, acceptFriend } from '../../store/actions/authActions'
+import CreatePost from '../createPost';
+import PostList from '../feed/postList'
+import FriendList from './friendList'
+import UploadPicture from './modalUploadPicture';
+import { updateProfile } from '../../store/actions/authActions'
 
 export class Profile extends Component {
 
-	constructor(){
-    super();
-    const params = this.getHashParams();
-		const token = params.access_token;
-		this.user = null
-    if (token) {
-      spotifyApi.setAccessToken(token);
+  state = {
+    posts_content: null,
+    friends_content: null,
+    navigate: null,
+    open: false,
+    name: '',
+    privacy: null,
+    profile: null
+  }
+
+  static getDerivedStateFromProps(nextProps, prevState) {
+    let data = {}
+    if ((prevState.profile === null || prevState.profile.isLoading) && nextProps.profile) {
+      if (nextProps.profile.privacy !== undefined) {
+        Object.assign(data,
+          {
+            privacy: nextProps.profile.privacy,
+            profile: nextProps.profile
+          }
+        )
+      }
+
+      if (nextProps.profile.name !== undefined) {
+        Object.assign(data,
+          {
+            name: nextProps.profile.name
+          }
+        )
+      }
+    }
+    return data
+  }
+
+  navigate = (destination) => {
+    this.setState({
+      navigate: destination
+    })
+  }
+
+  handleChange = (e) => {
+    this.setState({
+      [e.target.id]: e.target.value
+    })
+  }
+
+  handleSubmit = (e) => {
+    this.handleSubmitPrivacy(e, this.state.privacy)
+  }
+
+  handleSubmitPrivacy = (e, privacy) => {
+    e.preventDefault()
+    this.props.updateProfile(this.props.auth.uid, {name: this.state.name, privacy: privacy, profile: this.state.profile})
+    this.props.history.push('/profile/' + this.props.auth.uid)
+    this.setState({open: false})
+  }
+
+  togglePrivacy = (e) => {
+    let new_privacy = (this.state.privacy === 'private') ? 'public' : 'private'
+    this.setState({
+      privacy: new_privacy
+    })
+    this.handleSubmitPrivacy(e, new_privacy)
+  }
+
+  render() {
+    const { auth, users, profile, match, curProfilePosts, currentFriendsList} = this.props;
+    const curProfileUser = users && auth ? users.filter(user => user.id === match.params.id)[0] : null
+    const imageUrl = curProfileUser ? curProfileUser.imageUrl : null
+    
+    const isUser = auth.uid && match.params && auth.uid === match.params.id;
+
+    let friendButton = match && auth ? <Button onClick={() => {this.props.addFriend(match.params.id, auth.uid)}}>Add Friend</Button> : null
+    if (auth && curProfileUser && curProfileUser.friends_pending && curProfileUser.friends_pending.includes(auth.uid))
+      friendButton = <Button>Friend Request Sent</Button>
+    else if (auth && curProfileUser && curProfileUser.friends.includes(auth.uid) && match)
+      friendButton = <Button onClick={() => {this.props.removeFriend(match.params.id, auth.uid)}}>Remove Friend</Button>
+    else if (profile && profile.friends_pending && auth && match && profile.friends_pending.includes(match.params.id))
+      friendButton = <Button onClick={() => {this.props.acceptFriend(match.params.id, auth.uid)}}>Accept Friend Request</Button>
+    
+      
+    let posts_content = <div> <PostList posts={curProfilePosts} users={users} /> </div>
+    let friends_content = curProfileUser ? 
+          ((currentFriendsList && match && match.params && match.params.id && currentFriendsList.includes(match.params.id)) 
+            || (auth && match && match.params && match.params.id && auth["uid"] === match.params.id) ? 
+            <div> <FriendList users={users} friends={curProfileUser.friends} /> </div> :
+            <div> <FriendList users={users} friends={[]} /> </div>)
+             : null
+
+    let profile_panes = [
+    {
+      menuItem: 'Posts',
+      render: () => <Tab.Pane>{posts_content}</Tab.Pane>
+    },
+    {
+      menuItem: 'Friends',
+      render: () => <Tab.Pane>{friends_content}</Tab.Pane>
+    }
+  ]
+
+    if (this.state.navigate === '/createpost') {
+      return (
+        <div><Redirect to={this.state.navigate}/><CreatePost/></div>
+      )
     }
 
-    this.state = {
-			loggedIn: token ? true : false,
-			display: 'Mutters',
-      following: false
-		}
-	}
-	
-  getHashParams() {
-    var hashParams = {};
-    var e, r = /([^&;=]+)=?([^&;]*)/g,
-        q = window.location.hash.substring(1);
-    e = r.exec(q)
-    while (e) {
-       hashParams[e[1]] = decodeURIComponent(e[2]);
-       e = r.exec(q);
-    }
-    return hashParams;
+    
+    return (
+      <div>
+        <Grid centered padded='vertically'>
+          <GridRow>
+            <Segment>
+              { isUser ?
+                <UploadPicture uId={auth.uid} previousImageUrl={imageUrl} /> :
+                <Image src={imageUrl} size='medium' circular bordered/>
+              }
+              <br/>
+              <Button as='div' labelPosition='left'>
+                <Label basic>
+                  {curProfileUser ? curProfileUser.name : null }
+                </Label>
+                { isUser ?
+                <Modal
+                  trigger={<Button compact icon='edit'/>}
+                  open={this.state.open}
+                  onOpen={() => this.setState({open: true})}
+                  closeOnDimmerClick={false}
+                  closeOnDocumentClick={false}
+                  size='small'
+                  >
+                    <Modal.Content>
+                      <Form onSubmit={this.handleSubmit}>
+                        <Form.Field>
+                          <label>New Name</label>
+                          <Form.Input id='name' onChange={this.handleChange} placeholder={curProfileUser ? curProfileUser.name : ''}/>
+                        </Form.Field>
+                        <Button type='submit' color='green'>Change name</Button>
+                        <Button floated='right' color='red'  onClick={() => this.setState({open: false})}>Cancel</Button>
+                      </Form>
+                    </Modal.Content>
+                  </Modal>
+                : null
+                }
+              </Button>
+
+              { isUser ?  // If the current profile is logged in user's profile
+                <div>
+                  <Grid>
+                    <Grid.Column floated='left'>
+                      <Button onClick={this.togglePrivacy} basic size='small' color={(this.state.privacy === 'private') ? 'red' : 'green'}>{(this.state.privacy === 'private') ? 'Private' : 'Public'}</Button>
+                    </Grid.Column>
+                    <Grid.Column floated='right'>
+                      <Button floated='right' icon='plus' onClick={() => {this.navigate('/createpost')}}/>
+                    </Grid.Column>
+                  </Grid>
+                </div> :
+                  friendButton
+              }
+            </Segment>
+          </GridRow>
+          <GridRow> <GridColumn width={16}> <Tab panes={profile_panes}/> </GridColumn> </GridRow>
+        </Grid>
+      </div>
+    )
   }
 
   componentDidUpdate() {
-    const { auth, users, match } = this.props;
-    const { following } = this.state;
-
-    const currUserId = match.params.id;
-    const ownUserId = auth.uid;
-
-    if (users === undefined) {
-      console.log('users currently undefined');
-      return;
-    }
-
-    for (const user of users) {
-      if (user.id === ownUserId) {
-        let isFollowing = user.following.includes(currUserId);
-        if (following !== isFollowing) {
-          this.setState({ following: !following });
-        }
-        break;
-      }
-    }
-  }
-
-  handleNavClick = (e) => {
-  	if (e.target.id === '' || e.target.id === this.state.display) return;
-  	document.getElementById(this.state.display).innerHTML = this.state.display;
-  	this.setState({
-  		display: e.target.id
-  	});
-  	document.getElementById(e.target.id).innerHTML = "<b><u>"+e.target.id+"</u><b>";
-  }
-
-  getContent = () => {
-    const { posts, users, match } = this.props;
-  	switch(this.state.display) {
-  		case 'Mutters':
-				const myPosts = (posts != null && this.user ? posts.filter(post => post.authorId === this.user.id) : []);
-				 
-  			return (
-  				<div>
-						<PostList posts={myPosts} users={users} />
-					</div>
-  			);
-  			
-  		case 'Followers':
-
-        if (users === undefined) return (<div></div>);
-
-        //get list of users this dude is following
-        let followers = [];
-        for (const user of users) {
-          if (user.id === match.params.id) {
-            followers = user.followers;
-            break;
-          }
-        }
-
-        const myFollowers = users.filter(user => followers.includes(user.id));
-
-  			return (
-					<div className="collection followers">
-						<UserList users={myFollowers} />
-					</div>
-  			);
-  			
-  		case 'Following':
-
-        if (users === undefined) return (<div></div>);
-
-        //get list of users this dude is following
-        let following = [];
-        for (const user of users) {
-          if (user.id === match.params.id) {
-            following = user.following;
-            break;
-          }
-        }
-
-        const myFollowing = users.filter(user => following.includes(user.id));
-
-  			return (
-  				<div className="collection followers">
-    				<UserList users={myFollowing} />
-  				</div>
-  			);
-				
-  		default:
-  			break;
-  	}
-  }
-
-  handleFollowClick = () => {
-    const { following, ownProfile } = this.state;
-    const currUserId = this.props.match.params.id;
-    const ownUserId = this.props.auth.uid;
-
-    if (!following) 
-      this.props.followUser(ownUserId, currUserId);
-    else
-      this.props.unfollowUser(ownUserId, currUserId);
-
-    this.setState({ following: !following });
-  }
-
-  getButton = () => {
-    const { following, ownProfile } = this.state;
-    const currUserId = this.props.match.params.id;
-    const ownUserId = this.props.auth.uid;
-    
-    if (currUserId === ownUserId) return (<div></div>);
-
-    let color = following ? "red" : "green accent-4";
-
-    return (
-      <button className={"waves-effect waves-red btn "+color} onClick={this.handleFollowClick} >
-        <i className="material-icons left">{ this.state.following ? "remove" : "add" }
-        </i>{ this.state.following ? "Unfollow" : "Follow" }
-      </button>
-    );
-  }
-	
-  render() {
-		const { auth, users, match } = this.props;
-		if (!auth.uid) return <Redirect to='/splash' />
-
-		this.user = users && match ? users.filter(user => user.id === match.params.id)[0] : null
-	
-		const imageUrl = this.user ? this.user.imageUrl : null
-		const ProfileImg = styled.img`
-			width: 100px;
-			max-height: 100px;
-			margin-top: 5px;
-			margin-bottom: 0;
-			vertical-align: text-bottom;
-		`;
-
-		const Form = styled.form`
-			background-color: light-grey;
-			padding: 5px;
-			padding-bottom: 1px;
-			margin-top: 5px;
-			margin-bottom: 5px;
-			vertical-align: middle;
-			line-height: 14px;
-		`;
-
-    return (
-      <div className="container">
-				{ auth.uid && this.user && auth.uid === this.user.id ?
-					<Form>
-						<div className="row">
-							<div id = 'spotify' className="col s6 center">
-								<a href='http://localhost:8888' className="waves-effect waves-light btn center yellow darken-4">Connect Spotify</a>
-							</div>
-							<div className="col s6">
-							<UploadPicture uId={auth.uid} /> 
-							</div>
-						</div>
-					</Form>
-					: null }
-				
-
-        {/*Profile Header block*/}
-        <div className="profile-header">
-
-            <div className="left-align">
-              { this.getButton() }
-            </div>
-
-						<div className="center-align">
-							<a href={imageUrl} ><ProfileImg src={imageUrl} alt="" className="circle responsive-img" /> </a>
-							<p className="profile-name">{ this.user ? this.user.name : null }</p>
-						</div>
-
-				</div>
-
-
-        {/*navbar: mutters (Default active) | # followers | # following*/}
-        <div className="btn-group">
-					<button onClick={this.handleNavClick} id="Mutters"><b><u>Mutters</u></b></button>
-					<button onClick={this.handleNavClick} id="Followers">Followers</button>
-					<button onClick={this.handleNavClick} id="Following">Following</button>
-				</div>
-
-
-				{/*users posts (mutters), or list of users following/followers*/}
-				<div id="profile-content">
-					{this.getContent() }    	
-				</div>
-
-
-				{ auth.uid && this.user && auth.uid === this.user.id ?
-					<div className="postBtn">
-						<Link to="/newpost" className="btn-floating btn-large waves-effect waves-light yellow darken-4"><i className="material-icons">add</i></Link>
-					</div> : null }
-      
-      </div>
-    );
+    if (this.state.navigate != null)
+      this.navigate(null)
   }
 }
 
 
 const mapStateToProps = (state) => {
+    //creates the friends list for the current user
+    let currentFriendsList = ["0"]; //This is the dummy value
+    for(let key in state.firestore.ordered.users)
+    {
+      if(state.firebase.auth["uid"] === state.firestore.ordered.users[key]["id"])
+      {
+        currentFriendsList = state.firestore.ordered.users[key]["friends"];
+      }
+    }
+    
+    //This creates the posts on the profile that we are looking at
+    let curProfilePosts = [];
+    if(state.firestore.ordered.curPrivatePosts != null && state.firestore.ordered.curPublicPosts != null){
+      curProfilePosts = state.firestore.ordered.curPrivatePosts.concat(state.firestore.ordered.curPublicPosts).sort(function (a, b) {
+        return b.createdAt["seconds"] - a.createdAt["seconds"];
+    })
+    }
+    else if(state.firestore.ordered.curPublicPosts != null){
+      curProfilePosts = state.firestore.ordered.publicPosts;
+    }
+    else if(state.firestore.ordered.curPrivatePosts != null){
+      curProfilePosts = state.firestore.ordered.curPrivatePosts;
+    }
+
   return {
-    posts: state.firestore.ordered.posts,
+    curProfilePosts: curProfilePosts,
     auth: state.firebase.auth,
-    users: state.firestore.ordered.users
+    profile: state.firebase.profile,
+    users: state.firestore.ordered.users,
+    currentFriendsList: currentFriendsList
   }
 }
+
 
 const mapDispatchToProps = (dispatch) => {
   return {
-    followUser: (uId, followingId) => dispatch(followUser(uId, followingId)),
-    unfollowUser: (uId, followingId) => dispatch(unfollowUser(uId, followingId))
+    addFriend: (profile_user_id, logged_in_user_id) => dispatch(addFriend(profile_user_id, logged_in_user_id)),
+    removeFriend: (profile_user_id, logged_in_user_id) => dispatch(removeFriend(profile_user_id, logged_in_user_id)),
+    acceptFriend: (friend_user_id, logged_in_user_id) => dispatch(acceptFriend(friend_user_id, logged_in_user_id)),
+    updateProfile: (uId, newInfo) => dispatch(updateProfile(uId, newInfo))
   }
 }
 
+
 export default compose(
   connect(mapStateToProps, mapDispatchToProps),
-  firestoreConnect([
-    { collection: 'posts', orderBy: ['createdAt', 'desc'] },
-    { collection: 'users' }
+  firestoreConnect(props => [
+    { collection: 'users' },
+      { 
+      collection: 'posts',
+      storeAs: 'curPrivatePosts',
+      where: [
+        ['authorId', '==', props.match.params.id],
+        [
+        'privacy', '==', 
+        //get the private posts if they are friends OR they are the current user
+        //Otherwise we can only see their public posts
+        props.currentFriendsList === null || (props.match.params.id !== props.auth["uid"] && !props.currentFriendsList.includes(props.match.params.id))?
+        '0':'private'
+        ],
+      ],
+     },
+     { 
+      collection: 'posts',
+      storeAs: 'curPublicPosts',
+      where: [
+      //Alway just get the public posts, and we will add them together and sort them by their start time
+        ['authorId', '==', props.match.params.id],
+        ['privacy', '==','public'],
+      ],
+     },
+      
   ])
 )(Profile);

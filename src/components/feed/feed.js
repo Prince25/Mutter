@@ -1,119 +1,107 @@
-import React, { Component } from 'react';
-import PostList from '../feed/PostList';
-import { connect } from 'react-redux';
-import { firestoreConnect } from 'react-redux-firebase';
-import { compose } from 'redux';
-import { Redirect } from 'react-router-dom';
+import React, { Component } from 'react'
+import { Tab, Divider } from 'semantic-ui-react'
+import { compose } from 'redux'
+import { firestoreConnect } from 'react-redux-firebase'
+import { connect } from 'react-redux'
+import PostList from './postList'
 
-
-class Feed extends Component {
-
+export class Feed extends Component {
   state = {
-    filter: 'following'
+    friendsPosts: null,
+    explorePosts: null,
+    users: null,
   }
 
-  filter = (e) => {
-    this.setState({ filter: e.target.id });
-  }
-
-  componentDidUpdate() {
-    if (document.getElementById('following') == null) return;
-    document.getElementById(this.state.filter).checked = true;
+  static getDerivedStateFromProps(nextProps, prevState) {
+    let newPosts = {}
+    if (nextProps.explorePosts !== prevState.explorePosts) {
+      Object.assign(newPosts, {explorePosts: nextProps.explorePosts})
+    }
+    if (nextProps.friendsPosts !== undefined && nextProps.friendsPosts !== prevState.friendsPosts) {
+      Object.assign(newPosts, {friendsPosts: nextProps.friendsPosts})
+    }
+    if (nextProps.users !== undefined && nextProps.users !== prevState.users) {
+      Object.assign(newPosts, {users: nextProps.users})
+    }
+    return (newPosts.length !== 0) ? newPosts : null;
   }
 
   render() {
-
-    const { posts, users, groups, auth, match } = this.props;
-    if (!auth.uid) return <Redirect to='/splash' />
-
-
-    if (users === undefined || posts === undefined || groups === undefined) return (<div></div>);
-    const userId = this.props.auth.uid;
-
-    //get list of users this dude is following and list of groups theyre in
-    let usersFollowing = [];
-    let usersGroups = [];
-    for (const user of users) {
-      if (user.id === userId) {
-        usersFollowing = user.following;
-        usersGroups = user.groups;
-        break;
-      }
-    }
-
-    //get list of users who are in same groups this dude is in
-    let usersInGroups = [];
-    for (const group of groups) {
-      if (usersGroups.includes(group.id)) {
-        usersInGroups.push(...group.members);
-      }
-    }
-    usersInGroups = usersInGroups.filter((value, index, self) => { return self.indexOf(value)===index; } );   // remove duplicates
-
-    let postsToDisplay = [];
-    switch(this.state.filter) {
-      case 'groups':
-        postsToDisplay = posts.filter(post => post.authorId != auth.uid && usersInGroups.includes(post.authorId));
-        break;
-      case 'all':
-      	postsToDisplay = posts.filter(post => post.authorId != auth.uid);
-      	break;
-      case 'following':
-      default:
-        postsToDisplay = posts.filter(post => usersFollowing.includes(post.authorId));
-        break;
-    }
-
+    let feedPanes = [
+      { menuItem: 'Friends', render: () => <Tab.Pane><PostList posts={this.state.friendsPosts} users={this.state.users}/></Tab.Pane> },
+      { menuItem: 'Explore', render: () => <Tab.Pane><PostList posts={this.state.explorePosts} users={this.state.users}/></Tab.Pane> },
+    ]
+  
     return (
-      <div className="feed container">
-        <div className="col"> {/* https://youtu.be/hZswcXSd5GA?t=130 */}
-          <div className="row">
-
-          <form className="feed-selection-box"><b>FILTER FEED:</b>   
-            <div onChange={this.filter}>
-            
-            <label className="feed-options">
-              <input type="radio" id="following" value="following" name="filter-options"/>
-              <span>Following</span>
-            </label>
-            
-            <label className="feed-options">
-              <input type="radio" id="groups" value="groups" name="filter-options"/>
-              <span>Groups</span>
-            </label>
-
-            <label className="feed-options">
-              <input type="radio" id="all" value="all" name="filter-options"/>
-              <span>All</span>
-            </label>
-
-          </div>
-          </form>
-
-            <PostList posts={postsToDisplay} users={users} />
-          </div>
- 
-        </div>
+      <div>
+        <Divider hidden />
+        <Tab panes={feedPanes}/> 
       </div>
     )
   }
 }
 
 const mapStateToProps = (state) => {
+  //creates the friends list for us to query
+  var currentFriendsList = ["0"]; //This is the dummy value
+  for(var key in state.firestore.ordered.users)
+  {
+    if(state.firebase.auth["uid"] === state.firestore.ordered.users[key]["id"])
+    {
+      currentFriendsList = state.firestore.ordered.users[key]["friends"];
+    }
+  }
+
+  //sort friendsPosts, because the sortBy doesn't work
+  if(state.firestore.ordered.friendsPosts != null){
+  var sortedFriendsArray = state.firestore.ordered.friendsPosts.sort(function (a, b) {
+    return b.createdAt["seconds"] - a.createdAt["seconds"];
+  })
+  }
+
+  //This is if we wanted to allow personal private posts to be shown on explore page
+  //find a way to combine publicPosts and privatePersonalPosts for the explore page 
+  // if(state.firestore.ordered.publicPosts != null && state.firestore.ordered.privatePersonalPosts != null){
+  // var sortedExploreArray = state.firestore.ordered.publicPosts.concat(state.firestore.ordered.privatePersonalPosts)
+  //                                                   .sort(function (a, b) {
+  //   return b.createdAt["seconds"] - a.createdAt["seconds"];
+  // })
+  // }
+  if(state.firestore.ordered.publicPosts)
+    var sortedExploreArray = state.firestore.ordered.publicPosts.sort(function (a, b) {return b.createdAt["seconds"] - a.createdAt["seconds"];})
+
   return {
-    posts: state.firestore.ordered.posts,
+    explorePosts: sortedExploreArray,
+    friendsPosts: sortedFriendsArray,
+    auth: state.firebase.auth,
     users: state.firestore.ordered.users,
-    groups: state.firestore.ordered.groups,
-    auth: state.firebase.auth
+    currentFriendsList: currentFriendsList
   }
 }
 
 
 export default compose(
   connect(mapStateToProps),
-  firestoreConnect([
-    { collection: 'posts', orderBy: ['createdAt', 'desc'] },
-    { collection: 'users' },
-    { collection: 'groups' }
+  firestoreConnect(props => [
+      { collection: 'users' },
+      {
+        collection: 'posts',
+        storeAs: 'friendsPosts',
+        where: ['authorId', 'in', props.currentFriendsList === null || props.currentFriendsList.length === 0 ? ['0'] : props.currentFriendsList]
+      },
+      { 
+        collection: 'posts',
+        storeAs: 'publicPosts',
+        where: ['privacy', '==', 'public'],
+      },
+      // {
+      //   collection: 'posts',
+      //   storeAs: 'privatePersonalPosts',
+      //   where: [
+      //     ['authorId', '==', props.auth["uid"]
+      //   ],
+      //     ['privacy', '==', 'private']
+      //   ]
+      // },
   ])
 )(Feed);

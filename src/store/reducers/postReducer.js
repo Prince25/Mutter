@@ -1,16 +1,10 @@
-// dummy data for now
-// add more dummy data!!
-  // TODO: add flexibility for song OR album
-  // TODO: add timestamp
+
 const initState = {
   posts: [
-    {id: '1', author: 'AaronLovesMutter1', song: 'Stronger', comment: 'an all-time favorite workout song', rating: 4},
-    {id: '2', author: 'AaronLovesMutter2', song: 'EARFQUAKE', comment: 'pretty good but not really what I listen to Tyler for', rating: 3},
-    {id: '3', author: 'AaronLovesMutter3', song: 'No Role Modelz', comment: 'an all-time favorite song. period.', rating: 5},
-    {id: '4', author: 'AaronLovesMutter4', song: 'Ye vs. the People', comment: 'can he please just shut the fuck up', rating: 1}
+    {'song': null}
   ]
 }
-
+  
 const postReducer = (state = initState, action) => {
   switch (action.type) {
     case 'CREATE_POST': 
@@ -41,5 +35,4 @@ const postReducer = (state = initState, action) => {
   }
 }
 
-
-export default postReducer;
+export default postReducer

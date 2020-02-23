@@ -4,14 +4,14 @@ import 'firebase/auth'
 
 // Your web app's Firebase configuration
 var firebaseConfig = {
-  apiKey: "AIzaSyDVV6yNQpJCOy3j4WBpdeKD2QRDldQ-bBY",
-  authDomain: "mutter-ucla.firebaseapp.com",
-  databaseURL: "https://mutter-ucla.firebaseio.com",
-  projectId: "mutter-ucla",
-  storageBucket: "mutter-ucla.appspot.com",
-  messagingSenderId: "603613146271",
-  appId: "1:603613146271:web:2af294a94d1bc6745c46aa",
-  measurementId: "G-N54TCZ0F8J"
+  apiKey: "AIzaSyAie0QM22jlr4Jj3l6mdPXGa5pvdL0WsBM",
+  authDomain: "runtime-terror-1d144.firebaseapp.com",
+  databaseURL: "https://runtime-terror-1d144.firebaseio.com",
+  projectId: "runtime-terror-1d144",
+  storageBucket: "runtime-terror-1d144.appspot.com",
+  messagingSenderId: "70168581355",
+  appId: "1:70168581355:web:5e5d90b4acaa1fa0515aae",
+  measurementId: "G-CX98XPJEMS"
 };
 
 // Initialize Firebase

@@ -46,40 +46,48 @@ const authReducer = (state = initState, action) => {
       console.log('Update user image error', action.err)
       return state
 
-    case 'FOLLOW_USER': 
-      console.log('User ', action.uId, 'followed new user', action.followingId)
+    case 'USER_UPDATE': 
+      console.log('Updated user profile', action.uId, action.newInfo)
       return state
 
-    case 'FOLLOW_USER_ERROR': 
-      console.log('Follow new user error', action.err)
+    case 'USER_UPDATE_ERROR': 
+      console.log('Update user profile error', action.err)
       return state
 
-    case 'UNFOLLOW_USER': 
-      console.log('User', action.uId, 'unfollowed new user', action.followingId)
+    case 'SEND_FRIEND_REQUEST': 
+      console.log('Sent friend request', action.profile_user_id, action.logged_in_user_id)
       return state
 
-    case 'UNFOLLOW_USER_ERROR': 
-      console.log('Unfollow new user error', action.err)
+    case 'SEND_FRIEND_REQUEST_ERROR': 
+      console.log('Send friend request error', action.err)
       return state
 
-    case 'ADD_FOLLOWER': 
-      console.log('User', action.followingId, 'got new follower', action.uId)
+    case 'REMOVE_FRIEND': 
+      console.log('Sent friend request', action.profile_user_id, action.logged_in_user_id)
       return state
 
-    case 'ADD_FOLLOWER_ERROR': 
-      console.log('Add new follower error', action.err)
+    case 'REMOVE_FRIEND_ERROR': 
+      console.log('Send friend request error', action.err)
       return state
 
-    case 'REMOVE_FOLLOWER': 
-      console.log('User', action.followingId, 'lost follower', action.uId)
+    case 'ACCEPT_FRIEND': 
+      console.log('Accepted friend request', action.friend_user_id, action.logged_in_user_id)
       return state
 
-    case 'REMOVE_FOLLOWER_ERROR': 
-      console.log('Remove follower error', action.err)
+    case 'ACCEPT_FRIEND_ERROR': 
+      console.log('Accept friend request error', action.err)
+      return state
+
+    case 'REJECT_FRIEND': 
+      console.log('Rejected friend request', action.friend_user_id, action.logged_in_user_id)
+      return state
+
+    case 'REJECT_FRIEND_ERROR': 
+      console.log('Reject friend request error', action.err)
       return state
 
     case 'SPOTIFY_TOKEN': 
-      console.log('Updated user spotify token', action.uId, action.token)
+      console.log('Updated user spotify token', action.uId)
       return state
 
     case 'SPOTIFY_TOKEN_ERROR': 

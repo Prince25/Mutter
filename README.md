@@ -1,114 +1,101 @@
-# Mutter
 Our mission is to bring people together through music and provide anyone a platform to express
 themselves in their own music review blog. Become a music critic and see what others have to
 say about top music.
 
 
-### Video Demo
-[YouTube](https://youtu.be/1qkLy-PLUP0)
-
-
 ### Technologies
 * [React](https://reactjs.org/) - Frontend: JavaScript library for creating web apps!
-* [node.js](http://nodejs.org) - evented I/O for the backend
+* [node.js](http://nodejs.org) - Evented I/O for the backend
 * [Firebase](https://firebase.google.com/) - Backend: Database and Authorization
-* [Jsdoc](https://devdocs.io/jsdoc/) - Documentation
-* [Selenium](https://selenium-python.readthedocs.io/) - Unit Testing
+* [Spotify Web API](https://developer.spotify.com/documentation/web-api/) - For authenticating and integrating with Spotify
+* [Semantic UI](https://react.semantic-ui.com/) - Frontend Framework
 
 
-### Installation
-Mutter requires [node.js](https://nodejs.org/) to run.
-Clone repository, install the dependencies and start the server.
-
-Clone and Run the Script
+### Installation / Usage
+**Prefered Method**  
+1) Clone Repository and Run Spotify Server
 ```sh
-$ git clone https://github.com/PrinceS25/Mutter.git
-$ cd cs130-mutter
-$ ./run.sh
-```
-
-**OR**
-
-Clone and install dependencies
-```sh
-$ git clone https://github.com/PrinceS25/Mutter.git
-$ cd cs130-mutter
-$ npm install
-```
-
-Run Spotify Server
-```sh
-$ cd server
+$ git clone https://github.com/cs188-software-design-security-w20/project-runtime-terror
+$ cd project-runtime-terror/spotify_server
 $ npm install
 $ cd authorization_code
 $ node app.js
 ```
 
-Run Mutter
+2) Access via Website: //TODO
+
+
+**Backup Method**\
+Requires [node.js](https://nodejs.org/) to run.
+Clone repository, install the dependencies and start the server.
+
+Clone and Run the Script
+```sh
+$ git clone https://github.com/cs188-software-design-security-w20/project-runtime-terror
+$ cd project-runtime-terror
+$ ./run.sh
+```
+
+**OR**
+
+1) Clone and install dependencies
+```sh
+$ git clone https://github.com/cs188-software-design-security-w20/project-runtime-terror
+$ cd project-runtime-terror
+$ npm install
+```
+
+2) Run Spotify Server
+```sh
+$ cd spotify_server
+$ npm install
+$ cd authorization_code
+$ node app.js
+```
+
+3) Run App
 ```sh
 $ cd ../..
 $ npm start
 ```
 
 
-### Running Unit Tests Using Python Selenium
-This test requires [Chromedriver](https://chromedriver.chromium.org/downloads) and [Chrome](https://www.google.com/chrome/) to be installed on your machine 
-```sh
-$ pip install selenium
-$ cd test
-$ python MutterTest.py
-```
-### Running JavaScript Unit Tests
-The unit tests are specific for Spotify API, you need to fetch the response from Spotify offical console, the access token needs to be replaced with the up-to-date one. There are 5 test files totally. Use the same commands, just change file names.
-```sh
-$ cd test
-$ node Stest.js
-```
-
-
 ### Team
-* Aaron Van Doren
-* Ka U Ieong
-* Xiaoran Mei
+* Shabnam Bahmanyar
+* Henry Bui
+* Brian Du
+* Tejas Kasturi
 * Prabhjot Singh
-* Ege Tanboğa
-* Fuwei Zhang
 
 
 ### Directory Structure
-    CS130-Mutter
+    project-runtime-terror
     ├── ...
-    ├── server      # Spotify Auhentication Server
+    ├── spotify_server      # Spotify Auhentication Server
     │   └── ...
     ├── src
     │   ├── components      # All frontend components used to display web pages 
     |   |   ├── ...
     |   |   ├── discover            # Discover Page
     |   |   ├── feed                # Feed Page
-    |   |   ├── groups              # Groups Page
-    |   |   ├── layout              # Splash and Navbar
+    |   |   ├── layout              # Login and Navbar
     |   |   ├── profile             # Profile Page
-    |   |   ├── home.js             # Home Page
-    |   |   ├── notifications.js    # Handles notifications on the home page
+    |   |   ├── 404.js              # 404 Status Page 
+    |   |   ├── createPost.js       # Create Post Page
     |   |   └── ...
     │   ├── config
-    |   |   └── fbConfig.js # Firebase configuration
+    |   |   └── fbConfig.js         # Firebase configuration
     │   ├── store
-    |   |   ├── actions     # Backend methods used to communicate with Firebase
+    |   |   ├── actions             # Backend methods used to communicate with Firebase
     |   |   |   ├── authActions.js  # User Authentication
-    |   |   |   ├── groupActions.js # Groups Database
     |   |   |   └── postActions.js  # Posts Database
-    │   |   ├── reducers    # Backend reducers keeping track of state changes
+    │   |   ├── reducers            # Backend reducers keeping track of state changes
     |   |   |   ├── authReducer.js  
-    |   |   |   ├── groupReducer.js 
     |   |   |   ├── postReducer.js 
     |   |   |   └── rootReducer.js  # Combines Other Reducers
     │   ├── App.js      # Main Component responsible for routing
     │   ├── index.css   # Main CSS File
-    │   ├── loading.js  # Component That Displays While Page is Loading
     │   └── ...
-    ├── test
-    │   └── MutterTest.py # Python Unit Tests Using Selenium 
-    ├── README.md   # The file you are currently reading 
-    ├── run.sh      # Script used to easily launch Mutter
+    ├── README.md       # The file you are currently reading
+    ├── run.sh          # Bash script to run the web application
     └── ...
