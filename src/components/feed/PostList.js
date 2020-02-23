@@ -1,15 +1,16 @@
 import React from 'react';
-import PostSummary from './PostSummary';
+import PostSummary from './postSummary';
 
 
 const PostList = ({posts, users}) => {
   return (
-    <div style={{paddingTop: '0'}} className="post-list section">
-      { posts && posts.map(post => {
-        return (
-          <PostSummary post={post} users={users} key={post.id}/>
-        )
-      })}
+    <div>
+        {(posts && (posts.length === 0)) ? <h3>No Posts Yet!</h3> : null}
+        { posts && posts.map(post => {
+          return (
+            <PostSummary key={post.id} post={post} users={users} />
+          )
+        })}
     </div>
   )
 }
