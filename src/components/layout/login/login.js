@@ -15,7 +15,7 @@ class Login extends Component {
         else {
             return (
                 <Grid padded centered>
-                    <Image src="/img/silhouette_2.png"/>
+                    <Image src="Mutter/img/silhouette_2.png"/>
                     <GridRow> <LoginForm/> </GridRow>
                 </Grid>
             )
