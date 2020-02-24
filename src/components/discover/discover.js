@@ -7,7 +7,7 @@ import { makeCancellable } from './cancellablePromise';
 import _ from 'lodash'
 
 const spotifyApi = new SpotifyWebApi();
-const base_url = "http://localhost:3000"
+const base_url = "https://princes25.github.io/Mutter"
 
 export class Discover extends Component {
   constructor(){
