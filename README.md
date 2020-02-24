@@ -12,52 +12,59 @@ say about top music.
 
 
 ### Installation / Usage
-**Prefered Method**  
-1) Clone Repository and Run Spotify Server
-```sh
-$ git clone https://github.com/cs188-software-design-security-w20/project-runtime-terror
-$ cd project-runtime-terror/spotify_server
-$ npm install
-$ cd authorization_code
-$ node app.js
-```
-
-2) Access via Website: //TODO
-
-
-**Backup Method**\
 Requires [node.js](https://nodejs.org/) to run.
-Clone repository, install the dependencies and start the server.
 
-Clone and Run the Script
+**Prefered Method** (v2.0_Github_Pages Branch)
+1) Clone Repository and Run Spotify Server
+
+    Run Script
+    ```sh
+    $ git clone -b v2.0_Github_Pages https://github.com/PrinceS25/Mutter
+    $ cd mutter
+    $ ./run.sh
+    ```
+    **OR**
+    ```sh
+    $ git clone -b v2.0_Github_Pages https://github.com/PrinceS25/Mutter
+    $ cd mutter/spotify_server
+    $ npm install
+    $ cd authorization_code
+    $ node app.js
+    ```
+
+2) Access via Website: https://princes25.github.io/Mutter/
+
+
+**Backup Method** (master branch)\
+Clone localhost branch and Run the Script
 ```sh
-$ git clone https://github.com/cs188-software-design-security-w20/project-runtime-terror
-$ cd project-runtime-terror
+$ git clone https://github.com/PrinceS25/Mutter
+$ cd mutter
 $ ./run.sh
 ```
 
 **OR**
 
 1) Clone and install dependencies
-```sh
-$ git clone https://github.com/cs188-software-design-security-w20/project-runtime-terror
-$ cd project-runtime-terror
-$ npm install
-```
+    ```sh
+    $ git clone https://github.com/PrinceS25/Mutter
+    $ cd mutter
+    $ npm install
+    ```
 
 2) Run Spotify Server
-```sh
-$ cd spotify_server
-$ npm install
-$ cd authorization_code
-$ node app.js
-```
+    ```sh
+    $ cd spotify_server
+    $ npm install
+    $ cd authorization_code
+    $ node app.js
+    ```
 
 3) Run App
-```sh
-$ cd ../..
-$ npm start
-```
+    ```sh
+    $ cd ../..
+    $ npm start
+    ```
 
 
 ### Team
@@ -69,7 +76,7 @@ $ npm start
 
 
 ### Directory Structure
-    project-runtime-terror
+    mutter
     ├── ...
     ├── spotify_server      # Spotify Auhentication Server
     │   └── ...
