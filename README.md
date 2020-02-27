@@ -14,11 +14,31 @@ say about top music.
 ### Installation / Usage
 Requires [node.js](https://nodejs.org/) to run.
 
-**Prefered Method** (v2.0_Web Branch)
+There are two ways of running Mutter: 1) accessing it via webpage, or 2) running locally.
+It is recommended to use method 1 as it represents the web application as it would be during production.
+Method 2 is provided as backup in case method 1 is unavailable.
+
+**Preferred Method** (v2.0_Web Branch)\
 Access via Website: https://princes25.github.io/Mutter/
 
 
 **Backup Method** (master branch)\
+In order to run locally, you need to create an .env file in the root folder and define the following variables inside:
+* REACT_APP_FIREBASE_API_KEY
+* REACT_APP_AUTH_DOMAIN
+* REACT_APP_DATABASE_URL
+* REACT_APP_PROJECT_ID
+* REACT_APP_STORAGE_BUCKET
+* REACT_APP_MESSAGING_SENDER_ID
+* REACT_APP_APP_ID
+* REACT_APP_SPOTIFY_CLIENT_ID
+
+Environmental variables REACT_APP_FIREBASE_API_KEY to REACT_APP_APP_ID can be acquired by setting up [Firebase](https://console.firebase.google.com/) for a web app. Follow [this](https://www.robinwieruch.de/firebase-tutorial) tutorial.
+
+REACT_APP_SPOTIFY_CLIENT_ID can be acquired by going to [Spotify for Developers](https://developer.spotify.com/dashboard) and creating an app.
+
+See [sample.env](https://github.com/PrinceS25/Mutter/blob/master/sample.env) for an example.
+
 Clone localhost branch and Run the Script
 ```sh
 $ git clone https://github.com/PrinceS25/Mutter
