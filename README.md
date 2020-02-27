@@ -14,25 +14,8 @@ say about top music.
 ### Installation / Usage
 Requires [node.js](https://nodejs.org/) to run.
 
-**Prefered Method** (v2.0_Github_Pages Branch)
-1) Clone Repository and Run Spotify Server
-
-    Run Script
-    ```sh
-    $ git clone -b v2.0_Github_Pages https://github.com/PrinceS25/Mutter
-    $ cd mutter
-    $ ./run.sh
-    ```
-    **OR**
-    ```sh
-    $ git clone -b v2.0_Github_Pages https://github.com/PrinceS25/Mutter
-    $ cd mutter/spotify_server
-    $ npm install
-    $ cd authorization_code
-    $ node app.js
-    ```
-
-2) Access via Website: https://princes25.github.io/Mutter/
+**Prefered Method** (v2.0_Web Branch)
+Access via Website: https://princes25.github.io/Mutter/
 
 
 **Backup Method** (master branch)\
