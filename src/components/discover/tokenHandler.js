@@ -80,11 +80,11 @@ const mapDispatchToProps = (dispatch) => {
 
 
 export function redirectUrlToSpotifyForLogin() {
-	const CLIENT_ID = '1811b81e027e4dd291a2505a456b74e8'
+	const CLIENT_ID = process.env.REACT_APP_SPOTIFY_CLIENT_ID
   const REDIRECT_URI = 
     process.env.NODE_ENV === "production"
-    ? 'https://princes25.github.io/Mutter/tokenhandler'
-    : 'http://localhost:3000/tokenhandler';
+    ? 'https://princes25.github.io/Mutter/tokenHandler'
+    : 'http://localhost:3000/tokenHandler';
 
 	const scopes = [
     'user-read-private',

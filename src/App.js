@@ -27,7 +27,6 @@ class App extends Component {
   }
 
   render() {
-
     const { auth } = this.props
     const content = (
       <Switch>
