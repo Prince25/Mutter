@@ -1,4 +1,6 @@
 ![MutterLogo](https://i.imgur.com/DTLeUIB.png)
+
+# Mutter v2.0
 Our mission is to bring people together through music and provide anyone a platform to express themselves in their own music review blog. Become a music critic and see what others have to say about top music.
 
 
@@ -13,7 +15,7 @@ Our mission is to bring people together through music and provide anyone a platf
 ### Installation / Usage
 There are two ways of running Mutter: 1) accessing it via webpage, or 2) running locally. It is recommended to use method 1 as it represents the web application as it would be during production. Method 2 is provided as backup in case method 1 is unavailable.
 
-**Preferred Method** (gh_pages branch)\
+**Preferred Method** (gh-pages branch)\
 Access via Website: https://princes25.github.io/Mutter/
 
 

@@ -13,7 +13,7 @@ export class CreatePost extends Component {
   constructor(props) {
     super();
 
-    const songInfo = props.location.state;    
+    const songInfo = props && props.location ? props.location.state : null;    
     this.state = {
       song: songInfo ? songInfo.title : '',
       comment: '',
