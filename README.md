@@ -1,4 +1,4 @@
-# Mutter
+# Mutter v1.0
 Our mission is to bring people together through music and provide anyone a platform to express
 themselves in their own music review blog. Become a music critic and see what others have to
 say about top music.
