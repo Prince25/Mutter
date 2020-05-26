@@ -32,7 +32,7 @@ export const signUp = (newUser) => {
         friends_pending: [],
         privacy: 'public',
         spotify_token: '',
-        imageUrl: 'https://firebasestorage.googleapis.com/v0/b/runtime-terror-1d144.appspot.com/o/profile_images%2Fdefault_pic.png?alt=media&token=74c12ae4-d4ca-4ad2-af25-c38c2206ee43'
+        imageUrl: 'https://firebasestorage.googleapis.com/v0/b/mutterv2.appspot.com/o/default.png?alt=media&token=3eace69d-a34a-4721-b55c-0d6d8fd25f2a'
       })
     }).then(() => {
       dispatch({ type: 'SIGNUP_SUCCESS' })

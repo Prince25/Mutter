@@ -59,8 +59,11 @@ class SongCard extends Component {
     }
 
     makePost = () => {
-        let { create_url } = this.props;
-        window.location.href = create_url;
+        let { title, url } = this.props;
+        this.props.history.push({
+            pathname: '/createpost',
+            state: {title: title, url: url}
+        })
     }
 
     render() {

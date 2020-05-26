@@ -33,6 +33,7 @@ class SideNavbar extends Component {
 
     render() {
         const { profile } = this.props;
+        let logo = <Image circular centered size='mini' src={process.env.PUBLIC_URL + "/img/logo.png"} alt=""/>
         let imageTop = profile ? <Image circular centered size='mini' src={profile.imageUrl} alt=""/> : null
         let imageBot = profile ? <Image circular centered size='small' src={profile.imageUrl} alt=""/> : null
         let requests_num = profile && profile.friends_pending ? profile.friends_pending.length : 0
@@ -46,7 +47,7 @@ class SideNavbar extends Component {
             <div className='fullsize_div' id='sidebar_2'>
                 <Menu fixed='top' className='top_menu'>
                     <Menu.Item icon='th list' onClick={() => {this.setState({visible: !this.state.visible})}}/>
-                    <Menu.Item header onClick={() => {this.load(this.FEED)}}>Runtime Terror</Menu.Item>
+                    <Menu.Item header onClick={() => {this.load(this.FEED)}}>{logo}</Menu.Item>
                     <Menu.Item onClick={() => {this.load(this.PROFILE)}}>{imageTop}</Menu.Item>
                     {requests}
                 </Menu>

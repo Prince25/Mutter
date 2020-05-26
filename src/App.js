@@ -1,7 +1,7 @@
 import React, { Component } from 'react';
 import { Redirect, Switch, Route, BrowserRouter } from 'react-router-dom'
 import { connect } from 'react-redux'
-import { Menu, Loader } from 'semantic-ui-react';
+import { Loader, Image } from 'semantic-ui-react';
 import Discover from './components/discover/discover'
 import TokenHandler from './components/discover/tokenHandler'
 import Login from './components/layout/login/login'
@@ -44,7 +44,7 @@ class App extends Component {
     // Redirect forces user to load at Discover page if already logged in
     const showLogin = (auth.isLoaded && auth.uid) ? 
       <SideNavbar content={content}/> : 
-      <div><Redirect to='/'/><Menu><Menu.Item header>Runtime Terror</Menu.Item></Menu><Login/></div>
+      <div><Redirect to='/' /> <Login /> </div>
 
     return (
       this.state.isLoading ? <div className='fullsize_div'> <Loader active size='massive'>Loading</Loader> </div>:

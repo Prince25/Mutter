@@ -5,6 +5,9 @@ import FileUploader from 'react-firebase-file-uploader';
 import { updateImage } from '../../store/actions/authActions'
 import { Grid, Progress, Header, Image, Button, Modal } from 'semantic-ui-react';
 
+// TODO: Check file type before uploading
+// https://github.com/fris-fruitig/react-firebase-file-uploader/issues/11#issuecomment-344598190 
+
 
 class ModalUploadPicture extends Component {
 

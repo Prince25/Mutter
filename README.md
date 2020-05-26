@@ -1,6 +1,5 @@
-Our mission is to bring people together through music and provide anyone a platform to express
-themselves in their own music review blog. Become a music critic and see what others have to
-say about top music.
+![MutterLogo](https://i.imgur.com/DTLeUIB.png)
+Our mission is to bring people together through music and provide anyone a platform to express themselves in their own music review blog. Become a music critic and see what others have to say about top music.
 
 
 ### Technologies
@@ -12,17 +11,15 @@ say about top music.
 
 
 ### Installation / Usage
-Requires [node.js](https://nodejs.org/) to run.
+There are two ways of running Mutter: 1) accessing it via webpage, or 2) running locally. It is recommended to use method 1 as it represents the web application as it would be during production. Method 2 is provided as backup in case method 1 is unavailable.
 
-There are two ways of running Mutter: 1) accessing it via webpage, or 2) running locally.
-It is recommended to use method 1 as it represents the web application as it would be during production.
-Method 2 is provided as backup in case method 1 is unavailable.
-
-**Preferred Method** (v2.0_Web Branch)\
+**Preferred Method** (gh_pages branch)\
 Access via Website: https://princes25.github.io/Mutter/
 
 
 **Backup Method** (master branch)\
+Requires [node.js](https://nodejs.org/).
+
 In order to run locally, you need to create an .env file in the root folder and define the following variables inside:
 * REACT_APP_FIREBASE_API_KEY
 * REACT_APP_AUTH_DOMAIN
@@ -39,35 +36,12 @@ REACT_APP_SPOTIFY_CLIENT_ID can be acquired by going to [Spotify for Developers]
 
 See [sample.env](https://github.com/PrinceS25/Mutter/blob/master/sample.env) for an example.
 
-Clone localhost branch and Run the Script
+Clone master branch and run the script
 ```sh
 $ git clone https://github.com/PrinceS25/Mutter
 $ cd mutter
 $ ./run.sh
 ```
-
-**OR**
-
-1) Clone and install dependencies
-    ```sh
-    $ git clone https://github.com/PrinceS25/Mutter
-    $ cd mutter
-    $ npm install
-    ```
-
-2) Run Spotify Server
-    ```sh
-    $ cd spotify_server
-    $ npm install
-    $ cd authorization_code
-    $ node app.js
-    ```
-
-3) Run App
-    ```sh
-    $ cd ../..
-    $ npm start
-    ```
 
 
 ### Team

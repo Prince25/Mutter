@@ -13,15 +13,12 @@ export class CreatePost extends Component {
   constructor(props) {
     super();
 
-    const params = this.getHashParams();
-    const songName = params.SongName;
-    const songUrl = params.SongUrl;
-    
+    const songInfo = props.location.state;    
     this.state = {
-      song: songName ? songName : '',
+      song: songInfo ? songInfo.title : '',
       comment: '',
       rating: '',
-      url: songUrl ? songUrl : '',
+      url: songInfo ? songInfo.url : '',
       privacy: props.profile.privacy,
       error: false,
     }
@@ -37,18 +34,6 @@ export class CreatePost extends Component {
     else {
       return null
     }
-  }
-
-  getHashParams() {
-    var hashParams = {};
-    var e, r = /([^&;=]+)=?([^&;]*)/g,
-        q = window.location.hash.substring(1);
-    e = r.exec(q)
-    while (e) {
-       hashParams[e[1]] = decodeURIComponent(e[2]);
-       e = r.exec(q);
-    }
-    return hashParams;
   }
 
   handleChange = (e) => {

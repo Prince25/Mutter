@@ -265,7 +265,7 @@ export class Discover extends Component {
       clearInterval(this.playerCheckInterval);
 
       this.player = new window.Spotify.Player({
-        name: "Runtime Terror's Spotify Player",
+        name: "Mutter Spotify Player",
         getOAuthToken: cb => { cb(_token); },
       });
       this.createEventHandlers();
@@ -364,17 +364,16 @@ export class Discover extends Component {
   }
 
   createPost = () => { 
-    if (this.state.trackUrl === undefined) {
-      window.location.href = base_url + "/createpost/#SongName=" + this.state.trackName
-    }
-    else {
-      window.location.href = base_url + "/createpost/#SongName=" + this.state.trackName + "&SongUrl=" + this.state.trackUrl
-    }
+    this.props.history.push({
+      pathname: '/createpost',
+      state: {title: this.state.trackName, url: this.state.trackUrl}
+    })
   }
 
   render() {
     const { value, results, recentlyPlayed, topTracks, newReleases, trackName, artistName, albumName, albumArt, playing, _token, deviceId, account_type, player_connected } = this.state
 
+    let history = this.props.history
     let searchResults = []
     let newAlbums = []
     const recents = []
@@ -392,8 +391,7 @@ export class Discover extends Component {
         let uri = results[i].uri
         let deviceid = deviceId
         let type = results[i].type
-        let create_url = base_url + "/createpost/#SongName=" + title + "&SongUrl=" + url
-        searchResults.push(new SongInfo(title, artist, album, art_url, url, create_url, access_token, uri, deviceid, type, account_type, player_connected))
+        searchResults.push(new SongInfo(title, artist, album, art_url, url, access_token, uri, deviceid, type, account_type, player_connected, history))
       }
     } 
 
@@ -408,8 +406,7 @@ export class Discover extends Component {
         let uri = recentlyPlayed[i].track.uri
         let deviceid = deviceId
         let type = recentlyPlayed[i].track.type
-        let create_url = base_url + "/createpost/#SongName=" + title + "&SongUrl=" + url
-        recents.push(new SongInfo(title, artist, album, art_url, url, create_url, access_token, uri, deviceid, type, account_type, player_connected))
+        recents.push(new SongInfo(title, artist, album, art_url, url, access_token, uri, deviceid, type, account_type, player_connected, history))
       }
     }
 
@@ -424,8 +421,7 @@ export class Discover extends Component {
         let uri = topTracks[i].uri
         let deviceid = deviceId
         let type = topTracks[i].type
-        let create_url = base_url + "/createpost/#SongName=" + title + "&SongUrl=" + url
-        top.push(new SongInfo(title, artist, album, art_url, url, create_url, access_token, uri, deviceid, type, account_type, player_connected))
+        top.push(new SongInfo(title, artist, album, art_url, url, access_token, uri, deviceid, type, account_type, player_connected, history))
       }
     }
 
@@ -439,8 +435,7 @@ export class Discover extends Component {
         let uri = newReleases[i].uri
         let deviceid = deviceId
         let type = newReleases[i].type
-        let create_url = base_url + "/createpost/#SongName=" + title + "&SongUrl=" + url
-        newAlbums.push(new SongInfo(title, artist, "", art_url, url, create_url, access_token, uri, deviceid, type, account_type, player_connected))
+        newAlbums.push(new SongInfo(title, artist, "", art_url, url, access_token, uri, deviceid, type, account_type, player_connected, history))
       }
     }
 
